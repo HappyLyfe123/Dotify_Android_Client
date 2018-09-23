@@ -16,16 +16,19 @@
         <RelativeLayout
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="#A9A9A9">
 
             <Button
                 android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="15dp"
                 android:background="@android:color/transparent"
                 android:text="@string/back"
+                android:textColor="@android:color/black"
                 android:textAlignment="textStart" />
 
             <Button
@@ -34,9 +37,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignRight="@+id/back_button"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="15dp"
                 android:background="@android:color/transparent"
                 android:text="@string/create_account"
+                android:textColor="#808080"
                 android:textAlignment="textEnd" />
         </RelativeLayout>
         <LinearLayout
@@ -48,34 +52,35 @@
 
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/username_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="17sp"
                 android:layout_marginTop="10dp"
                 android:text="@string/username"/>
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/user_name_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginTop="10dp"
                 android:ems="10"
                 android:paddingStart="5dp"
                 android:inputType="textPersonName"
-                android:text="Name"
                 android:background="@drawable/rounded_background"/>
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/password_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:textSize="17sp"
                 android:text="@string/password"/>
 
             <EditText
-                android:id="@+id/editText2"
+                android:id="@+id/password_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginTop="10dp"
                 android:ems="10"
                 android:paddingStart="5dp"
@@ -83,52 +88,73 @@
                 android:background="@drawable/rounded_background"/>
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/weak_password_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_red_dark"
+                android:visibility="visible"
+                android:textSize="10sp"
+                android:layout_marginStart="10dp"
+                android:text="@string/weak_password"/>
+
+            <TextView
+                android:id="@+id/confirm_password_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:textSize="17sp"
                 android:text="@string/confirm_password"/>
+
             <EditText
-                android:id="@+id/editText3"
+                android:id="@+id/confirm_password_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginTop="10dp"
                 android:ems="10"
                 android:paddingStart="5dp"
                 android:inputType="textPassword"
                 android:background="@drawable/rounded_background"/>
 
+            <TextView
+                android:id="@+id/confirm_password_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="10sp"
+                android:visibility="visible"
+                android:layout_marginLeft="10dp"
+                android:text="@string/confirm_password_not_match"/>
+
             <Spinner
-                android:id="@+id/spinner"
+                android:id="@+id/security_question_1_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp" />
 
             <EditText
-                android:id="@+id/editText4"
+                android:id="@+id/security_question_1_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginTop="10dp"
                 android:ems="10"
                 android:paddingStart="5dp"
                 android:inputType="textPersonName"
-                android:text="Name"
                 android:background="@drawable/rounded_background"/>
 
             <Spinner
-                android:id="@+id/spinner2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <EditText
-                android:id="@+id/editText5"
+                android:id="@+id/security_question_2_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/security_question_2_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
                 android:layout_marginTop="10dp"
                 android:ems="10"
                 android:paddingStart="5dp"
                 android:inputType="textPersonName"
-                android:text="Name"
                 android:background="@drawable/rounded_background"/>
         </LinearLayout>
 

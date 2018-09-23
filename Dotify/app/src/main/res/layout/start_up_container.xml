@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".login_activity">
+    tools:context=".start_up_container">
 
     <FrameLayout
         android:id="@+id/main_display"
@@ -19,8 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/TODO"
-            android:name="com.example.thai.dotify.create_account_fragment"
-            tools:layout="@layout/fragment_create_account">
+            android:name="com.example.thai.dotify.login_fragment"
+            tools:layout="@layout/fragment_login">
         </fragment>
 
 
