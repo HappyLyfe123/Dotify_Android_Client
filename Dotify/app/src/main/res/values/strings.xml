@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Dotify</string>
+    <string name="empty_login_entry">Username or Password Can\'t Be Empty</string>
+    <string name="invalid_credential">Invalid Username or Password</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="forget_password">Forget Password?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="create_account">Create</string>
+    <string name="back">Back</string>
+    <string name="security_questions1">Security Questions 1</string>
+    <string name="security_questions2">Security Questions 2</string>
+
+    <string-array name="security_questions_array">
+        <item>Security Questions</item>
+        <item>Favorite Anime</item>
+        <item>Favorite Ice Cream Flavor</item>
+        <item>Favorite Color</item>
+        <item>Favorite Tree</item>
+        <item>Favorite Sand</item>
+        <item>Favorite Ox</item>
+    </string-array>
+
+</resources>

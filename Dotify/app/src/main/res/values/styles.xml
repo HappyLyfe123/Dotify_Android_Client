@@ -1,0 +1,9 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:background">#242424</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+</resources>
