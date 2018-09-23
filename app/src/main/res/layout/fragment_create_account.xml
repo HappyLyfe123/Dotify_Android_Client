@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="10dp"
     tools:context=".create_account_fragment"
     android:theme="@style/AppTheme">
 
@@ -29,7 +29,8 @@
                 android:background="@android:color/transparent"
                 android:text="@string/back"
                 android:textColor="@android:color/black"
-                android:textAlignment="textStart" />
+                android:textAlignment="textStart"
+                android:clickable="false"/>
 
             <Button
                 android:id="@+id/create_account_button"
@@ -40,7 +41,7 @@
                 android:layout_marginEnd="15dp"
                 android:background="@android:color/transparent"
                 android:text="@string/create_account"
-                android:textColor="#808080"
+                android:textColor="@color/createAccount"
                 android:textAlignment="textEnd" />
         </RelativeLayout>
 
@@ -93,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:textColor="@android:color/holo_red_dark"
+                android:textColor="@android:color/holo_red_light"
                 android:visibility="invisible"
                 android:textSize="10sp"
                 android:layout_marginStart="10dp"
@@ -122,7 +123,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:textColor="@android:color/holo_red_dark"
+                android:textColor="@android:color/holo_red_light"
                 android:textSize="10sp"
                 android:visibility="invisible"
                 android:layout_marginLeft="10dp"
@@ -166,4 +167,4 @@
 
     </LinearLayout>
 
-</FrameLayout>
+</ScrollView>

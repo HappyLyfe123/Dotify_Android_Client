@@ -1,5 +1,6 @@
 package com.example.thai.dotify;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.Editable;
@@ -26,6 +27,10 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
     private TextView confirmPasswordErrorTextView;
     private boolean isWeakPasswordEnable;
     private boolean isPasswordMatch;
+    private boolean usernameFilled, passwordFilled, confirmedPasswordFilled, securityQuestion1Filled,
+        securityQuestion2Filled;
+    private Button createAccountButton;
+
 
 
     @Override
@@ -43,12 +48,17 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Button createAccountButton = getActivity().findViewById(R.id.create_account_button);
+        createAccountButton = getActivity().findViewById(R.id.create_account_button);
         Button backButton = getActivity().findViewById(R.id.back_button);
 
         //
         isWeakPasswordEnable = false;
         isPasswordMatch = false;
+        usernameFilled = false;
+        passwordFilled = false;
+        confirmedPasswordFilled = false;
+        securityQuestion1Filled = false;
+        securityQuestion2Filled = false;
 
         //Initialize all of the views
         usernameEditText = getActivity().findViewById(R.id.user_name_edit_text);
@@ -63,6 +73,7 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
         backButton.setOnClickListener(this);
 
         setTextEditFocusListener();
+        setTextChange();
     }
 
     /**
@@ -90,7 +101,9 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
-
+                    if(!usernameEditText.getText().toString().isEmpty()){
+                        usernameFilled = true;
+                    }
                 }
             }
         });
@@ -99,11 +112,18 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
-                    if(passwordGuidelineCheck(passwordEditText.getText().toString())|| passwordEditText.getText().toString().isEmpty()){
+                    if(passwordEditText.getText().toString().isEmpty()){
                         weakPasswordTextView.setVisibility(View.INVISIBLE);
+                        passwordFilled = false;
+                    }
+                    else if(passwordGuidelineCheck(passwordEditText.getText().toString()) ){
+                        weakPasswordTextView.setVisibility(View.INVISIBLE);
+                        passwordFilled = true;
+                        isWeakPasswordEnable = false;
                     }
                     else{
                         weakPasswordTextView.setVisibility(View.VISIBLE);
+                        isWeakPasswordEnable = true;
                     }
                 }
             }
@@ -115,9 +135,11 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
                 if(!hasFocus){
                     if(passwordEditText.getText().toString().equals(confirmPasswordEditText.getText().toString())){
                         confirmPasswordErrorTextView.setVisibility(View.INVISIBLE);
+                        isPasswordMatch = true;
+                        confirmedPasswordFilled = true;
                     }
                     else{
-                        weakPasswordTextView.setVisibility(View.VISIBLE);
+                        confirmPasswordErrorTextView.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -127,6 +149,12 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
+                    if(securityQuestion1EditText.getText().toString().isEmpty()){
+                        securityQuestion1Filled = false;
+                    }
+                    else{
+                        securityQuestion1Filled = true;
+                    }
 
                 }
             }
@@ -135,6 +163,12 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
         securityQuestion2EditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                if(securityQuestion2EditText.getText().toString().isEmpty()){
+                    securityQuestion2Filled = false;
+                }
+                else{
+                    securityQuestion2Filled = true;
+                }
 
             }
         });
@@ -152,7 +186,13 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if(!s.toString().toString().trim().isEmpty()){
+                    usernameFilled = true;
+                    enableCreateAccountButton();
+                }
+                else{
+                    usernameFilled = false;
+                }
             }
 
             @Override
@@ -165,6 +205,15 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(passwordGuidelineCheck(s.toString())){
+                    passwordFilled = true;
+                    isWeakPasswordEnable = false;
+                    enableCreateAccountButton();
+                }
+                else{
+                    passwordFilled = false;
+                    isWeakPasswordEnable = true;
+                }
 
             }
 
@@ -178,6 +227,11 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(passwordEditText.getText().toString().equals(s.toString())){
+                    confirmedPasswordFilled = true;
+                    isPasswordMatch = true;
+                    enableCreateAccountButton();
+                }
 
             }
 
@@ -191,7 +245,13 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if(!s.toString().trim().isEmpty()){
+                    securityQuestion1Filled = true;
+                    enableCreateAccountButton();
+                }
+                else{
+                    securityQuestion1Filled = false;
+                }
             }
 
             @Override
@@ -204,26 +264,44 @@ public class create_account_fragment extends Fragment implements View.OnClickLis
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) { }
-        });
-
-        usernameEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if(!s.toString().trim().isEmpty()){
+                    securityQuestion2Filled = true;
+                    enableCreateAccountButton();
+                }
+                else{
+                    securityQuestion2Filled = false;
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) { }
         });
     }
+
+
+
+    /**
+     * Check to see if every edit text is filled and correctly formatted
+     *
+     */
+    private void enableCreateAccountButton(){
+
+        /**
+         *Enable crate button to be able to click and change the color to black
+         */
+        if(usernameFilled && passwordFilled && confirmedPasswordFilled && securityQuestion1Filled
+                && securityQuestion2Filled && !isWeakPasswordEnable && isPasswordMatch){
+
+            createAccountButton.setTextColor(Color.BLACK);
+            createAccountButton.setClickable(true);
+        }
+        else{
+            createAccountButton.setTextColor(getResources().getColor(R.color.createAccount));
+            createAccountButton.setClickable(false);
+
+        }
+    }
+
 
     /**
      * Checks the user's password to make sure it is strong enough to prevent dictionary attacks
