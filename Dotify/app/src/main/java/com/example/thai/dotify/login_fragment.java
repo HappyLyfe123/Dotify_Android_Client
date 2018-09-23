@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
 
 
 public class login_fragment extends Fragment implements View.OnClickListener {
@@ -37,7 +36,7 @@ public class login_fragment extends Fragment implements View.OnClickListener {
      * @param savedInstanceState The saved instance of the fragment
      */
     @Override
-    public void onActivityCreated( Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         //Initialize all of the views
