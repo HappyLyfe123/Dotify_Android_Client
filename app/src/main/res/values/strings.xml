@@ -12,7 +12,7 @@
     <string name="back">Back</string>
     <string name="security_questions1">Security Questions 1</string>
     <string name="security_questions2">Security Questions 2</string>
-    <string name="confirm_password_not_match">Password Does\'t Match</string>
+    <string name="confirm_password_not_match">Password Do Not Match</string>
     <string name="weak_password">Password must contain at least one of (a-z, A-Z, 0-9, Special Character)</string>
     <string name="submit">Submit</string>
 
@@ -25,8 +25,5 @@
         <item>Favorite Sand</item>
         <item>Favorite Ox</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
