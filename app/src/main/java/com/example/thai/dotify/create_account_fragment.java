@@ -39,6 +39,8 @@ public class create_account_fragment extends Fragment {
         usernameEditText = getActivity().findViewById(R.id.user_name_edit_text);
         passwordEditText = getActivity().findViewById(R.id.password_edit_text);
         confirmPasswordEditText = getActivity().findViewById(R.id.confirm_password_edit_text);
+        securityQuestion1EditText = getActivity().findViewById(R.id.security_question_1_edit_text);
+        securityQuestion2EditText = getActivity().findViewById(R.id.security_question_2_edit_text);
     }
 
 
