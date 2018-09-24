@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 
 
-public class login_fragment extends Fragment implements View.OnClickListener {
+public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private EditText usernameEditText;
     private EditText passwordEditText;

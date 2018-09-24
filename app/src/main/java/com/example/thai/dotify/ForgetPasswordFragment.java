@@ -8,10 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class forget_password_fragment extends Fragment {
+public class ForgetPasswordFragment extends Fragment {
 
 
-    public forget_password_fragment() {
+    public ForgetPasswordFragment() {
         // Required empty public constructor
     }
 

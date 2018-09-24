@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="10dp"
-    tools:context=".create_account_fragment"
+    tools:context=".CreateAccountFragment"
     android:theme="@style/AppTheme">
 
     <LinearLayout

@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class create_account_fragment extends Fragment implements View.OnClickListener{
+public class CreateAccountFragment extends Fragment implements View.OnClickListener{
 
     private EditText usernameEditText;
     private EditText passwordEditText;
