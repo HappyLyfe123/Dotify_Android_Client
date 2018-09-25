@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
+    android:background="@color/lightGray"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivityContainer">
@@ -11,6 +12,7 @@
         android:id="@+id/main_display_frame"
         android:layout_width="match_parent"
         android:layout_height="457dp"
+        android:background="@color/lightGray"
         app:layout_constraintBottom_toTopOf="@+id/music_player_controller_frame"
         app:layout_constraintEnd_toEndOf="@id/music_player_controller_frame"
         app:layout_constraintHorizontal_bias="0.0"

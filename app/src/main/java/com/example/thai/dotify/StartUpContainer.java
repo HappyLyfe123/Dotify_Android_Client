@@ -8,6 +8,6 @@ public class StartUpContainer extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.start_up_container);
+        setContentView(R.layout.activity_main);
     }
 }
