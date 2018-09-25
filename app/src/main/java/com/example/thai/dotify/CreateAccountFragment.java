@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,6 +86,12 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.create_account_button:
+                if(passwordEditText.getText().toString().equals(confirmPasswordEditText.getText().toString())){
+                    confirmPasswordErrorTextView.setVisibility(View.VISIBLE);
+                }
+                else{
+
+                }
                 break;
             case R.id.back_button:
                 break;
@@ -186,17 +193,20 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
                 if(!s.toString().toString().trim().isEmpty()){
                     usernameFilled = true;
-                    enableCreateAccountButton();
                 }
                 else{
                     usernameFilled = false;
                 }
+                enableCreateAccountButton();
             }
 
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+
+            }
         });
 
         passwordEditText.addTextChangedListener(new TextWatcher() {
@@ -205,20 +215,33 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                isPasswordMatch = false;
+
+                //Check if the password and confirm password match
+                if(confirmedPasswordFilled){
+                    if(passwordEditText.getText().toString().equals(s.toString())){
+                        isPasswordMatch = true;
+                    }
+                }
+
+                //Check if the user entered a password that follow the guide line
                 if(passwordGuidelineCheck(s.toString())){
                     passwordFilled = true;
                     isWeakPasswordEnable = false;
-                    enableCreateAccountButton();
                 }
                 else{
                     passwordFilled = false;
                     isWeakPasswordEnable = true;
                 }
+                enableCreateAccountButton();
 
             }
 
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+
+            }
         });
 
         confirmPasswordEditText.addTextChangedListener(new TextWatcher() {
@@ -227,11 +250,20 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                isPasswordMatch = false;
+
+                //Check if password and confirm password match
                 if(passwordEditText.getText().toString().equals(s.toString())){
                     confirmedPasswordFilled = true;
                     isPasswordMatch = true;
-                    enableCreateAccountButton();
+                    confirmPasswordErrorTextView.setVisibility(View.INVISIBLE);
+
                 }
+                else if(s.toString().trim().isEmpty()){
+                    confirmedPasswordFilled = false;
+                }
+                enableCreateAccountButton();
 
             }
 
@@ -245,13 +277,16 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                //CHeck to determine if the security question is entered
                 if(!s.toString().trim().isEmpty()){
                     securityQuestion1Filled = true;
-                    enableCreateAccountButton();
                 }
                 else{
                     securityQuestion1Filled = false;
+
                 }
+                enableCreateAccountButton();
             }
 
             @Override
@@ -264,13 +299,15 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                //CHeck to determine if the security question is entered
                 if(!s.toString().trim().isEmpty()){
                     securityQuestion2Filled = true;
-                    enableCreateAccountButton();
                 }
                 else{
                     securityQuestion2Filled = false;
                 }
+                enableCreateAccountButton();
             }
 
             @Override
@@ -281,7 +318,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
 
     /**
-     * Check to see if every edit text is filled and correctly formatted
+     * Enable create account button
      *
      */
     private void enableCreateAccountButton(){
