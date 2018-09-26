@@ -8,23 +8,12 @@
 
 
     <ImageButton
-        android:id="@+id/play_image_button"
+        android:id="@+id/play_pause_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:src="@drawable/play_icon_mini_player"
-        android:background="@drawable/white_circle_line"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:visibility="invisible"/>
-
-    <ImageView
-        android:id="@+id/pause_image_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:src="@drawable/pause_icon_mini_player"
-        android:background="@drawable/white_circle_line"
+        android:src="@drawable/mini_play_button_icon"
+        android:background="@android:color/transparent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:visibility="visible"/>
@@ -46,8 +35,8 @@
         android:layout_marginStart="8dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/arrow_up_white"
         android:background="@android:color/transparent"
+        android:src="@drawable/arrow_up_white"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"/>
 
