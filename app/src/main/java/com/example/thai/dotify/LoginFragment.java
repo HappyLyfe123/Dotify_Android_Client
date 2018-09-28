@@ -2,6 +2,7 @@ package com.example.thai.dotify;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
+
 
     /**
      * Gets called upon the user clicking an interactive item on screen
