@@ -43,6 +43,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/search_view_layout"
         android:layout_marginTop="50dp" />
 
 

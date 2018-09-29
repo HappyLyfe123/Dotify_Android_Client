@@ -32,6 +32,10 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         securityQuestion2Filled;
     private Button createAccountButton;
 
+    public interface OnChangeFragmentListener {
+        void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
+    }
+    private OnChangeFragmentListener onChangeFragmentListener;
 
 
     @Override
@@ -49,8 +53,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        createAccountButton = getActivity().findViewById(R.id.create_account_button);
-        Button backButton = getActivity().findViewById(R.id.back_button);
+        createAccountButton = (Button) getActivity().findViewById(R.id.create_account_button);
+        Button backButton = (Button) getActivity().findViewById(R.id.back_button);
 
         //
         isWeakPasswordEnable = false;
@@ -62,13 +66,13 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         securityQuestion2Filled = false;
 
         //Initialize all of the views
-        usernameEditText = getActivity().findViewById(R.id.user_name_edit_text);
-        passwordEditText = getActivity().findViewById(R.id.password_edit_text);
-        confirmPasswordEditText = getActivity().findViewById(R.id.confirm_password_edit_text);
-        securityQuestion1EditText = getActivity().findViewById(R.id.security_question_1_edit_text);
-        securityQuestion2EditText = getActivity().findViewById(R.id.security_question_2_edit_text);
-        weakPasswordTextView = getView().findViewById(R.id.weak_password_error);
-        confirmPasswordErrorTextView = getActivity().findViewById(R.id.confirm_password_error);
+        usernameEditText = (EditText) getActivity().findViewById(R.id.user_name_edit_text);
+        passwordEditText = (EditText) getActivity().findViewById(R.id.password_edit_text);
+        confirmPasswordEditText = (EditText) getActivity().findViewById(R.id.confirm_password_edit_text);
+        securityQuestion1EditText = (EditText) getActivity().findViewById(R.id.security_question_1_edit_text);
+        securityQuestion2EditText = (EditText) getActivity().findViewById(R.id.security_question_2_edit_text);
+        weakPasswordTextView = (TextView) getView().findViewById(R.id.weak_password_error);
+        confirmPasswordErrorTextView = (TextView) getActivity().findViewById(R.id.confirm_password_error);
 
         createAccountButton.setOnClickListener(this);
         backButton.setOnClickListener(this);
@@ -94,6 +98,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                 }
                 break;
             case R.id.back_button:
+
                 break;
         }
     }

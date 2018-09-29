@@ -1,5 +1,6 @@
 package com.example.thai.dotify;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,7 +18,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private EditText usernameEditText;
     private EditText passwordEditText;
     private TextView errorMessageTextView;
+    private OnChangeFragmentListener onChangeFragmentListener;
 
+
+    public interface OnChangeFragmentListener {
+        void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,4 +91,22 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         return flagType;
     }
+
+    /**
+     * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
+     *
+     * @param onChangeFragmentListener The listener for communication
+     */
+    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
+        this.onChangeFragmentListener = onChangeFragmentListener;
+    }
+
+    /**
+     * Starts the main activity
+     */
+    private void startMainActivity() {
+        //Dismiss the alert dialog if it is currently showing
+        Intent startMainActivityIntent = new Intent(getActivity(), MainActivityContainer.class);
+    }
+
 }
