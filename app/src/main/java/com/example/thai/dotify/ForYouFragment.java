@@ -13,6 +13,11 @@ public class ForYouFragment extends Fragment implements View.OnClickListener {
 
     private OnChangeFragmentListener onChangeFragmentListener;
 
+    public static ForYouFragment newInstance() {
+        ForYouFragment fragment = new ForYouFragment();
+        return fragment;
+    }
+
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
     }

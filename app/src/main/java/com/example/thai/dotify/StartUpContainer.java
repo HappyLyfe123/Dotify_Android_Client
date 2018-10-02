@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.app.FragmentTransaction;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 public class StartUpContainer extends Activity implements LoginFragment.OnChangeFragmentListener,
@@ -13,6 +14,8 @@ public class StartUpContainer extends Activity implements LoginFragment.OnChange
     private LoginFragment loginFragment;
     private CreateAccountFragment createAccountFragment;
     private ForgetPasswordFragment forgetPasswordFragment;
+    private Toolbar toolbar;
+    private boolean isLoginPage;
 
     //Enumerator
     public enum AuthFragmentType {
@@ -39,6 +42,9 @@ public class StartUpContainer extends Activity implements LoginFragment.OnChange
         //Initialize forget password Fragment
         forgetPasswordFragment = new ForgetPasswordFragment();
         forgetPasswordFragment.setOnChangeFragmentListener(this);
+
+        toolbar = findViewById(R.id.start_up_toolbar);
+        toolbar.setVisibility(View.GONE);
 
         //Check why this activity was started
         beginFragment(AuthFragmentType.LOGIN, true, false);

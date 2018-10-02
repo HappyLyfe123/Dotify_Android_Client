@@ -63,8 +63,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        createAccountButton = (Button) getActivity().findViewById(R.id.create_account_button);
-        backButton = (Button) getActivity().findViewById(R.id.back_button);
+        //createAccountButton = (Button) getActivity().findViewById(R.id.create_account_button);
+        //backButton = (Button) getActivity().findViewById(R.id.back_button);
 
         //
         isWeakPasswordEnable = false;
@@ -98,19 +98,19 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
      */
     @Override
     public void onClick(View view) {
-        switch(view.getId()){
-            case R.id.create_account_button:
-                if(passwordEditText.getText().toString().equals(confirmPasswordEditText.getText().toString())){
-                    confirmPasswordErrorTextView.setVisibility(View.VISIBLE);
-                }
-                else{
-
-                }
-                break;
-            case R.id.back_button:
-                onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.BACK_BUTTON);
-                break;
-        }
+//        switch(view.getId()){
+//            case R.id.create_account_button:
+//                if(passwordEditText.getText().toString().equals(confirmPasswordEditText.getText().toString())){
+//                    confirmPasswordErrorTextView.setVisibility(View.VISIBLE);
+//                }
+//                else{
+//
+//                }
+//                break;
+//            case R.id.back_button:
+//                //onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.BACK_BUTTON);
+//                break;
+//        }
     }
 
     /**
