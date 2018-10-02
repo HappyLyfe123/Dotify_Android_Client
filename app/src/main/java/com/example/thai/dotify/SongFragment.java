@@ -8,13 +8,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;*/
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
 
 public class SongFragment
 {
-    prviate static int id = 100;
+    static int id = 100;
     private String title;
     private String artist;
     private String album;
@@ -70,9 +72,14 @@ public class SongFragment
         music = song;
     }
 
-    public static String Stringify(Object obj)
+    public static String Stringify(Object obj) throws JSONException
     {
-        return JsonConvert.SerializeObject(obj);
+        SongFragment song = (SongFragment) obj;
+        JSONObject jsonOBJ = new JSONObject();
+        jsonOBJ.put(song.title,song.songId);
+        jsonOBJ.put(song.getArtist(),song.getID());
+        jsonOBJ.put(song.getAlbum(),song.getID());
+        return jsonOBJ.toString();
     }
 
 }
