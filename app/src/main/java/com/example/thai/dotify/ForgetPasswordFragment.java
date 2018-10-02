@@ -10,11 +10,21 @@ import android.view.ViewGroup;
 
 public class ForgetPasswordFragment extends Fragment {
 
+    private OnChangeFragmentListener onChangeFragmentListener;
 
-    public ForgetPasswordFragment() {
-        // Required empty public constructor
+
+    public interface OnChangeFragmentListener {
+        void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
     }
 
+    /**
+     * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
+     *
+     * @param onChangeFragmentListener The listener for communication
+     */
+    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
+        this.onChangeFragmentListener = onChangeFragmentListener;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

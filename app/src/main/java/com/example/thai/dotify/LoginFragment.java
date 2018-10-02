@@ -3,7 +3,6 @@ package com.example.thai.dotify;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +70,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.sign_up_button:
+                onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.CREATE_ACCOUNT);
                 break;
         }
     }

@@ -31,11 +31,21 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     private boolean usernameFilled, passwordFilled, confirmedPasswordFilled, securityQuestion1Filled,
         securityQuestion2Filled;
     private Button createAccountButton;
+    private Button backButton;
+    private OnChangeFragmentListener onChangeFragmentListener;
 
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
     }
-    private OnChangeFragmentListener onChangeFragmentListener;
+
+    /**
+     * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
+     *
+     * @param onChangeFragmentListener The listener for communication
+     */
+    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
+        this.onChangeFragmentListener = onChangeFragmentListener;
+    }
 
 
     @Override
@@ -54,7 +64,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         createAccountButton = (Button) getActivity().findViewById(R.id.create_account_button);
-        Button backButton = (Button) getActivity().findViewById(R.id.back_button);
+        backButton = (Button) getActivity().findViewById(R.id.back_button);
 
         //
         isWeakPasswordEnable = false;
@@ -98,7 +108,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                 }
                 break;
             case R.id.back_button:
-
+                onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.BACK_BUTTON);
                 break;
         }
     }

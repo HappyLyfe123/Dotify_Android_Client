@@ -9,14 +9,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ForYouFragment extends Fragment {
+public class ForYouFragment extends Fragment implements View.OnClickListener {
 
-    private View fragView;
+    private OnChangeFragmentListener onChangeFragmentListener;
 
-    public static ForYouFragment newInstance() {
-        ForYouFragment fragment = new ForYouFragment();
-        return fragment;
+    public interface OnChangeFragmentListener {
+        void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
     }
+
+    /**
+     * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
+     *
+     * @param onChangeFragmentListener The listener for communication
+     */
+    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
+        this.onChangeFragmentListener = onChangeFragmentListener;
+    }
+
 
     @Override
     public void onAttach(Context context) {
@@ -29,8 +38,11 @@ public class ForYouFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        fragView = inflater.inflate(R.layout.fragment_for_you, container, false);
-        return fragView;
+        return inflater.inflate(R.layout.fragment_for_you, container, false);
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
 }
