@@ -15,14 +15,14 @@ import org.json.JSONObject;
 public class SongFragment
 {
     prviate static int id = 100;
-    private string title;
-    private string artist;
-    private string album;
+    private String title;
+    private String artist;
+    private String album;
     private byte[] image;
     private byte[] music;
     private int songId;
 
-    public SongFragment(string song, string Artist, string Alb, byte[] pic, byte[] mus)
+    public SongFragment(String song, String Artist, String Alb, byte[] pic, byte[] mus)
     {
         title = song;
         artist = Artist;
@@ -31,18 +31,18 @@ public class SongFragment
         music = mus;
         songId = id + 1;
         //JSONObject obj1 = toJSON();
-        string SongJSON = Stringify(this);
+        String SongJSON = Stringify(this);
 
     }
 
     public int getID() {
         return songId;
     }
-    public string getTitle() {
+    public String getTitle() {
         return title;
     }
-    public string getAlbum() {return album; }
-    public string getArtist() {
+    public String getAlbum() {return album; }
+    public String getArtist() {
         return artist;
     }
     public byte[] getImage() {
@@ -52,15 +52,15 @@ public class SongFragment
         return music;
     }
     public void setID(int id) {
-        songid = id;
+        songId = id;
     }
-    public void setTitle(string songTitle) {
+    public void setTitle(String songTitle) {
         title = songTitle;
     }
-    public void setArtist(string artist1) {
+    public void setArtist(String artist1) {
         artist = artist1;
     }
-    public void setAlbum(string alb) {
+    public void setAlbum(String alb) {
         album = alb;
     }
     public void setImage(byte[] img) {
@@ -70,7 +70,7 @@ public class SongFragment
         music = song;
     }
 
-    public static string Stringify(object obj)
+    public static String Stringify(Object obj)
     {
         return JsonConvert.SerializeObject(obj);
     }
