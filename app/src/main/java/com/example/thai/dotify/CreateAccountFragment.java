@@ -38,7 +38,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     private OnChangeFragmentListener onChangeFragmentListener;
 
     public interface OnChangeFragmentListener {
-        void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
+        void enableCreateButton(boolean enableCreateAccountButton);
     }
 
     /**
@@ -50,12 +50,36 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         this.onChangeFragmentListener = onChangeFragmentListener;
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_create_account, container, false);
+        //Initialize variable
+        isWeakPasswordEnable = false;
+        isPasswordMatch = false;
+        usernameFilled = false;
+        passwordFilled = false;
+        confirmedPasswordFilled = false;
+        securityQuestion1Filled = false;
+        securityQuestion2Filled = false;
+
+        //Initialize all of the views
+        usernameEditText = (EditText) v.findViewById(R.id.user_name_edit_text);
+        passwordEditText = (EditText) v.findViewById(R.id.password_edit_text);
+        confirmPasswordEditText = (EditText) v.findViewById(R.id.confirm_password_edit_text);
+        securityQuestion1EditText = (EditText) v.findViewById(R.id.security_question_1_edit_text);
+        securityQuestion2EditText = (EditText) v.findViewById(R.id.security_question_2_edit_text);
+        weakPasswordTextView = (TextView) v.findViewById(R.id.weak_password_error);
+        confirmPasswordErrorTextView = (TextView) v.findViewById(R.id.confirm_password_error);
+        securityQuestion1Spinner = (Spinner) v.findViewById(R.id.security_question_1_spinner);
+        securityQuestion2Spinner = (Spinner) v.findViewById(R.id.security_question_2_spinner);
+
+        setTextEditFocusListener();
+        setTextChange();
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_account, container, false);
+        return v;
     }
 
     /**
@@ -66,31 +90,18 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(null);
-
-        //
-        isWeakPasswordEnable = false;
-        isPasswordMatch = false;
-        usernameFilled = false;
-        passwordFilled = false;
-        confirmedPasswordFilled = false;
-        securityQuestion1Filled = false;
-        securityQuestion2Filled = false;
-
-        //Initialize all of the views
-        usernameEditText = (EditText) getActivity().findViewById(R.id.user_name_edit_text);
-        passwordEditText = (EditText) getActivity().findViewById(R.id.password_edit_text);
-        confirmPasswordEditText = (EditText) getActivity().findViewById(R.id.confirm_password_edit_text);
-        securityQuestion1EditText = (EditText) getActivity().findViewById(R.id.security_question_1_edit_text);
-        securityQuestion2EditText = (EditText) getActivity().findViewById(R.id.security_question_2_edit_text);
-        weakPasswordTextView = (TextView) getView().findViewById(R.id.weak_password_error);
-        confirmPasswordErrorTextView = (TextView) getActivity().findViewById(R.id.confirm_password_error);
-        securityQuestion1Spinner = (Spinner) getActivity().findViewById(R.id.security_question_1_spinner);
-        securityQuestion2Spinner = (Spinner) getActivity().findViewById(R.id.security_question_2_spinner);
-
-
-        setTextEditFocusListener();
-        setTextChange();
         populateSpinner();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     /**
@@ -344,7 +355,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
                 && securityQuestion2Filled && !isWeakPasswordEnable && isPasswordMatch){
 
         }
-        else{
+        else {
 
         }
     }

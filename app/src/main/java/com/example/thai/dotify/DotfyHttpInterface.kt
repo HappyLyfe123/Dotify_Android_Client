@@ -1,7 +1,5 @@
 package com.example.thai.dotify
 
-import okhttp3.ResponseBody
-import retrofit2.Call
 import retrofit2.http.*
 
 interface DotifyHttpInterface {
@@ -17,5 +15,5 @@ interface DotifyHttpInterface {
                    @Field("answer1") securityAnswer1: String,
                    @Field("question2") securityQuestion2: String,
                    @Field("answer2") securityAnswer2: String?)
-            : Call<DotifyUser>
+            : retrofit2.Call<DotifyUser>
 }

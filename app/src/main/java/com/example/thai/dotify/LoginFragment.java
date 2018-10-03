@@ -36,8 +36,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_login, container, false);
+        //Initialize all of the views
+        usernameEditText = v.findViewById(R.id.user_name_edit_text);
+        passwordEditText = v.findViewById(R.id.password_edit_text);
+        errorMessageTextView = v.findViewById(R.id.error_text_view);
+        Button signInButton = v.findViewById(R.id.sign_in_button);
+        Button signUpButton = v.findViewById(R.id.sign_up_button);
+
+        //Set listeners for buttons
+        signInButton.setOnClickListener(this);
+        signUpButton.setOnClickListener(this);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        return v;
     }
 
     @Override
@@ -54,16 +65,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //Initialize all of the views
-        usernameEditText = getActivity().findViewById(R.id.user_name_edit_text);
-        passwordEditText = getActivity().findViewById(R.id.password_edit_text);
-        errorMessageTextView = getActivity().findViewById(R.id.error_text_view);
-        Button signInButton = getActivity().findViewById(R.id.sign_in_button);
-        Button signUpButton = getActivity().findViewById(R.id.sign_up_button);
-
-        //Set listeners for buttons
-        signInButton.setOnClickListener(this);
-        signUpButton.setOnClickListener(this);
     }
 
     /**
