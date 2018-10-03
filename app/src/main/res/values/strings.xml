@@ -5,6 +5,8 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
 
+    <!-- App Key -->
+    <string name ="appKey">DotifyOnline-327</string>
 
     <!-- Login -->
     <string name="empty_login_entry">Username or Password Can\'t Be Empty</string>
