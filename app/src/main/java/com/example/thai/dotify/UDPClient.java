@@ -11,7 +11,7 @@ public class UDPClient{
             byte[] m = args[0].getBytes();
             InetAddress aHost = InetAddress.getByName(args[1]);
             int serverPort = 6789;
-            DatagramPacket request = new DatagramPacket(m, m.length(), aHost, serverPort);
+            DatagramPacket request = new DatagramPacket(m, m.length, aHost, serverPort);
             aSocket.send(request);
             byte[] buffer = new byte[1000];
             DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
@@ -25,6 +25,5 @@ public class UDPClient{
             if (aSocket != null) aSocket.close();
         }
     }
-}
 }
 

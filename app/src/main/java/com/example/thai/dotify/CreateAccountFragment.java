@@ -1,5 +1,6 @@
 package com.example.thai.dotify;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -8,8 +9,10 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -26,12 +29,12 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     private EditText securityQuestion2EditText;
     private TextView weakPasswordTextView;
     private TextView confirmPasswordErrorTextView;
+    private Spinner securityQuestion1Spinner;
+    private Spinner securityQuestion2Spinner;
     private boolean isWeakPasswordEnable;
     private boolean isPasswordMatch;
     private boolean usernameFilled, passwordFilled, confirmedPasswordFilled, securityQuestion1Filled,
         securityQuestion2Filled;
-    private Button createAccountButton;
-    private Button backButton;
     private OnChangeFragmentListener onChangeFragmentListener;
 
     public interface OnChangeFragmentListener {
@@ -62,9 +65,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
      */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //createAccountButton = (Button) getActivity().findViewById(R.id.create_account_button);
-        //backButton = (Button) getActivity().findViewById(R.id.back_button);
+        super.onActivityCreated(null);
 
         //
         isWeakPasswordEnable = false;
@@ -83,12 +84,13 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         securityQuestion2EditText = (EditText) getActivity().findViewById(R.id.security_question_2_edit_text);
         weakPasswordTextView = (TextView) getView().findViewById(R.id.weak_password_error);
         confirmPasswordErrorTextView = (TextView) getActivity().findViewById(R.id.confirm_password_error);
+        securityQuestion1Spinner = (Spinner) getActivity().findViewById(R.id.security_question_1_spinner);
+        securityQuestion2Spinner = (Spinner) getActivity().findViewById(R.id.security_question_2_spinner);
 
-        createAccountButton.setOnClickListener(this);
-        backButton.setOnClickListener(this);
 
         setTextEditFocusListener();
         setTextChange();
+        populateSpinner();
     }
 
     /**
@@ -98,19 +100,7 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
      */
     @Override
     public void onClick(View view) {
-//        switch(view.getId()){
-//            case R.id.create_account_button:
-//                if(passwordEditText.getText().toString().equals(confirmPasswordEditText.getText().toString())){
-//                    confirmPasswordErrorTextView.setVisibility(View.VISIBLE);
-//                }
-//                else{
-//
-//                }
-//                break;
-//            case R.id.back_button:
-//                //onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.BACK_BUTTON);
-//                break;
-//        }
+
     }
 
     /**
@@ -333,6 +323,15 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
 
 
     /**
+     * Add the item to the spinner
+     *
+     */
+    private void populateSpinner(){
+
+    }
+
+
+    /**
      * Enable create account button
      *
      */
@@ -344,12 +343,8 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         if(usernameFilled && passwordFilled && confirmedPasswordFilled && securityQuestion1Filled
                 && securityQuestion2Filled && !isWeakPasswordEnable && isPasswordMatch){
 
-            createAccountButton.setTextColor(Color.BLACK);
-            createAccountButton.setClickable(true);
         }
         else{
-            createAccountButton.setTextColor(getResources().getColor(R.color.createAccount));
-            createAccountButton.setClickable(false);
 
         }
     }

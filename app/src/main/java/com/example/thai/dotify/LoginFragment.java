@@ -24,6 +24,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
     }
 
+    /**
+     * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
+     *
+     * @param onChangeFragmentListener The listener for communication
+     */
+    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
+        this.onChangeFragmentListener = onChangeFragmentListener;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -90,15 +99,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
 
         return flagType;
-    }
-
-    /**
-     * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
-     *
-     * @param onChangeFragmentListener The listener for communication
-     */
-    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
-        this.onChangeFragmentListener = onChangeFragmentListener;
     }
 
     /**

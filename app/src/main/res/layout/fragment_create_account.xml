@@ -29,8 +29,9 @@
                 android:layout_height="30dp"
                 android:layout_marginTop="10dp"
                 android:ems="10"
-                android:paddingStart="5dp"
-                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:saveEnabled="false"
+                android:inputType="textPersonName|textAutoComplete|textVisiblePassword"
                 android:background="@drawable/rounded_background"/>
 
             <TextView
@@ -47,8 +48,9 @@
                 android:layout_height="30dp"
                 android:layout_marginTop="10dp"
                 android:ems="10"
-                android:paddingStart="5dp"
+                android:paddingStart="10dp"
                 android:inputType="textPassword"
+                android:saveEnabled="false"
                 android:background="@drawable/rounded_background"/>
 
             <TextView
@@ -76,8 +78,9 @@
                 android:layout_height="30dp"
                 android:layout_marginTop="10dp"
                 android:ems="10"
-                android:paddingStart="5dp"
+                android:paddingStart="10dp"
                 android:inputType="textPassword"
+                android:saveEnabled="false"
                 android:background="@drawable/rounded_background"/>
 
             <TextView
@@ -96,6 +99,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:entries="@array/security_questions_array"
+                android:spinnerMode="dialog"
                 android:prompt="@string/security_questions1" />
 
             <EditText
@@ -104,8 +109,9 @@
                 android:layout_height="30dp"
                 android:layout_marginTop="10dp"
                 android:ems="10"
-                android:paddingStart="5dp"
-                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:inputType="textPersonName|textVisiblePassword"
+                android:saveEnabled="false"
                 android:background="@drawable/rounded_background"/>
 
             <Spinner
@@ -113,6 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:entries="@array/security_questions_array"
                 android:prompt="@string/security_questions2"/>
 
             <EditText
@@ -121,8 +128,9 @@
                 android:layout_height="30dp"
                 android:layout_marginTop="10dp"
                 android:ems="10"
-                android:paddingStart="5dp"
-                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:saveEnabled="false"
+                android:inputType="textPersonName|textVisiblePassword"
                 android:background="@drawable/rounded_background"/>
 
     </LinearLayout>

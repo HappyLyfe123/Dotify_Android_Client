@@ -33,7 +33,7 @@ public class SongFragment
         music = mus;
         songId = id + 1;
         //JSONObject obj1 = toJSON();
-        String SongJSON = Stringify(this);
+        //String SongJSON = Stringify(this);
 
     }
 
