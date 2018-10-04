@@ -1,6 +1,8 @@
 package com.example.thai.dotify;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -20,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class CreateAccountFragment extends Fragment implements View.OnClickListener{
+public class CreateAccountFragment extends Fragment{
 
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -35,9 +37,9 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     private boolean isPasswordMatch;
     private boolean usernameFilled, passwordFilled, confirmedPasswordFilled, securityQuestion1Filled,
         securityQuestion2Filled;
-    private OnChangeFragmentListener onChangeFragmentListener;
+    private CreateAccountListener fragmentController;
 
-    public interface OnChangeFragmentListener {
+    public interface CreateAccountListener {
         void enableCreateButton(boolean enableCreateAccountButton);
     }
 
@@ -46,14 +48,14 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
      *
      * @param onChangeFragmentListener The listener for communication
      */
-    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
-        this.onChangeFragmentListener = onChangeFragmentListener;
+    public void setOnChangeFragmentListener(CreateAccountListener onChangeFragmentListener) {
+        this.fragmentController = onChangeFragmentListener;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_create_account, container, false);
+        View view = inflater.inflate(R.layout.fragment_create_account, container, false);
         //Initialize variable
         isWeakPasswordEnable = false;
         isPasswordMatch = false;
@@ -64,22 +66,32 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
         securityQuestion2Filled = false;
 
         //Initialize all of the views
-        usernameEditText = (EditText) v.findViewById(R.id.user_name_edit_text);
-        passwordEditText = (EditText) v.findViewById(R.id.password_edit_text);
-        confirmPasswordEditText = (EditText) v.findViewById(R.id.confirm_password_edit_text);
-        securityQuestion1EditText = (EditText) v.findViewById(R.id.security_question_1_edit_text);
-        securityQuestion2EditText = (EditText) v.findViewById(R.id.security_question_2_edit_text);
-        weakPasswordTextView = (TextView) v.findViewById(R.id.weak_password_error);
-        confirmPasswordErrorTextView = (TextView) v.findViewById(R.id.confirm_password_error);
-        securityQuestion1Spinner = (Spinner) v.findViewById(R.id.security_question_1_spinner);
-        securityQuestion2Spinner = (Spinner) v.findViewById(R.id.security_question_2_spinner);
+        usernameEditText = (EditText) view.findViewById(R.id.user_name_edit_text);
+        passwordEditText = (EditText) view.findViewById(R.id.password_edit_text);
+        confirmPasswordEditText = (EditText) view.findViewById(R.id.confirm_password_edit_text);
+        securityQuestion1EditText = (EditText) view.findViewById(R.id.security_question_1_edit_text);
+        securityQuestion2EditText = (EditText) view.findViewById(R.id.security_question_2_edit_text);
+        weakPasswordTextView = (TextView) view.findViewById(R.id.weak_password_error);
+        confirmPasswordErrorTextView = (TextView) view.findViewById(R.id.confirm_password_error);
+        securityQuestion1Spinner = (Spinner) view.findViewById(R.id.security_question_1_spinner);
+        securityQuestion2Spinner = (Spinner) view.findViewById(R.id.security_question_2_spinner);
 
         setTextEditFocusListener();
         setTextChange();
 
 
         // Inflate the layout for this fragment
-        return v;
+        return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            fragmentController = (CreateAccountListener) context;
+        }catch (ClassCastException e){
+            throw new ClassCastException(context.toString());
+        }
     }
 
     /**
@@ -91,27 +103,6 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(null);
         populateSpinner();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    /**
-     * Gets called upon the user clicking an interactive item on screen
-     *
-     * @param view The current view
-     */
-    @Override
-    public void onClick(View view) {
-
     }
 
     /**
@@ -353,13 +344,22 @@ public class CreateAccountFragment extends Fragment implements View.OnClickListe
          */
         if(usernameFilled && passwordFilled && confirmedPasswordFilled && securityQuestion1Filled
                 && securityQuestion2Filled && !isWeakPasswordEnable && isPasswordMatch){
-
+            fragmentController.enableCreateButton(true);
         }
         else {
-
+            fragmentController.enableCreateButton(false);
         }
     }
 
+    /**
+     * Sent the user information to the server
+     *
+     */
+    public boolean createAccount(){
+        boolean isAccountCreated = false;
+
+        return isAccountCreated;
+    }
 
     /**
      * Checks the user's password to make sure it is strong enough to prevent dictionary attacks

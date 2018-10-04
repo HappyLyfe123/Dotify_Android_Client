@@ -6,21 +6,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class ResetPasswordFragment extends Fragment {
 
+    private EditText resetPasswordEditText;
+    private EditText resetConfirmPasswordEditText;
+    private Button resetResetPasswordButton;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_reset_password, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-
-    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -36,4 +30,29 @@ public class ResetPasswordFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_reset_password, container, false);
+
+        //Initialize all of the views
+        resetPasswordEditText = (EditText) view.findViewById(R.id.reset_new_password_edit_text);
+        resetConfirmPasswordEditText = (EditText) view.findViewById(R.id.reset_confirm_password_edit_text);
+        resetResetPasswordButton = (Button) view.findViewById(R.id.reset_password_button);
+
+        resetResetPasswordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        return view;
+    }
+
+
+
+
 }

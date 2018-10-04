@@ -1,6 +1,5 @@
 package com.example.thai.dotify;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -36,7 +35,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_login, container, false);
+
         //Initialize all of the views
         usernameEditText = v.findViewById(R.id.user_name_edit_text);
         passwordEditText = v.findViewById(R.id.password_edit_text);
@@ -49,11 +51,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         signUpButton.setOnClickListener(this);
         // Inflate the layout for this fragment
         return v;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     /**
@@ -75,9 +72,20 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sign_in_button:
-                if(isValidCredential(usernameEditText.getText().toString(), passwordEditText.getText().toString()) == 1){
+                int flagNum = isValidCredential(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                //Username and password is valid
+                if(flagNum == 0){
+
+                }
+                //Username or password edit field is empty
+                if( flagNum == 1){
                     errorMessageTextView.setText(R.string.empty_login_entry);
                 }
+                //Username and password doesn't match
+                else if(flagNum == 2){
+                    errorMessageTextView.setText(R.string.invalid_credential);
+                }
+                onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
                 break;
             case R.id.sign_up_button:
                 onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.CREATE_ACCOUNT);
@@ -91,23 +99,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      *
      * @param username The user username
      * @param password The user password
+     *
+     * @return flagType use for telling which error it has
      */
     private int isValidCredential(String username, String password){
         int flagType = 0;
 
+        //Check to see if username or password is empty
         if(username.trim().isEmpty() || password.trim().isEmpty()){
             flagType = 1;
         }
+        else{
+            flagType = 2;
+        }
 
         return flagType;
-    }
-
-    /**
-     * Starts the main activity
-     */
-    private void startMainActivity() {
-        //Dismiss the alert dialog if it is currently showing
-        Intent startMainActivityIntent = new Intent(getActivity(), MainActivityContainer.class);
     }
 
 }

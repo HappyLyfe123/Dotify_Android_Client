@@ -20,7 +20,7 @@ data class DotifyUser(val username: String,
     /**
      * Turns the user's information into a map
      */
-    fun toMap() : Map<String,String?> {
+    fun toMap() : HashMap<String,String?> {
         //Initialize the HashMap
         val userInfoMap : HashMap<String, String?> = HashMap<String,String?>()
         userInfoMap.put("username", username)
@@ -29,6 +29,6 @@ data class DotifyUser(val username: String,
         userInfoMap.put("answer1", securityAnswer1)
         userInfoMap.put("question1", securityQuestion2)
         userInfoMap.put("answer1", securityAnswer2)
-        return userInfoMap.toMap()
+        return userInfoMap
     }
 }

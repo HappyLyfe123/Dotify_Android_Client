@@ -1,31 +1,28 @@
 package com.example.thai.dotify;
 
-import android.app.Activity;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.FragmentTransaction;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
-import static com.example.thai.dotify.R.color.black;
-
-public class StartUpContainer extends Activity implements LoginFragment.OnChangeFragmentListener,
-        CreateAccountFragment.OnChangeFragmentListener, ForgetPasswordFragment.OnChangeFragmentListener,
+public class StartUpContainer extends AppCompatActivity implements LoginFragment.OnChangeFragmentListener,
+        CreateAccountFragment.CreateAccountListener, ForgetPasswordFragment.OnChangeFragmentListener,
         View.OnClickListener {
 
     private LoginFragment loginFragment;
     private CreateAccountFragment createAccountFragment;
     private ForgetPasswordFragment forgetPasswordFragment;
-    private boolean isLoginPage;
     private RelativeLayout toolbar;
     private ImageButton backButton;
     private Button createAccountButton;
     private boolean goHomeEnable;
+    private boolean isLoginPage;
+
 
     //Enumerator
     public enum AuthFragmentType {
@@ -101,37 +98,20 @@ public class StartUpContainer extends Activity implements LoginFragment.OnChange
     @Override
     public void buttonClicked(AuthFragmentType fragmentType) {
         switch (fragmentType){
+            //Start main activity container
             case LOGIN:
-
+                Intent myIntent = new Intent(StartUpContainer.this, MainActivityContainer.class);
+                startActivity(myIntent);
                 break;
+            //Load create account fragment
             case CREATE_ACCOUNT:
                 beginFragment(AuthFragmentType.CREATE_ACCOUNT, true, true);
                 break;
+            //Load forgot password fragment
             case FORGOT_PASSWORD:
                 beginFragment(AuthFragmentType.FORGOT_PASSWORD, true, true);
                 break;
         }
-    }
-
-    @Override
-    public void enableCreateButton(boolean enableCreateAccountButton){
-        if(enableCreateAccountButton){
-            createAccountButton.setEnabled(true);
-            createAccountButton.setTextColor(getResources().getColor(R.color.black));
-        }
-        else{
-            createAccountButton.setEnabled(false);
-            createAccountButton.setTextColor(getResources().getColor(R.color.createAccount));
-        }
-    }
-
-    //Handle default back button
-    @Override
-    public void onBackPressed() {
-        if(goHomeEnable) {
-            super.onBackPressed();
-        }
-        goBackPreviousPage();
     }
 
     //Button Click listener for the activity
@@ -142,12 +122,43 @@ public class StartUpContainer extends Activity implements LoginFragment.OnChange
                 goBackPreviousPage();
                 break;
             case R.id.create_account_button:
+                if(createAccountFragment.createAccount()){
+
+                }
+
                 break;
         }
     }
 
+    @Override
+    public void enableCreateButton(boolean enableCreateAccountButton){
+        //Enable create account button and change it color
+        if(enableCreateAccountButton){
+            createAccountButton.setEnabled(true);
+            createAccountButton.setTextColor(getResources().getColor(R.color.black));
+        }
+        //Disable create account button and change its color
+        else{
+            createAccountButton.setEnabled(false);
+            createAccountButton.setTextColor(getResources().getColor(R.color.createAccount));
+        }
+    }
+
+    //Handle default back button
+    @Override
+    public void onBackPressed() {
+        //If the current page is the login page then will will go to the
+        //main apps page
+        if(goHomeEnable) {
+            super.onBackPressed();
+        }
+        goBackPreviousPage();
+    }
+
     //Remove current viewing screen and go back to previous screen
     private void goBackPreviousPage(){
+
+        //Remove the current view of back stack
         getFragmentManager().popBackStackImmediate();
         if(getFragmentManager().getBackStackEntryCount() == 0){
             //To allow default back button to go to home page
@@ -156,4 +167,5 @@ public class StartUpContainer extends Activity implements LoginFragment.OnChange
         }
 
     }
+
 }

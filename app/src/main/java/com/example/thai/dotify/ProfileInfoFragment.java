@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 
 public class ProfileInfoFragment extends Fragment {
 
-    private View fragView;
-
     public static ProfileInfoFragment newInstance() {
         ProfileInfoFragment fragment = new ProfileInfoFragment();
         return fragment;
@@ -29,8 +27,13 @@ public class ProfileInfoFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        fragView = inflater.inflate(R.layout.fragment_profile_info, container, false);
-        return fragView;
+
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_profile_info, container, false);
+
+
+
+        return view;
     }
 
 }
