@@ -44,7 +44,7 @@ public class ForgetPasswordFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_forget_password, container, false);
 
         //
-        usernameSubmitButton = view.findViewById(R.id.submit_button);
+        usernameSubmitButton = view.findViewById(R.id.reset_password_stub);
 
         userNameStub = view.findViewById(R.id.username_stub);
         securityQuestionStub = view.findViewById(R.id.security_question_stub);
