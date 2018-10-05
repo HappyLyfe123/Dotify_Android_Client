@@ -18,6 +18,7 @@
         </activity>
         <activity
             android:name=".MainActivityContainer"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/title_activity_main"></activity>
     </application>
 
