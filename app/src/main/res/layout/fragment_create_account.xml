@@ -101,7 +101,7 @@
         android:prompt="@string/security_questions1" />
 
     <EditText
-        android:id="@+id/security_question_1_edit_text"
+        android:id="@+id/security_question_1_answer_edit_text"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginTop="10dp"
@@ -120,7 +120,7 @@
         android:prompt="@string/security_questions2"/>
 
     <EditText
-        android:id="@+id/security_question_2_edit_text"
+        android:id="@+id/security_question_2_answer_edit_text"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginTop="10dp"

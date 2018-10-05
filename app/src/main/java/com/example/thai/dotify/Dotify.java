@@ -2,18 +2,12 @@ package com.example.thai.dotify;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
-import java.io.IOException;
-import java.io.Serializable;
+import com.example.thai.dotify.Server.DotifyHttpInterface;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
