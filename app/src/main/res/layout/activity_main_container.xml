@@ -19,6 +19,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <FrameLayout
+                android:id="@+id/main_display_frame"
+                android:layout_width="match_parent"
+                android:layout_height="457dp"
+                android:background="@color/lightGray"
+                app:layout_constraintBottom_toTopOf="@+id/music_player_controller_frame"
+                app:layout_constraintEnd_toEndOf="@id/music_player_controller_frame"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/music_player_controller_frame"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/navigation"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+            </FrameLayout>
+
             <android.support.design.widget.BottomNavigationView
                 android:id="@+id/navigation"
                 android:layout_width="0dp"
