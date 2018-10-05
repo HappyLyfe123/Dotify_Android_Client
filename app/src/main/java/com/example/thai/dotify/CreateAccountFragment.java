@@ -39,6 +39,7 @@ public class CreateAccountFragment extends Fragment{
     private EditText securityQuestion2AnswerEditText;
     private TextView weakPasswordTextView;
     private TextView confirmPasswordErrorTextView;
+    private TextView usernameTakenTextView;
     private Spinner securityQuestion1Spinner;
     private Spinner securityQuestion2Spinner;
     private boolean isWeakPasswordEnable;
@@ -81,6 +82,7 @@ public class CreateAccountFragment extends Fragment{
         securityQuestion2AnswerEditText = (EditText) view.findViewById(R.id.security_question_2_answer_edit_text);
         weakPasswordTextView = (TextView) view.findViewById(R.id.weak_password_error);
         confirmPasswordErrorTextView = (TextView) view.findViewById(R.id.confirm_password_error);
+        usernameTakenTextView = (TextView) view.findViewById(R.id.user_name_error_text_view);
         securityQuestion1Spinner = (Spinner) view.findViewById(R.id.security_question_1_spinner);
         securityQuestion2Spinner = (Spinner) view.findViewById(R.id.security_question_2_spinner);
 

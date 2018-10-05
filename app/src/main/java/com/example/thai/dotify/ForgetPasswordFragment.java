@@ -15,9 +15,11 @@ import android.widget.Button;
 public class ForgetPasswordFragment extends Fragment {
 
     private OnChangeFragmentListener onChangeFragmentListener;
-    private Button usernameSubmitButton;
 
-    ViewStub userNameStub, securityQuestionStub, resetPasswordStub;
+    private Button userNameSubmitButton;
+
+    private ViewStub currentViewStub,userNameStub, securityQuestionStub, resetPasswordStub;
+    public byte currentStubNum;
 
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
@@ -43,13 +45,37 @@ public class ForgetPasswordFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_forget_password, container, false);
 
-        //
-        usernameSubmitButton = view.findViewById(R.id.reset_password_stub);
+        //Initialize view stub
+        userNameStub = (ViewStub) view.findViewById(R.id.username_stub);
+        securityQuestionStub = (ViewStub) view.findViewById(R.id.security_question_stub);
+        resetPasswordStub = (ViewStub) view.findViewById(R.id.reset_password_stub);
 
-        userNameStub = view.findViewById(R.id.username_stub);
-        securityQuestionStub = view.findViewById(R.id.security_question_stub);
-        resetPasswordStub = view.findViewById(R.id.reset_password_stub);
-        View inflate = userNameStub.inflate();
+        switchStubView((byte)1);
+
         return view;
+    }
+
+    /**
+     * Tell the system which view stub to display
+     *
+     * @param viewNum The view stub that will be display
+     */
+    public void switchStubView(byte viewNum){
+        if(currentViewStub != null)
+            currentViewStub.setVisibility(View.GONE);
+        currentStubNum = viewNum;
+        switch (viewNum){
+            case 1:
+                currentViewStub = userNameStub;
+
+                break;
+            case 2:
+                currentViewStub = securityQuestionStub;
+                break;
+            case 3:
+                currentViewStub = resetPasswordStub;
+                break;
+
+        }
     }
 }

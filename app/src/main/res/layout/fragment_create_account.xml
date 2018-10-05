@@ -28,8 +28,14 @@
         android:ems="10"
         android:paddingStart="10dp"
         android:saveEnabled="false"
-        android:inputType="textPersonName|textAutoComplete|textVisiblePassword"
+        android:inputType="textPersonName|textNoSuggestions|textVisiblePassword"
         android:background="@drawable/rounded_background"/>
+
+    <TextView
+        android:id="@+id/user_name_error_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_light"/>
 
     <TextView
         android:id="@+id/password_text_view"
@@ -46,7 +52,7 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:paddingStart="10dp"
-        android:inputType="textPassword"
+        android:inputType="textPassword|textNoSuggestions"
         android:saveEnabled="false"
         android:background="@drawable/rounded_background"/>
 
@@ -76,7 +82,7 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:paddingStart="10dp"
-        android:inputType="textPassword"
+        android:inputType="textPassword|textNoSuggestions"
         android:saveEnabled="false"
         android:background="@drawable/rounded_background"/>
 
@@ -107,7 +113,7 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:paddingStart="10dp"
-        android:inputType="textPersonName|textVisiblePassword"
+        android:inputType="textPersonName|textVisiblePassword|textNoSuggestions"
         android:saveEnabled="false"
         android:background="@drawable/rounded_background"/>
 
@@ -127,7 +133,7 @@
         android:ems="10"
         android:paddingStart="10dp"
         android:saveEnabled="false"
-        android:inputType="textPersonName|textVisiblePassword"
+        android:inputType="textPersonName|textVisiblePassword|textNoSuggestions"
         android:background="@drawable/rounded_background"/>
 
 </LinearLayout>
