@@ -1,5 +1,6 @@
-package com.example.thai.dotify
+package com.example.thai.dotify.Server
 
+import com.example.thai.dotify.Server.DotifyUser
 import retrofit2.http.*
 
 interface DotifyHttpInterface {

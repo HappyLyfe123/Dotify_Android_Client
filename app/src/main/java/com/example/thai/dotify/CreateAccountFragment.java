@@ -27,8 +27,8 @@ public class CreateAccountFragment extends Fragment{
     private EditText usernameEditText;
     private EditText passwordEditText;
     private EditText confirmPasswordEditText;
-    private EditText securityQuestion1EditText;
-    private EditText securityQuestion2EditText;
+    private EditText securityQuestion1AnswerEditText;
+    private EditText securityQuestion2AnswerEditText;
     private TextView weakPasswordTextView;
     private TextView confirmPasswordErrorTextView;
     private Spinner securityQuestion1Spinner;
@@ -69,8 +69,8 @@ public class CreateAccountFragment extends Fragment{
         usernameEditText = (EditText) view.findViewById(R.id.user_name_edit_text);
         passwordEditText = (EditText) view.findViewById(R.id.password_edit_text);
         confirmPasswordEditText = (EditText) view.findViewById(R.id.confirm_password_edit_text);
-        securityQuestion1EditText = (EditText) view.findViewById(R.id.security_question_1_edit_text);
-        securityQuestion2EditText = (EditText) view.findViewById(R.id.security_question_2_edit_text);
+        securityQuestion1AnswerEditText = (EditText) view.findViewById(R.id.security_question_1_answer_edit_text);
+        securityQuestion2AnswerEditText = (EditText) view.findViewById(R.id.security_question_2_answer_edit_text);
         weakPasswordTextView = (TextView) view.findViewById(R.id.weak_password_error);
         confirmPasswordErrorTextView = (TextView) view.findViewById(R.id.confirm_password_error);
         securityQuestion1Spinner = (Spinner) view.findViewById(R.id.security_question_1_spinner);
@@ -159,11 +159,11 @@ public class CreateAccountFragment extends Fragment{
             }
         });
 
-        securityQuestion1EditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        securityQuestion1AnswerEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
-                    if(securityQuestion1EditText.getText().toString().isEmpty()){
+                    if(securityQuestion1AnswerEditText.getText().toString().isEmpty()){
                         securityQuestion1Filled = false;
                     }
                     else{
@@ -174,10 +174,10 @@ public class CreateAccountFragment extends Fragment{
             }
         });
 
-        securityQuestion2EditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        securityQuestion2AnswerEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(securityQuestion2EditText.getText().toString().isEmpty()){
+                if(securityQuestion2AnswerEditText.getText().toString().isEmpty()){
                     securityQuestion2Filled = false;
                 }
                 else{
@@ -278,7 +278,7 @@ public class CreateAccountFragment extends Fragment{
             public void afterTextChanged(Editable s) { }
         });
 
-        securityQuestion1EditText.addTextChangedListener(new TextWatcher() {
+        securityQuestion1AnswerEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
@@ -300,7 +300,7 @@ public class CreateAccountFragment extends Fragment{
             public void afterTextChanged(Editable s) { }
         });
 
-        securityQuestion2EditText.addTextChangedListener(new TextWatcher() {
+        securityQuestion2AnswerEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
@@ -357,6 +357,12 @@ public class CreateAccountFragment extends Fragment{
      */
     public boolean createAccount(){
         boolean isAccountCreated = false;
+        String usernmae = usernameEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+        String securityQuestion1;
+        String securityQuestion2;
+        String securityAnswer1 = securityQuestion1AnswerEditText.getText().toString();
+        String securityAnswer2 = securityQuestion2AnswerEditText.getText().toString();
 
         return isAccountCreated;
     }
