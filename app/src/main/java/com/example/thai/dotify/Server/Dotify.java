@@ -1,9 +1,9 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Server;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.thai.dotify.Server.DotifyHttpInterface;
+import com.example.thai.dotify.BuildConfig;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -17,6 +17,19 @@ public class Dotify{
     public final static String APP_KEY_HEADER = "appKey";
     public final static String DOTIFY_USERNAME = "username";
     public final static String DOTIFY_STORAGE = "dotify_storage";
+    public final static int CREATED = 201;
+    public final static int ACCEPTED = 202;
+    public final static int NON_AUTHORUTATUVE_INFO = 203;
+    public final static int NO_CONTENT = 204;
+    public final static int RESET_CONTENT = 205;
+    public final static int PARTIAL_CONTENT = 206;
+    public final static int BAD_REQUEST = 400;
+    public final static int UNAUTHORIZED = 401;
+    public final static int FORBIDDEN = 403;
+    public final static int NOT_FOUND = 404;
+    public final static int METHOD_NOT_ALLOWED = 405;
+    public final static int NOT_ACCEPTABLE = 406;
+    public final static int INTERNAL_SERVER_ERROR = 500;
 
     //Private Constants
     private final static String TAG = Dotify.class.getSimpleName();

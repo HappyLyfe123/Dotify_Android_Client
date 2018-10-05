@@ -12,9 +12,9 @@ interface DotifyHttpInterface {
     @POST("users")
     fun createUser(@Field("username") username: String,
                    @Field("password") password: String,
-                   @Field("question1") securityQuestion1: String,
-                   @Field("question2") securityQuestion2: String,
-                   @Field("answer1") securityAnswer1: String,
-                   @Field("answer2") securityAnswer2: String?)
+                   @Field("securityQuestion1") securityQuestion1: String,
+                   @Field("securityQuestion2") securityQuestion2: String,
+                   @Field("securityAnswer1") securityAnswer1: String,
+                   @Field("securityAnswer2") securityAnswer2: String?)
             : retrofit2.Call<DotifyUser>
 }

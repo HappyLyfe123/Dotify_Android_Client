@@ -29,7 +29,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private TextView errorMessageTextView;
     private OnChangeFragmentListener onChangeFragmentListener;
 
-
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
     }
