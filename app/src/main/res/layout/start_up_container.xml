@@ -12,7 +12,7 @@
         android:layout_height="50dp"
         android:background="@android:color/darker_gray"
         android:orientation="horizontal"
-        android:visibility="visible">
+        android:visibility="gone">
 
 
         <ImageButton
