@@ -24,6 +24,7 @@
     <string name="confirm_password_not_match">Password Do Not Match</string>
     <string name="weak_password">Password must contain at least one of (a-z, A-Z, 0-9, Special Character)</string>
     <string name="submit">Submit</string>
+    <string name="username_taken">Username is taken</string>
     <string-array name="security_questions_array">
         <item>Security Questions</item>
         <item>Favorite Anime</item>
