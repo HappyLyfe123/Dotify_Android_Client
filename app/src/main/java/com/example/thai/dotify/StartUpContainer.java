@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -20,6 +21,7 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
     private RelativeLayout toolbar;
     private ImageButton backButton;
     private Button createAccountButton;
+    private ViewStub stub;
     private boolean goHomeEnable;
     private boolean isLoginPage;
 
@@ -29,6 +31,7 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
         LOGIN,
         FORGOT_PASSWORD,
         CREATE_ACCOUNT,
+
     }
 
     @Override
@@ -56,7 +59,6 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
         backButton.setOnClickListener(this);
         createAccountButton.setOnClickListener(this);
         goHomeEnable = true;
-
 
         //Check why this activity was started
         beginFragment(AuthFragmentType.LOGIN, true, false);
@@ -86,7 +88,7 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
             case FORGOT_PASSWORD:
                 toolbar.setVisibility(View.VISIBLE);
                 createAccountButton.setVisibility(View.GONE);
-                getFragmentManager().popBackStackImmediate();
+                fragmentTransaction.replace(R.id.main_display_container, forgetPasswordFragment);
                 break;
         }
         if(addToBackStack) {

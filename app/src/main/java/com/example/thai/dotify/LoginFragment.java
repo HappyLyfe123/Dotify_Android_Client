@@ -48,20 +48,22 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         //Initialize all of the views
-        usernameEditText = v.findViewById(R.id.user_name_edit_text);
-        passwordEditText = v.findViewById(R.id.password_edit_text);
-        errorMessageTextView = v.findViewById(R.id.error_text_view);
-        Button signInButton = v.findViewById(R.id.sign_in_button);
-        Button signUpButton = v.findViewById(R.id.sign_up_button);
+        usernameEditText = view.findViewById(R.id.user_name_edit_text);
+        passwordEditText = view.findViewById(R.id.password_edit_text);
+        errorMessageTextView = view.findViewById(R.id.error_text_view);
+        Button signInButton = view.findViewById(R.id.sign_in_button);
+        Button signUpButton = view.findViewById(R.id.sign_up_button);
+        Button forgetPasswordButton = view.findViewById(R.id.forget_password_button);
 
         //Set listeners for buttons
         signInButton.setOnClickListener(this);
         signUpButton.setOnClickListener(this);
+        forgetPasswordButton.setOnClickListener(this);
         // Inflate the layout for this fragment
-        return v;
+        return view;
     }
 
     /**
@@ -101,6 +103,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             case R.id.sign_up_button:
                // createDotifyUser(usernameEditText.getText(), passwordEditText.getText(), );
                 onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.CREATE_ACCOUNT);
+                break;
+            case R.id.forget_password_button:
+                onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.FORGOT_PASSWORD);
                 break;
         }
     }

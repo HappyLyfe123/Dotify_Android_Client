@@ -53,17 +53,17 @@ public class MainActivityContainer extends AppCompatActivity {
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     switch (item.getItemId()) {
                         case R.id.playlists:
-                            fragmentTransaction.replace(R.id.container, playlistFragment);
+                            fragmentTransaction.replace(R.id.main_display_frame, playlistFragment);
                             break;
                         case R.id.search:
-                            fragmentTransaction.replace(R.id.container, searchFragment);
+                            fragmentTransaction.replace(R.id.main_display_frame, searchFragment);
                             break;
                         case R.id.for_you:
-                            fragmentTransaction.replace(R.id.container, forYouFragment);
+                            fragmentTransaction.replace(R.id.main_display_frame, forYouFragment);
                             break;
                         case R.id.profile:
                             //go to user account
-                            fragmentTransaction.replace(R.id.container, profileInfoFragment);
+                            fragmentTransaction.replace(R.id.main_display_frame, profileInfoFragment);
                             break;
                     }
                     //fragmentTransaction.setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -82,16 +82,16 @@ public class MainActivityContainer extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         switch (fragmentId) {
             case R.id.search:
-                fragmentTransaction.replace(R.id.container, searchFragment);
+                fragmentTransaction.replace(R.id.main_display_frame, searchFragment);
                 break;
             case R.id.playlists:
-                fragmentTransaction.replace(R.id.container, playlistFragment);
+                fragmentTransaction.replace(R.id.main_display_frame, playlistFragment);
                 break;
             case R.id.for_you:
-                fragmentTransaction.replace(R.id.container, forYouFragment);
+                fragmentTransaction.replace(R.id.main_display_frame, forYouFragment);
                 break;
             case R.id.profile:
-                fragmentTransaction.replace(R.id.container, profileInfoFragment);
+                fragmentTransaction.replace(R.id.main_display_frame, profileInfoFragment);
                 break;
         }
         fragmentTransaction.addToBackStack(null);
@@ -109,7 +109,7 @@ public class MainActivityContainer extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.playlists);
         bottomNavigationView.setOnNavigationItemSelectedListener(NavItemListen);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, PlaylistFragment.newInstance());
+        transaction.replace(R.id.main_display_frame, PlaylistFragment.newInstance());
         //Commit changes transaction
         transaction.commit();
     }
