@@ -7,6 +7,7 @@
 
     <!-- App Key -->
     <string name ="appKey">DotifyOnline-327</string>
+    <string name ="base_URL">https://www.dotify.online/</string>
 
     <!-- Login -->
     <string name="empty_login_entry">Username or Password Can\'t Be Empty</string>
