@@ -18,7 +18,7 @@ public class ForgetPasswordFragment extends Fragment {
 
     private Button userNameSubmitButton;
 
-    private ViewStub currentViewStub,userNameStub, securityQuestionStub, resetPasswordStub;
+    private ViewStub currentViewStub;
     public byte currentStubNum;
 
     public interface OnChangeFragmentListener {
@@ -46,9 +46,7 @@ public class ForgetPasswordFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_forget_password, container, false);
 
         //Initialize view stub
-        userNameStub = (ViewStub) view.findViewById(R.id.username_stub);
-        securityQuestionStub = (ViewStub) view.findViewById(R.id.security_question_stub);
-        resetPasswordStub = (ViewStub) view.findViewById(R.id.reset_password_stub);
+        currentViewStub = view.findViewById(R.id.forget_password_display_stub);
 
         switchStubView((byte)1);
 
@@ -64,18 +62,38 @@ public class ForgetPasswordFragment extends Fragment {
         if(currentViewStub != null)
             currentViewStub.setVisibility(View.GONE);
         currentStubNum = viewNum;
+        View currView;
         switch (viewNum){
             case 1:
-                currentViewStub = userNameStub;
+                currentViewStub.setLayoutResource(R.layout.reset_password_username_layout);
+                currView = currentViewStub.inflate();
 
                 break;
             case 2:
-                currentViewStub = securityQuestionStub;
+                currentViewStub.setLayoutResource(R.layout.reset_password_security_question_layout);
+                currView = currentViewStub.inflate();
                 break;
             case 3:
-                currentViewStub = resetPasswordStub;
+                currentViewStub.setLayoutResource(R.layout.reset_password_layout);
+                currView = currentViewStub.inflate();
                 break;
 
         }
+    }
+
+
+    //Control actions for reset password username layout
+    private void usernameController(View currView){
+
+    }
+
+    //Control actions for reset password username layout
+    private void securityQuestionController(View currView){
+
+    }
+
+    //Control actions for reset password username layout
+    private void resetPasswordController(View currView){
+
     }
 }
