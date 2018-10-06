@@ -1,9 +1,6 @@
 package com.example.thai.dotify;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.Editable;
@@ -12,12 +9,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.VideoView;
+
+import com.example.thai.dotify.Server.Dotify;
+import com.example.thai.dotify.Server.DotifyHttpInterface;
 
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 
@@ -371,14 +368,17 @@ public class CreateAccountFragment extends Fragment{
      *
      */
     public boolean createAccount(){
-        boolean isAccountCreated = false;
-        String usernmae = usernameEditText.getText().toString();
+        boolean isAccountCreated = true;
+        String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
-        String securityQuestion1;
-        String securityQuestion2;
+        String securityQuestion1 = securityQuestion1Spinner.getSelectedItem().toString();
+        String securityQuestion2 = securityQuestion2Spinner.getSelectedItem().toString();
         String securityAnswer1 = securityQuestion1AnswerEditText.getText().toString();
         String securityAnswer2 = securityQuestion2AnswerEditText.getText().toString();
-
+        createDotifyUser(username,password,securityQuestion1,securityQuestion2, securityAnswer1, securityAnswer2);
+        if (username == null){
+            isAccountCreated = false;
+        }
         return isAccountCreated;
     }
 
@@ -424,30 +424,36 @@ public class CreateAccountFragment extends Fragment{
             }
         });
         dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
-        DotifyHttpInterface astralHttpInterface = dotify.getHttpInterface();
+        DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
         //Create the POST request
-        Call<DotifyUser> request = astralHttpInterface.createUser(dotifyUser.getUsername(), dotifyUser.getPassword(),
+        Call<DotifyUser> request = dotifyHttpInterface.createUser(dotifyUser.getUsername(), dotifyUser.getPassword(),
                 dotifyUser.getQuestion1(), dotifyUser.getQuestion2(), dotifyUser.getAnswer1(), dotifyUser.getAnswer2());
-        //Call the request asynchronouslygit
-        request.enqueue(new Callback<DotifyUser>() {
-            @Override
-            public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
-                if (response.code() == 200) {
-                    Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
-                    //Create the DotifyUser account
-                    //startMainActivity();
-                } else {
-                    Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
+        //Call the request asynchronously
+//        try{
+            request.enqueue(new Callback<DotifyUser>() {
+                @Override
+                public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
+                    if (response.code() == 201) {
+                        Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
+                        //Create the DotifyUser account
+                        //startMainActivity();
+                    } else {
+                        Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<DotifyUser> call, Throwable t) {
-                //The request has unexpectedly failed
-                Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Unexpected request failure");
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<DotifyUser> call, Throwable t) {
+                    //The request has unexpectedly failed
+                    Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Unexpected request failure");
+                    t.printStackTrace();
+                }
+            });
+//        }
+//        catch (Exception e){
+//            Log.d(TAG, "Server not responding.");
+//        }
+
     }
 
 }
