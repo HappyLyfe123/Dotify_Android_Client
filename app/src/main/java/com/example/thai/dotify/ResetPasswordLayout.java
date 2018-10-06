@@ -35,7 +35,7 @@ public class ResetPasswordLayout extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.reset_password_layout, container, false);
+        View view = inflater.inflate(R.layout.forget_password_reset_password_layout, container, false);
 
         //Initialize all of the views
         resetPasswordEditText = (EditText) view.findViewById(R.id.reset_new_password_edit_text);

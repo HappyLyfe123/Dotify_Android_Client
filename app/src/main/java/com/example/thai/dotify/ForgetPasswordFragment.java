@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class ForgetPasswordFragment extends Fragment{
 
     private OnChangeFragmentListener onChangeFragmentListener;
@@ -24,8 +26,6 @@ public class ForgetPasswordFragment extends Fragment{
                 passwordEditText, confirmPasswordEditText;
     private TextView securityQuestion1TextView, securityQuestion2TextView;
     private ViewStub usernameStub, securityQuestionStub, resetPasswordStub;
-    private View fragmentView;
-    public byte currentStubNum;
 
     private enum ViewStubType{
         USERNAME,
@@ -55,12 +55,15 @@ public class ForgetPasswordFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        fragmentView = inflater.inflate(R.layout.fragment_forget_password, container, false);
+        View view = inflater.inflate(R.layout.fragment_forget_password, container, false);
 
         //Initialize view stub
+        usernameStub = (ViewStub) view.findViewById(R.id.forget_password_username_stub);
+        securityQuestionStub = (ViewStub) view.findViewById(R.id.forget_password_security_question_stub);
+        resetPasswordStub = (ViewStub) view.findViewById(R.id.forget_password_reset_password_stub);
         switchStubView(ViewStubType.USERNAME);
 
-        return fragmentView;
+        return view;
     }
 
     /**
@@ -72,20 +75,18 @@ public class ForgetPasswordFragment extends Fragment{
         View currView;
         switch (viewType){
             case USERNAME:
-                if(usernameStub == null){
-                    usernameStub = (ViewStub) fragmentView.findViewById(R.id.forget_password_username);
+                if(usernameStub.getLayoutResource() == 0){
+                    usernameStub.setLayoutResource(R.layout.forget_password_username_layout);
                     currView = usernameStub.inflate();
                     usernameController(currView);
-                    System.out.println(getResources().getResourceEntryName(usernameStub.getInflatedId()));
                 }
                 else{
                     usernameStub.setVisibility(View.VISIBLE);
                 }
-
                 break;
             case SECURITY_QUESTION:
-                if(securityQuestionStub == null){
-                    securityQuestionStub = (ViewStub) fragmentView.findViewById(R.id.forget_password_security_question);
+                if(securityQuestionStub.getLayoutResource() == 0){
+                    securityQuestionStub.setLayoutResource(R.layout.forget_password_security_question_layout);
                     currView = securityQuestionStub.inflate();
                     securityQuestionController(currView);
                 }
@@ -94,10 +95,13 @@ public class ForgetPasswordFragment extends Fragment{
                 }
                 break;
             case RESET_PASSWORD:
-                if(resetPasswordStub == null){
-                    resetPasswordStub = (ViewStub) fragmentView.findViewById(R.id.forget_password_reset_password);
+                if(resetPasswordStub.getLayoutResource() == 0){
+                    resetPasswordStub.setLayoutResource(R.layout.forget_password_reset_password_layout);
                     currView = resetPasswordStub.inflate();
                     resetPasswordController(currView);
+                }
+                else{
+                    resetPasswordStub.setVisibility(View.VISIBLE);
                 }
                 break;
         }
@@ -105,11 +109,12 @@ public class ForgetPasswordFragment extends Fragment{
 
     }
 
+
     //Control actions for reset password username layout
     private void usernameController(View currView){
         //Initialize view layout
-        usernameEditText = currView.findViewById(R.id.reset_password_user_name_edit_text);
-        userNameSubmitButton = currView.findViewById(R.id.forget_password_username_submit_button);
+        usernameEditText = (EditText) currView.findViewById(R.id.reset_password_user_name_edit_text);
+        userNameSubmitButton = (Button) currView.findViewById(R.id.forget_password_username_submit_button);
         userNameSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,28 +127,33 @@ public class ForgetPasswordFragment extends Fragment{
     //Control actions for reset password username layout
     private void securityQuestionController(View currView){
         //Initialize view layout
-        securityQuestion1TextView = currView.findViewById(R.id.reset_password_security_question_1_text_view);
-        securityQuestion2TextView = currView.findViewById(R.id.reset_password_security_question_2_text_view);
-        securityQuestionSubmitButton = currView.findViewById(R.id.security_question_submit_button);
+        securityQuestion1TextView = (TextView) currView.findViewById(R.id.forget_password_security_question_1_text_view);
+        securityQuestion2TextView = (TextView) currView.findViewById(R.id.forget_password_security_question_2_text_view);
+        securityQuestion1EditText = (EditText) currView.findViewById(R.id.forget_password_security_question_answer_1_edit_text);
+        securityQuestion2EditText = (EditText) currView.findViewById(R.id.forget_password_security_question_answer_2_edit_text);
+        securityQuestionSubmitButton = (Button) currView.findViewById(R.id.security_question_submit_button);
 
         securityQuestionSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 securityQuestionStub.setVisibility(View.GONE);
-                switchStubView(ViewStubType.RESET_PASSWORD);
+                switchStubView(ViewStubType.USERNAME);
             }
         });
     }
 
     //Control actions for reset password username layout
     private void resetPasswordController(View currView){
-        passwordEditText = currView.findViewById(R.id.reset_new_password_edit_text);
-        confirmPasswordEditText = currView.findViewById(R.id.reset_confirm_password_edit_text);
-        resetPasswordButton = currView.findViewById(R.id.reset_password_button);
+        passwordEditText = (EditText) currView.findViewById(R.id.reset_new_password_edit_text);
+        confirmPasswordEditText = (EditText) currView.findViewById(R.id.reset_confirm_password_edit_text);
+        resetPasswordButton = (Button) currView.findViewById(R.id.reset_password_button);
 
         resetPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(passwordEditText.getText().equals(confirmPasswordEditText.getText())){
+
+                }
 
             }
         });

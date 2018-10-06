@@ -27,6 +27,7 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
     private TextView titleTextView;
     private boolean goHomeEnable;
     private boolean isLoginPage;
+    private boolean isOnCreateAccount, isOnForgetPassword;
 
 
     //Enumerator
@@ -118,6 +119,7 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
             //Load forgot password fragment
             case FORGOT_PASSWORD:
                 beginFragment(AuthFragmentType.FORGOT_PASSWORD, true, true);
+                isOnForgetPassword = true;
                 break;
         }
     }
