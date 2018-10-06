@@ -15,6 +15,7 @@ public class MainActivityContainer extends AppCompatActivity {
     PlaylistFragment playlistFragment;
     ProfileInfoFragment profileInfoFragment;
     ForYouFragment forYouFragment;
+    CreatePlaylistFragment createPlaylistFragment;
 
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
 //            = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -44,6 +45,7 @@ public class MainActivityContainer extends AppCompatActivity {
         playlistFragment = PlaylistFragment.newInstance();
         profileInfoFragment = ProfileInfoFragment.newInstance();
         forYouFragment = forYouFragment.newInstance();
+        createPlaylistFragment = CreatePlaylistFragment.newInstance();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener NavItemListen =
@@ -92,6 +94,9 @@ public class MainActivityContainer extends AppCompatActivity {
                 break;
             case R.id.profile:
                 fragmentTransaction.replace(R.id.main_display_frame, profileInfoFragment);
+                break;
+            case R.id.create_playlist_button:
+                fragmentTransaction.replace(R.id.main_display_frame,createPlaylistFragment);
                 break;
         }
         fragmentTransaction.addToBackStack(null);
