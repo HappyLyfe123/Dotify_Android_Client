@@ -11,15 +11,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-public class ForgetPasswordFragment extends Fragment {
+public class ForgetPasswordFragment extends Fragment{
 
     private OnChangeFragmentListener onChangeFragmentListener;
 
-    private Button userNameSubmitButton;
-
-    private ViewStub currentViewStub;
+    private Button userNameSubmitButton, securityQuestionSubmitButton, resetPasswordButton;
+    private EditText usernameEditText, securityQuestion1EditText, securityQuestion2EditText,
+                passwordEditText, confirmPasswordEditText;
+    private TextView securityQuestion1TextView, securityQuestion2TextView;
+    private ViewStub usernameStub, securityQuestionStub, resetPasswordStub;
+    private View fragmentView;
     public byte currentStubNum;
+
+    private enum ViewStubType{
+        USERNAME,
+        SECURITY_QUESTION,
+        RESET_PASSWORD
+    }
 
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
@@ -43,57 +55,97 @@ public class ForgetPasswordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_forget_password, container, false);
+        fragmentView = inflater.inflate(R.layout.fragment_forget_password, container, false);
 
         //Initialize view stub
-        currentViewStub = view.findViewById(R.id.forget_password_display_stub);
+        switchStubView(ViewStubType.USERNAME);
 
-        switchStubView((byte)1);
-
-        return view;
+        return fragmentView;
     }
 
     /**
      * Tell the system which view stub to display
      *
-     * @param viewNum The view stub that will be display
+     * @param viewType The view stub that will be display
      */
-    public void switchStubView(byte viewNum){
-        if(currentViewStub != null)
-            currentViewStub.setVisibility(View.GONE);
-        currentStubNum = viewNum;
+    public void switchStubView(ViewStubType viewType){
         View currView;
-        switch (viewNum){
-            case 1:
-                currentViewStub.setLayoutResource(R.layout.reset_password_username_layout);
-                currView = currentViewStub.inflate();
+        switch (viewType){
+            case USERNAME:
+                if(usernameStub == null){
+                    usernameStub = (ViewStub) fragmentView.findViewById(R.id.forget_password_username);
+                    currView = usernameStub.inflate();
+                    usernameController(currView);
+                    System.out.println(getResources().getResourceEntryName(usernameStub.getInflatedId()));
+                }
+                else{
+                    usernameStub.setVisibility(View.VISIBLE);
+                }
 
                 break;
-            case 2:
-                currentViewStub.setLayoutResource(R.layout.reset_password_security_question_layout);
-                currView = currentViewStub.inflate();
+            case SECURITY_QUESTION:
+                if(securityQuestionStub == null){
+                    securityQuestionStub = (ViewStub) fragmentView.findViewById(R.id.forget_password_security_question);
+                    currView = securityQuestionStub.inflate();
+                    securityQuestionController(currView);
+                }
+                else{
+                    securityQuestionStub.setVisibility(View.VISIBLE);
+                }
                 break;
-            case 3:
-                currentViewStub.setLayoutResource(R.layout.reset_password_layout);
-                currView = currentViewStub.inflate();
+            case RESET_PASSWORD:
+                if(resetPasswordStub == null){
+                    resetPasswordStub = (ViewStub) fragmentView.findViewById(R.id.forget_password_reset_password);
+                    currView = resetPasswordStub.inflate();
+                    resetPasswordController(currView);
+                }
                 break;
-
         }
-    }
 
+
+    }
 
     //Control actions for reset password username layout
     private void usernameController(View currView){
-
+        //Initialize view layout
+        usernameEditText = currView.findViewById(R.id.reset_password_user_name_edit_text);
+        userNameSubmitButton = currView.findViewById(R.id.forget_password_username_submit_button);
+        userNameSubmitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                usernameStub.setVisibility(View.GONE);
+                switchStubView(ViewStubType.SECURITY_QUESTION);
+            }
+        });
     }
 
     //Control actions for reset password username layout
     private void securityQuestionController(View currView){
+        //Initialize view layout
+        securityQuestion1TextView = currView.findViewById(R.id.reset_password_security_question_1_text_view);
+        securityQuestion2TextView = currView.findViewById(R.id.reset_password_security_question_2_text_view);
+        securityQuestionSubmitButton = currView.findViewById(R.id.security_question_submit_button);
 
+        securityQuestionSubmitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                securityQuestionStub.setVisibility(View.GONE);
+                switchStubView(ViewStubType.RESET_PASSWORD);
+            }
+        });
     }
 
     //Control actions for reset password username layout
     private void resetPasswordController(View currView){
+        passwordEditText = currView.findViewById(R.id.reset_new_password_edit_text);
+        confirmPasswordEditText = currView.findViewById(R.id.reset_confirm_password_edit_text);
+        resetPasswordButton = currView.findViewById(R.id.reset_password_button);
 
+        resetPasswordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 }

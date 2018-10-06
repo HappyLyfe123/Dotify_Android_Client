@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class ResetPasswordFragment extends Fragment {
+public class ResetPasswordLayout extends Fragment {
 
     private EditText resetPasswordEditText;
     private EditText resetConfirmPasswordEditText;

@@ -10,6 +10,9 @@ import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class StartUpContainer extends AppCompatActivity implements LoginFragment.OnChangeFragmentListener,
         CreateAccountFragment.CreateAccountListener, ForgetPasswordFragment.OnChangeFragmentListener,
@@ -21,7 +24,7 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
     private RelativeLayout toolbar;
     private ImageButton backButton;
     private Button createAccountButton;
-    private ViewStub stub;
+    private TextView titleTextView;
     private boolean goHomeEnable;
     private boolean isLoginPage;
 
@@ -55,6 +58,7 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
         toolbar = (RelativeLayout) findViewById(R.id.toolbar);
         backButton = (ImageButton) findViewById(R.id.back_button);
         createAccountButton = (Button) findViewById(R.id.create_account_button);
+        titleTextView = (TextView) findViewById(R.id.start_up_title_text_view);
 
         backButton.setOnClickListener(this);
         createAccountButton.setOnClickListener(this);
@@ -82,12 +86,14 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
             case CREATE_ACCOUNT:
                 toolbar.setVisibility(View.VISIBLE);
                 createAccountButton.setVisibility(View.VISIBLE);
+                titleTextView.setText(R.string.create_account_title);
                 goHomeEnable = false;
                 fragmentTransaction.replace(R.id.main_display_container, createAccountFragment);
                 break;
             case FORGOT_PASSWORD:
                 toolbar.setVisibility(View.VISIBLE);
                 createAccountButton.setVisibility(View.GONE);
+                titleTextView.setText(R.string.forget_password_title);
                 fragmentTransaction.replace(R.id.main_display_container, forgetPasswordFragment);
                 break;
         }

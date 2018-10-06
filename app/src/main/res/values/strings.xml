@@ -4,6 +4,8 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="create_account_title">Create Account</string>
+    <string name="forget_password_title">Forget Password</string>
 
     <!-- App Key -->
     <string name ="appKey">DotifyOnline-327</string>
