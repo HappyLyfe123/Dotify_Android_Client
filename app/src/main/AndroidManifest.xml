@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".StartUpContainer">
+        <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,6 +25,9 @@
             android:name=".MainActivityContainer"
             android:windowSoftInputMode="adjustPan"
             android:label="@string/title_activity_main"></activity>
+        <activity android:name=".StartUpContainer"
+            android:label="Start Up Activity">
+        </activity>
     </application>
 
 </manifest>

@@ -24,9 +24,10 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/music_player_controller_frame"
+                android:id="@+id/mini_music_player_controller_frame"
                 android:layout_width="match_parent"
-                android:layout_height="50dp">
+                android:layout_height="50dp"
+                android:visibility="visible">
 
             </FrameLayout>
 

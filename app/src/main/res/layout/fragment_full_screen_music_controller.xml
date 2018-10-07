@@ -37,7 +37,7 @@
         android:layout_width="316dp"
         android:layout_height="264dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,6 +99,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:onClick="miniMusicScreenClicked"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/full_screen_music_down_arrow_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:onClick="miniMusicScreenClicked"
+            android:src="@drawable/down_arrow_white" />
+
+        <TextView
+            android:id="@+id/full_screen_title_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="15dp"
+            android:onClick="miniMusicScreenClicked"
+            android:text="TextView"
+            android:textAlignment="center" />
+    </LinearLayout>
 
 
 </android.support.constraint.ConstraintLayout>

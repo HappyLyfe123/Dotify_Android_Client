@@ -3,13 +3,12 @@ package com.example.thai.dotify;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.FragmentTransaction;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class StartUpContainer extends AppCompatActivity implements LoginFragment.OnChangeFragmentListener,
         CreateAccountFragment.CreateAccountListener, ForgetPasswordFragment.OnChangeFragmentListener,
@@ -21,10 +20,10 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
     private RelativeLayout toolbar;
     private ImageButton backButton;
     private Button createAccountButton;
-    private ViewStub stub;
+    private TextView titleTextView;
     private boolean goHomeEnable;
     private boolean isLoginPage;
-
+    private boolean isOnCreateAccount, isOnForgetPassword;
 
     //Enumerator
     public enum AuthFragmentType {
@@ -35,7 +34,7 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_up_container);
 
@@ -55,6 +54,7 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
         toolbar = (RelativeLayout) findViewById(R.id.toolbar);
         backButton = (ImageButton) findViewById(R.id.back_button);
         createAccountButton = (Button) findViewById(R.id.create_account_button);
+        titleTextView = (TextView) findViewById(R.id.start_up_title_text_view);
 
         backButton.setOnClickListener(this);
         createAccountButton.setOnClickListener(this);
@@ -82,12 +82,14 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
             case CREATE_ACCOUNT:
                 toolbar.setVisibility(View.VISIBLE);
                 createAccountButton.setVisibility(View.VISIBLE);
+                titleTextView.setText(R.string.create_account_title);
                 goHomeEnable = false;
                 fragmentTransaction.replace(R.id.main_display_container, createAccountFragment);
                 break;
             case FORGOT_PASSWORD:
                 toolbar.setVisibility(View.VISIBLE);
                 createAccountButton.setVisibility(View.GONE);
+                titleTextView.setText(R.string.forget_password_title);
                 fragmentTransaction.replace(R.id.main_display_container, forgetPasswordFragment);
                 break;
         }
@@ -112,6 +114,7 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
             //Load forgot password fragment
             case FORGOT_PASSWORD:
                 beginFragment(AuthFragmentType.FORGOT_PASSWORD, true, true);
+                isOnForgetPassword = true;
                 break;
         }
     }

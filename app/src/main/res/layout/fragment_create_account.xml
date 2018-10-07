@@ -28,7 +28,7 @@
         android:ems="10"
         android:paddingStart="10dp"
         android:saveEnabled="false"
-        android:inputType="textPersonName|textNoSuggestions|textVisiblePassword"
+        android:inputType="textNoSuggestions|textVisiblePassword"
         android:background="@drawable/rounded_background"/>
 
     <TextView
@@ -113,7 +113,7 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:paddingStart="10dp"
-        android:inputType="textPersonName|textVisiblePassword|textNoSuggestions"
+        android:inputType="textVisiblePassword|textNoSuggestions"
         android:saveEnabled="false"
         android:background="@drawable/rounded_background"/>
 
@@ -133,7 +133,7 @@
         android:ems="10"
         android:paddingStart="10dp"
         android:saveEnabled="false"
-        android:inputType="textPersonName|textVisiblePassword|textNoSuggestions"
+        android:inputType="textVisiblePassword|textNoSuggestions"
         android:background="@drawable/rounded_background"/>
 
 </LinearLayout>

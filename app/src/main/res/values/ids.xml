@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="subTree" type="id" />
+    <item name="usernameView" type="id"/>
+    <item name="forgetPasswordSecurityQuestionView" type="id"/>
+    <item name="forgetPasswordResetPasswordView" type="id"/>
+</resources>

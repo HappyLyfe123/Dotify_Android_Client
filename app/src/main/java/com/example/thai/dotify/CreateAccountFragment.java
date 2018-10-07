@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 
+import com.example.thai.dotify.Server.DotifyHttpInterface;
+
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
