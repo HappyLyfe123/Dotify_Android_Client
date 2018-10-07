@@ -29,7 +29,6 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
     private boolean isLoginPage;
     private boolean isOnCreateAccount, isOnForgetPassword;
 
-
     //Enumerator
     public enum AuthFragmentType {
         LOGIN,
