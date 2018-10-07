@@ -1,6 +1,7 @@
 package com.example.thai.dotify.Server
 
 import com.example.thai.dotify.DotifyUser
+import retrofit2.Call
 import retrofit2.http.*
 
 interface DotifyHttpInterface {
@@ -17,4 +18,10 @@ interface DotifyHttpInterface {
                    @Field("securityAnswer1") securityAnswer1: String,
                    @Field("securityAnswer2") securityAnswer2: String?)
             : retrofit2.Call<DotifyUser>
+
+    @GET("users")
+    fun getUser(@Header("appKey") appKey: String,
+                 @Header("username") username: String,
+                 @Header("password") password: String)
+            : Call<DotifyUser>
 }
