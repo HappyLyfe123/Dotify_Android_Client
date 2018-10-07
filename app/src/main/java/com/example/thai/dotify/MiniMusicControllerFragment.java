@@ -1,7 +1,9 @@
 package com.example.thai.dotify;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.constraint.ConstraintLayout;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +12,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
-public class MiniMusicControllerFragment extends Fragment {
+public class MiniMusicControllerFragment extends Fragment{
 
     private ImageButton playPauseMusicButton;
     private TextView songTitleInfo;
+    private ConstraintLayout currLayout;
+    private OnChangeFragmentListener onChangeFragmentListener;
 
+    public interface OnChangeFragmentListener {
+        void buttonClicked(MainActivityContainer.AuthFragmentType fragmentType);
+    }
+
+    /**
+     * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
+     *
+     * @param onChangeFragmentListener The listener for communication
+     */
+    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
+        this.onChangeFragmentListener = onChangeFragmentListener;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -28,4 +44,17 @@ public class MiniMusicControllerFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            onChangeFragmentListener = (OnChangeFragmentListener) context;
+        }catch(ClassCastException e){
+            throw new ClassCastException(context.toString());
+        }
+    }
+
+
+
 }

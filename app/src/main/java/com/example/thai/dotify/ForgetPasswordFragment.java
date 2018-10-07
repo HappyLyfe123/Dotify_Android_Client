@@ -75,31 +75,37 @@ public class ForgetPasswordFragment extends Fragment{
         View currView;
         switch (viewType){
             case USERNAME:
+                //Check if a layout already exist
                 if(usernameStub.getLayoutResource() == 0){
                     usernameStub.setLayoutResource(R.layout.forget_password_username_layout);
                     currView = usernameStub.inflate();
                     usernameController(currView);
                 }
+                //If layout already exist just set its to visible
                 else{
                     usernameStub.setVisibility(View.VISIBLE);
                 }
                 break;
             case SECURITY_QUESTION:
+                //Check if a layout already exist
                 if(securityQuestionStub.getLayoutResource() == 0){
                     securityQuestionStub.setLayoutResource(R.layout.forget_password_security_question_layout);
                     currView = securityQuestionStub.inflate();
                     securityQuestionController(currView);
                 }
+                //If layout already exist just set its to visible
                 else{
                     securityQuestionStub.setVisibility(View.VISIBLE);
                 }
                 break;
             case RESET_PASSWORD:
+                //Check if a layout already exist
                 if(resetPasswordStub.getLayoutResource() == 0){
                     resetPasswordStub.setLayoutResource(R.layout.forget_password_reset_password_layout);
                     currView = resetPasswordStub.inflate();
                     resetPasswordController(currView);
                 }
+                //If layout already exist just set its to visible
                 else{
                     resetPasswordStub.setVisibility(View.VISIBLE);
                 }
@@ -118,7 +124,9 @@ public class ForgetPasswordFragment extends Fragment{
         userNameSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Remove the current layout
                 usernameStub.setVisibility(View.GONE);
+                //Sent this layout to the view stub
                 switchStubView(ViewStubType.SECURITY_QUESTION);
             }
         });
@@ -136,7 +144,9 @@ public class ForgetPasswordFragment extends Fragment{
         securityQuestionSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Remove the current layout
                 securityQuestionStub.setVisibility(View.GONE);
+                //Sent this layout to the view stub
                 switchStubView(ViewStubType.USERNAME);
             }
         });

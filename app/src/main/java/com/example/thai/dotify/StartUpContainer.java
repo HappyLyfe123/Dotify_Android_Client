@@ -3,16 +3,12 @@ package com.example.thai.dotify;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.FragmentTransaction;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class StartUpContainer extends AppCompatActivity implements LoginFragment.OnChangeFragmentListener,
         CreateAccountFragment.CreateAccountListener, ForgetPasswordFragment.OnChangeFragmentListener,
@@ -38,7 +34,7 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_up_container);
 

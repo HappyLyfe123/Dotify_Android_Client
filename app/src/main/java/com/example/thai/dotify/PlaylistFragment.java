@@ -1,11 +1,8 @@
 package com.example.thai.dotify;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.app.AlertDialog;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,42 +14,25 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
 
     private View fragView;
     private Button button;
-    private OnChangeFragmentListener onChangeFragmentListener;
-
-    public static PlaylistFragment newInstance() {
-        PlaylistFragment fragment = new PlaylistFragment();
-        return fragment;
-    }
-
-    public interface OnChangeFragmentListener {
-        void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
-    }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        //Make sure that the container activity has implemented
-
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        fragView = inflater.inflate(R.layout.fragment_playlist, container, false);
-        return fragView;
-    }
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        button = getActivity().findViewById(R.id.create_playlist_button);
+        View view  = inflater.inflate(R.layout.fragment_playlist, container, false);
+        button = view.findViewById(R.id.create_playlist_button);
         button.setOnClickListener(this);
+        return view;
+    }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.create_playlist_button: case R.id.delete_playlist_button:
+            case R.id.create_playlist_button:
+                //case R.id.delete_playlist_button:
                 AlertDialog dialogBox = createPlaylistDialog();
                 dialogBox.show();
                 dialogBox.cancel();
@@ -89,14 +69,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
 
 
         return alertDialogBuilder.create();
-    }
-    /**
-     * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
-     *
-     * @param onChangeFragmentListener The listener for communication
-     */
-    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
-        this.onChangeFragmentListener = onChangeFragmentListener;
     }
 
 }
