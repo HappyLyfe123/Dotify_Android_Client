@@ -75,6 +75,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.full_screen_add_to_playlist_button:
+
                 break;
             case R.id.full_screen_previous_track_image_button:
                 break;

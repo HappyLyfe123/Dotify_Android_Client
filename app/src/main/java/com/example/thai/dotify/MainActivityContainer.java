@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivityContainer extends AppCompatActivity implements SearchView.OnQueryTextListener{
+public class MainActivityContainer extends AppCompatActivity{
 
     private TextView mTextMessage;
     private SearchFragment searchFragment;
@@ -29,7 +29,6 @@ public class MainActivityContainer extends AppCompatActivity implements SearchVi
     private FrameLayout mainDisplayLayout;
     private ListView list;
     private SearchView searchView;
-    ListViewAdapter adapter;
     ArrayList<SongFragment> arraylist;
     private static boolean isMusicPlaying;
 
@@ -49,20 +48,6 @@ public class MainActivityContainer extends AppCompatActivity implements SearchVi
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         miniMusicControllerLayout = (FrameLayout) findViewById(R.id.mini_music_player_controller_frame);
         mainDisplayLayout = (FrameLayout) findViewById(R.id.main_display_frame);
-        //navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        isMusicPlaying = false;
-
-        //list = findViewById(R.id.listView);
-
-        arraylist.add(new SongFragment("Payphone","Maroon 5","Overexposed",new byte[]{125,100}, new byte[]{111,123}));
-        arraylist.add(new SongFragment("Hall of Fame","The Script","#3",new byte[]{125,13}, new byte[]{11,15}));
-        arraylist.add(new SongFragment("Breaking the Habit","Linkin Park","Meteora",new byte[]{10,11},new byte[]{16,100}));
-
-//        adapter = new ListViewAdapter(this, arraylist);
-//        list.setAdapter(adapter);
-//        searchView = findViewById(R.id.search);
-//        searchView.setOnQueryTextListener(this);
 
         //Instantiate fragments
         searchFragment = new SearchFragment();
@@ -73,16 +58,7 @@ public class MainActivityContainer extends AppCompatActivity implements SearchVi
         miniMusicControllerFragment = miniMusicControllerFragment.newInstance();
         fullScreenMusicControllerFragment = new FullScreenMusicControllerFragment();
 
-
-
-        arraylist.add(new SongFragment("Payphone","Maroon 5","Overexposed",new byte[]{125,100}, new byte[]{111,123}));
-        arraylist.add(new SongFragment("Hall of Fame","The Script","#3",new byte[]{125,13}, new byte[]{11,15}));
-        arraylist.add(new SongFragment("Breaking the Habit","Linkin Park","Meteora",new byte[]{10,11},new byte[]{16,100}));
-
-//        adapter = new ListViewAdapter(this, arraylist);
-//        list.setAdapter(adapter);
-//        searchView = findViewById(R.id.search);
-//        searchView.setOnQueryTextListener(this);
+        isMusicPlaying = false;
 
         //create bottom navigation bar
         createMiniMusicControllerView();
@@ -190,17 +166,4 @@ public class MainActivityContainer extends AppCompatActivity implements SearchVi
         miniMusicControllerFragment.changeMusicPlayerButtonImage();
         getFragmentManager().popBackStackImmediate();
     }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        String text = newText;
-        adapter.filter(text);
-        return false;
-    }
-
 }

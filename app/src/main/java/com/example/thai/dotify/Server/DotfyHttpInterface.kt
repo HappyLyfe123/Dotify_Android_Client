@@ -24,4 +24,15 @@ interface DotifyHttpInterface {
                  @Header("username") username: String,
                  @Header("password") password: String)
             : Call<DotifyUser>
+
+    @PUT("users")
+    fun createPlaylist(
+            @Header("appKey") appKey: String,
+            @Field("playlistName") playlistName: String
+    )
+    : Call<DotifyUser>
+
+    @GET("users")
+    fun getPalylistName()
+    : Call<DotifyUser>
 }
