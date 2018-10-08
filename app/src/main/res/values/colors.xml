@@ -7,4 +7,6 @@
     <color name="lightGray">#efefef</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="bottom_nav_icon_color">#9b9b9b</color>
+    <color name="bottom_nav_select_color">#3247ff</color>
 </resources>
