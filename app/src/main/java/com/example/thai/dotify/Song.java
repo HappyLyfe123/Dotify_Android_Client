@@ -1,13 +1,13 @@
 package com.example.thai.dotify;
 
-public class SongInfo {
+public class Song {
 
     private int numOfTimeSongPlayed;
     private boolean isSongLiked;
     private String songName, artistName, albumName;
 
-    public SongInfo(String songName, String artistName, String albumName, boolean isSongLiked,
-                    int numOfTimeSongPlayed){
+    public Song(String songName, String artistName, String albumName, boolean isSongLiked,
+                int numOfTimeSongPlayed){
         this.songName = songName;
         this.artistName = artistName;
         this.albumName = albumName;
@@ -42,6 +42,26 @@ public class SongInfo {
         return numOfTimeSongPlayed;
     }
 
+    //Set the song name
+    public void setSongName(String title){
+        songName = title;
+    }
+
+    //Set artist name
+    public void setArtistName(String name){
+        artistName = name;
+    }
+
+    //Set album name
+    public void setAlbumName(String name){
+        albumName = name;
+    }
+
+    //Set weather the song is like or not
+    public void setIsSongLike(boolean likeStatus){
+        isSongLiked = likeStatus;
+    }
+
     //Increase the number of time a song played by one
     public void increaseNumOfSongPlayed(){
         numOfTimeSongPlayed++;
@@ -51,6 +71,10 @@ public class SongInfo {
     public void increaseNumOfSongPlayed(int numToIncrease){
         numOfTimeSongPlayed += numToIncrease;
     }
+
+
+
+
 
 
 

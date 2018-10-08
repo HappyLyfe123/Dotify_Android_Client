@@ -59,7 +59,6 @@ public class MainActivityContainer extends AppCompatActivity{
         fullScreenMusicControllerFragment = new FullScreenMusicControllerFragment();
 
         isMusicPlaying = false;
-
         //create bottom navigation bar
         createMiniMusicControllerView();
         createBottomNavigationView();

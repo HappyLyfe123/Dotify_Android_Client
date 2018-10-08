@@ -3,6 +3,9 @@ package com.example.thai.dotify;
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,9 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -25,6 +31,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class PlaylistFragment extends Fragment implements View.OnClickListener  {
 
     private Button createPlaylistButton;
+    private RecyclerView playlistListRecycleView;
+    private List<Playlist> playlistList = new ArrayList<>();
+    private PlaylistsAdapter playlistsAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,11 +41,18 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         View view  = inflater.inflate(R.layout.fragment_playlist, container, false);
         createPlaylistButton = view.findViewById(R.id.create_playlist_button);
         createPlaylistButton.setOnClickListener(this);
+        playlistListRecycleView = view.findViewById(R.id.playlist_list_recycle_view);
         return view;
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        playlistsAdapter = new PlaylistsAdapter(playlistList);
+        RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
+        playlistListRecycleView.setLayoutManager(songLayoutManager);
+        playlistListRecycleView.setItemAnimator(new DefaultItemAnimator());
+        playlistListRecycleView.setAdapter(playlistsAdapter);
+        test();
     }
 
     @Override
@@ -102,5 +118,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
 
         return playlistCreated;
+    }
+
+    private void test(){
+        Playlist playList = new Playlist("Hello");
+        playlistList.add(playList);
+        for(int x = 0; x < 50; x++){
+            playList = new Playlist("A");
+            playlistList.add(playList);
+        }
     }
 }

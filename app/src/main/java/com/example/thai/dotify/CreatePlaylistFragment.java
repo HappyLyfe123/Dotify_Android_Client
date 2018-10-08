@@ -38,4 +38,6 @@ public class CreatePlaylistFragment extends Fragment{
     public void onDetach() {
         super.onDetach();
     }
+
+
 }
