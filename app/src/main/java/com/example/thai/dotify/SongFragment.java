@@ -33,7 +33,13 @@ public class SongFragment
         music = mus;
         songId = id + 1;
         //JSONObject obj1 = toJSON();
-        //String SongJSON = Stringify(this);
+       try {
+           String SongJSON = Stringify(this);
+       }
+       catch (JSONException j) {
+
+       }
+
 
     }
 
