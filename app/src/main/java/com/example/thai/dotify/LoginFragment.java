@@ -24,6 +24,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.support.constraint.Constraints.TAG;
 
 
@@ -34,7 +35,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private TextView errorMessageTextView;
     private OnChangeFragmentListener onChangeFragmentListener;
     private Context activityContext;
-    private boolean successfulLogin;
 
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
@@ -69,9 +69,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Button signInButton = view.findViewById(R.id.sign_in_button);
         Button signUpButton = view.findViewById(R.id.sign_up_button);
         Button forgetPasswordButton = view.findViewById(R.id.forget_password_button);
-
-        //Determines if the user is logged in
-        successfulLogin = false;
 
         //Set listeners for buttons
         signInButton.setOnClickListener(this);
@@ -145,9 +142,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     if (respCode == Dotify.ACCEPTED) {
                         Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
                         DotifyUser dotifyUser = response.body();
-                        onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
                         //Cache the user
-                        //SharedPreferences pref = activityContext.getSharedPreferences();
+                        SharedPreferences userData = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = userData.edit();
+                        editor.putString("username", username);
+                        editor.putString("password", password);
+                        editor.apply();
+                        onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
                     }
                 }
                 else{
