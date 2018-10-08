@@ -59,10 +59,10 @@ public class MainActivityContainer extends AppCompatActivity implements SearchVi
         arraylist.add(new SongFragment("Hall of Fame","The Script","#3",new byte[]{125,13}, new byte[]{11,15}));
         arraylist.add(new SongFragment("Breaking the Habit","Linkin Park","Meteora",new byte[]{10,11},new byte[]{16,100}));
 
-        adapter = new ListViewAdapter(this, arraylist);
-        list.setAdapter(adapter);
-        searchView = findViewById(R.id.search);
-        searchView.setOnQueryTextListener(this);
+//        adapter = new ListViewAdapter(this, arraylist);
+//        list.setAdapter(adapter);
+//        searchView = findViewById(R.id.search);
+//        searchView.setOnQueryTextListener(this);
 
         //Instantiate fragments
         searchFragment = new SearchFragment();
@@ -79,10 +79,10 @@ public class MainActivityContainer extends AppCompatActivity implements SearchVi
         arraylist.add(new SongFragment("Hall of Fame","The Script","#3",new byte[]{125,13}, new byte[]{11,15}));
         arraylist.add(new SongFragment("Breaking the Habit","Linkin Park","Meteora",new byte[]{10,11},new byte[]{16,100}));
 
-        adapter = new ListViewAdapter(this, arraylist);
-        list.setAdapter(adapter);
-        searchView = findViewById(R.id.search);
-        searchView.setOnQueryTextListener(this);
+//        adapter = new ListViewAdapter(this, arraylist);
+//        list.setAdapter(adapter);
+//        searchView = findViewById(R.id.search);
+//        searchView.setOnQueryTextListener(this);
 
         //create bottom navigation bar
         createMiniMusicControllerView();
