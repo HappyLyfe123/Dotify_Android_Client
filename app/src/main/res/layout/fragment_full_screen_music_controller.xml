@@ -12,17 +12,17 @@
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView">
+        app:layout_constraintTop_toBottomOf="@+id/full_screen_song_image_view">
 
         <TextView
-            android:id="@+id/song_info_text_view"
+            android:id="@+id/full_screen_song_info_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="TextView" />
 
         <ImageButton
-            android:id="@+id/add_to_playlist_button"
+            android:id="@+id/full_screen_add_to_playlist_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
@@ -33,7 +33,7 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/full_screen_song_image_view"
         android:layout_width="316dp"
         android:layout_height="264dp"
         android:layout_marginStart="8dp"
@@ -57,17 +57,17 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
-            android:id="@+id/previous_track_image_button"
+            android:id="@+id/full_screen_previous_track_image_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginEnd="30dp"
-            android:layout_toStartOf="@id/play_pause_image_button"
+            android:layout_toStartOf="@id/full_screen_play_pause_image_button"
             android:background="@android:color/transparent"
             android:src="@drawable/previous_track_button_icon" />
 
         <ImageButton
-            android:id="@+id/play_pause_image_button"
+            android:id="@+id/full_screen_play_pause_image_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -75,19 +75,19 @@
             android:src="@drawable/big_play_button_icon" />
 
         <ImageButton
-            android:id="@+id/next_track_image_button"
+            android:id="@+id/full_screen_next_track_image_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="30dp"
-            android:layout_toEndOf="@id/play_pause_image_button"
+            android:layout_toEndOf="@id/full_screen_play_pause_image_button"
             android:background="@android:color/transparent"
             android:src="@drawable/next_track_button_icon" />
 
     </RelativeLayout>
 
     <SeekBar
-        android:id="@+id/seekBar"
+        android:id="@+id/full_screen_song_seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

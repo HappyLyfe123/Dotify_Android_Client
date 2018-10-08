@@ -15,8 +15,8 @@
         android:src="@drawable/mini_play_button_icon"
         android:background="@android:color/transparent"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:visibility="visible"/>
+        android:clickable="true"
+        android:layout_centerVertical="true"/>
 
     <TextView
         android:id="@+id/mini_music_player_song_info_text_view"

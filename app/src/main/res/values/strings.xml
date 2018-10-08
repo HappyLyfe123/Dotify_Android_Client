@@ -47,7 +47,9 @@
 
     <!-- Play Lists -->
     <string name="edit">Edit</string>
+    <string name="create_playlist_name">Playlist Name</string>
     <string name="create_playlist">Create</string>
+    <string name="duplicate_error">Playlist Already Exist, Try Again</string>
 
     <!-- Reset Password -->
     <string name="new_password">New Password</string>

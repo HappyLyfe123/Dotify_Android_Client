@@ -32,6 +32,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.create_playlist_button:
+
                 //case R.id.delete_playlist_button:
                 AlertDialog dialogBox = createPlaylistDialog();
                 dialogBox.show();
@@ -45,11 +46,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
      * @return
      */
     private AlertDialog createPlaylistDialog() {
+        System.out.println("Got here");
         //Create an instance of the Alert Dialog
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         //Set the View of the Alert Dialog
         final View alertDialogView = getActivity().getLayoutInflater().inflate(R.layout.fragment_create_playlist, null);
         alertDialogBuilder.setView(alertDialogView);
+
 
         //Initialize Views for this Fragment
         final Button createPlaylist = (Button) alertDialogView.findViewById(R.id.create_button);
