@@ -35,7 +35,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                 //case R.id.delete_playlist_button:
                 AlertDialog dialogBox = createPlaylistDialog();
                 dialogBox.show();
-                dialogBox.cancel();
+                //dialogBox.cancel();
                 break;
         }
     }
