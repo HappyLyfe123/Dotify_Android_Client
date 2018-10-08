@@ -3,6 +3,7 @@ package com.example.thai.dotify;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private TextView errorMessageTextView;
     private OnChangeFragmentListener onChangeFragmentListener;
     private Context activityContext;
+    private boolean successfulLogin;
 
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
@@ -68,6 +70,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Button signUpButton = view.findViewById(R.id.sign_up_button);
         Button forgetPasswordButton = view.findViewById(R.id.forget_password_button);
 
+        //Determines if the user is logged in
+        successfulLogin = false;
+
         //Set listeners for buttons
         signInButton.setOnClickListener(this);
         signUpButton.setOnClickListener(this);
@@ -93,22 +98,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      * @param view The current view
      */
     public void onClick(View view) {
+        String username = usernameEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
         switch (view.getId()) {
             case R.id.sign_in_button:
-                int flagNum = isValidCredential(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-                //Username and password is valid
-                if(flagNum == 0){
-                    //Cache that the user is logged in
-                    loginDotifyUser(usernameEditText.toString(), passwordEditText.toString());
-                    onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
-                }
                 //Username or password edit field is empty
-                if( flagNum == 1){
+                if(username.trim().isEmpty() || password.trim().isEmpty()) {
                     errorMessageTextView.setText(R.string.empty_login_entry);
                 }
-                //Username and password doesn't match
-                else if(flagNum == 2){
-                    errorMessageTextView.setText(R.string.invalid_credential);
+                else{
+                    //Tries the login for the username and password
+                    loginDotifyUser(username, password);
                 }
                 break;
             case R.id.sign_up_button:
@@ -120,33 +120,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-
     /**
-     * Gets called upon the user clicking an interactive item on screen
-     *
-     * @param username The user username
-     * @param password The user password
-     *
-     * @return flagType use for telling which error it has
-     */
-    private int isValidCredential(String username, String password){
-        int flagType = 0;
-
-        //Check to see if username or password is empty
-        if(username.trim().isEmpty() || password.trim().isEmpty()){
-            flagType = 1;
-        }
-        else{
-            flagType = 2;
-        }
-
-        flagType = 0;
-
-        return flagType;
-    }
-
-    /**
-     * Checks to see if the credentials matach for the user
+     * Checks to see if the credentials match for the user
      */
     private void loginDotifyUser(final String username, final String password){
         //Start a GET request to login the user
@@ -165,15 +140,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         request.enqueue(new Callback<DotifyUser>() {
             @Override
             public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
-                if (response.code() == Dotify.ACCEPTED) {
-                    Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
-                    DotifyUser dotifyUser = response.body();
-                    //Cache the user
-                    //SharedPreferences pref = activityContext.getSharedPreferences();
-
+                if (response.isSuccessful()){
+                    int respCode = response.code();
+                    if (respCode == Dotify.ACCEPTED) {
+                        Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
+                        DotifyUser dotifyUser = response.body();
+                        onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
+                        //Cache the user
+                        //SharedPreferences pref = activityContext.getSharedPreferences();
+                    }
                 }
-                else if (response.code() == Dotify.NON_AUTHORUTATUVE_INFO){
+                else{
                     Log.d(TAG, "loginUser-> onResponse: Invalid Credentials : " + response.code());
+                    errorMessageTextView.setText(R.string.invalid_credential);
                     //User needs to retry to log in
                 }
             }
