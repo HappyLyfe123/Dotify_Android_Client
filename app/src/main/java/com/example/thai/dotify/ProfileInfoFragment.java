@@ -2,6 +2,7 @@ package com.example.thai.dotify;
 
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -85,6 +86,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
                 editor.clear();
                 editor.apply();
                 //Send the User back to the login screen
+
                 break;
         }
     }

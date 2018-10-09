@@ -409,7 +409,7 @@ public class CreateAccountFragment extends Fragment{
         //Create an dotifyUser object to send
         DotifyUser dotifyUser = new DotifyUser(username, password, secQuestion1, secQuestion2, secAnswer1, secAnswer2);
 
-        //Start at POST request to create the user in the Astral Framework
+        //Start at POST request to create the user
         final Dotify dotify = new Dotify(getString(R.string.base_URL));
         //Intercept the request to add a header item
         dotify.addRequestInterceptor(new Interceptor() {
