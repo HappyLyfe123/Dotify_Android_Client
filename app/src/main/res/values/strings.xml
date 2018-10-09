@@ -8,8 +8,8 @@
     <string name="forget_password_title">Forget Password</string>
 
     <!-- App Key -->
-    <string name ="appKey">DotifyOnline-327</string>
-    <string name ="base_URL">https://www.dotify.online/</string>
+    <string name="appKey">DotifyOnline-327</string>
+    <string name="base_URL">https://www.dotify.online/</string>
 
     <!-- Login -->
     <string name="empty_login_entry">Username or Password Can\'t Be Empty</string>
@@ -46,10 +46,11 @@
     <string name="for_you">For You</string>
 
     <!-- Play Lists -->
+    <string name="empty_playlist_name_error">Name Can Not Be Empty</string>
     <string name="edit">Edit</string>
     <string name="create_playlist_name">Playlist Name</string>
     <string name="create_playlist">Create</string>
-    <string name="duplicate_error">Playlist Already Exist, Try Again</string>
+    <string name="duplicate_playlist_name_error">Playlist Name Already Exist, Try Again</string>
 
     <!-- Reset Password -->
     <string name="new_password">New Password</string>

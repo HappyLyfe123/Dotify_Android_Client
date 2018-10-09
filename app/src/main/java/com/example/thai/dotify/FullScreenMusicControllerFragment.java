@@ -24,6 +24,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
     private ImageButton previousSongImageButton;
     private ImageButton nextSongImageButton;
     private ImageButton playPauseImageButton;
+    private ImageButton likeSongImageButton;
     public static SeekBar songSeekBar;
     private static boolean isSonPlaying;
 
@@ -46,6 +47,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
         nextSongImageButton = (ImageButton) view.findViewById(R.id.full_screen_next_track_image_button);
         playPauseImageButton = (ImageButton) view.findViewById(R.id.full_screen_play_pause_image_button);
         songSeekBar = (SeekBar) view.findViewById(R.id.full_screen_song_seekBar);
+        likeSongImageButton = (ImageButton) view.findViewById(R.id.full_screen_like_button_image);
 
         //Set listener
         addToPlaylistButton.setOnClickListener(this);
@@ -53,8 +55,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
         previousSongImageButton.setOnClickListener(this);
         nextSongImageButton.setOnClickListener(this);
         playPauseImageButton.setOnClickListener(this);
-
-
+        likeSongImageButton.setOnClickListener(this);
 
         return view;
     }
@@ -75,6 +76,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.full_screen_add_to_playlist_button:
+
                 break;
             case R.id.full_screen_previous_track_image_button:
                 break;
@@ -89,6 +91,9 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
                     playPauseImageButton.setImageResource(R.drawable.big_pause_button_icon);
                     PlayingMusicController.setSongPlayingStatus(true);
                 }
+                break;
+            case R.id.full_screen_like_button_image:
+                likeSongImageButton.setImageResource(R.drawable.already_like_song_icon);
                 break;
         }
     }
