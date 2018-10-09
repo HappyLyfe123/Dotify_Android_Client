@@ -17,6 +17,7 @@ public class Dotify{
     public final static String APP_KEY_HEADER = "appKey";
     public final static String DOTIFY_USERNAME = "username";
     public final static String DOTIFY_STORAGE = "dotify_storage";
+    public final static int OK = 200;
     public final static int CREATED = 201;
     public final static int ACCEPTED = 202;
     public final static int NON_AUTHORUTATUVE_INFO = 203;
