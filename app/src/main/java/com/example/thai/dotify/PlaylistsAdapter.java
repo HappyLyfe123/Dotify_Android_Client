@@ -40,7 +40,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
     public void updatePlaylist(List<Playlist> newData){
         playlistList.clear();
         playlistList.addAll(newData);
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 
     @NonNull

@@ -54,9 +54,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private String username;
     protected static AsyncTask<Void, Void, Void> client = new AsyncTask<Void, Void, Void>() {
         private String message = "0001";
+
         @Override
         protected Void doInBackground(Void... voids) {
-            try{
+            try {
                 InetAddress address = InetAddress.getByName("www.dotify.online");
 
                 DatagramSocket datagramSocket = new DatagramSocket();
@@ -68,7 +69,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                 );
                 datagramSocket.setBroadcast(true);
                 datagramSocket.send(datagramPacket);
-            } catch(Exception ex){
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
             return null;
@@ -225,6 +226,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                     //DotifyUser dotifyUser = response.body();
                     //Cache the playlist
                     playlistList.add(new Playlist(playlistName));
+                    playlistsAdapter.updatePlaylist(playlistList);
                     SharedPreferences userData = activityContext.getSharedPreferences("Playlist", MODE_PRIVATE);
                     SharedPreferences.Editor editor = userData.edit();
                     editor.putString("playlist", playlistName);
