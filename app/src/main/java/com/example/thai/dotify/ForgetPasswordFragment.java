@@ -248,10 +248,10 @@ public class ForgetPasswordFragment extends Fragment{
                         Log.d(TAG, "resetQuestions-> onResponse: Success Code : " + response.code());
                         DotifySecurityQuestion received = response.body();
                         if (received.getSecurityQuestion1() != null && received.getSecurityQuestion2() != null) {
-                            String securityQuestionFirst = received.getSecurityQuestion1();
-                            String securityQuestionSecond = received.getSecurityQuestion2();
-                            listOfSecQuestions.add(securityQuestionFirst);
-                            listOfSecQuestions.add(securityQuestionSecond);
+//                            String securityQuestionFirst = received.getSecurityQuestion1();
+//                            String securityQuestionSecond = received.getSecurityQuestion2();
+//                            listOfSecQuestions.add(securityQuestionFirst);
+//                            listOfSecQuestions.add(securityQuestionSecond);
                             //now send the user to the reset password page
                             //onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
                         }
