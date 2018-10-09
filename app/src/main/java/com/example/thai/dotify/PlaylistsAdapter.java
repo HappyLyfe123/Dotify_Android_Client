@@ -37,6 +37,11 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
         mlistener = listener;
     }
 
+    public void updatePlaylist(List<Playlist> newData){
+        playlistList.clear();
+        playlistList.addAll(newData);
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override

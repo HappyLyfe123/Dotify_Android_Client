@@ -29,6 +29,13 @@ public class SongsListFragment extends Fragment implements View.OnClickListener 
         super.onCreate(savedInstanceState);
     }
 
+    /***
+     * create View object of fragment
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return new View object of type SongsListFragment
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,6 +47,11 @@ public class SongsListFragment extends Fragment implements View.OnClickListener 
         return view;
     }
 
+    /***
+     * invoked when a View object is created
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -50,6 +62,10 @@ public class SongsListFragment extends Fragment implements View.OnClickListener 
         playListTitle = title;
     }
 
+    /***
+     * invoked when button is selected
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()){

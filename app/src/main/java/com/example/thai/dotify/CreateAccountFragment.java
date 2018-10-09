@@ -63,6 +63,13 @@ public class CreateAccountFragment extends Fragment{
         this.fragmentController = onChangeFragmentListener;
     }
 
+    /***
+     * instantiates CreateAccountFragment object
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -96,6 +103,10 @@ public class CreateAccountFragment extends Fragment{
         return view;
     }
 
+    /***
+     * invoked when context object wants to attach to fragment
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

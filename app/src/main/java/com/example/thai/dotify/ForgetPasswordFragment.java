@@ -50,12 +50,16 @@ public class ForgetPasswordFragment extends Fragment{
     private static List<String> listOfSecQuestions;
     private String securityToken;
 
+    //enum of possible fragments to display
     private enum ViewStubType{
         USERNAME,
         SECURITY_QUESTION,
         RESET_PASSWORD
     }
 
+    /***
+     * fragment interface
+     */
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
     }
@@ -80,6 +84,13 @@ public class ForgetPasswordFragment extends Fragment{
         activtyContext = context;
     }
 
+    /***
+     * creates a View object for this fragment
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
