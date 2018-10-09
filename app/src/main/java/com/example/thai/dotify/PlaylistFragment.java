@@ -1,17 +1,21 @@
 package com.example.thai.dotify;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
@@ -22,11 +26,15 @@ import java.util.List;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 
 import okhttp3.logging.HttpLoggingInterceptor;
+
+import static android.content.Context.MODE_PRIVATE;
+import static android.support.constraint.Constraints.TAG;
 
 public class PlaylistFragment extends Fragment implements View.OnClickListener  {
 
@@ -35,10 +43,23 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private List<Playlist> playlistList = new ArrayList<>();
     private PlaylistsAdapter playlistsAdapter;
     private OnChangeFragmentListener onChangeFragmentListener;
+    private String playlistName = "";
+    private Context activityContext;
+    private TextView errorMessageTextView;
+    private String username;
+
+    public PlaylistFragment()  {
+    }
 
     public interface OnChangeFragmentListener{
         void buttonClicked(MainActivityContainer.PlaylistFragmentType fragmentType);
         void setTitle(String title);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activityContext = context;
     }
 
     /**
@@ -50,6 +71,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         this.onChangeFragmentListener = onChangeFragmentListener;
     }
 
+    /***
+     * creates view for the object
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -57,14 +85,23 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         createPlaylistButton = view.findViewById(R.id.create_playlist_button);
         createPlaylistButton.setOnClickListener(this);
         playlistListRecycleView = view.findViewById(R.id.playlist_list_recycle_view);
+        SharedPreferences sharedPreferences = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
+//        username = sharedPreferences.getString("username", null);
+        username = "PenguinDan";
         return view;
     }
+
+    /***
+     * invoked when user selects playlist
+     * @param savedInstanceState
+     */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         //Set up recycler view click adapter
         RecyclerViewClickListener listener = (view, position) -> {
+            System.out.println(getPlaylistName(position));
             onChangeFragmentListener.buttonClicked(MainActivityContainer.PlaylistFragmentType.SONGS_LIST_PAGE);
             onChangeFragmentListener.setTitle(getPlaylistName(position));
         };
@@ -79,6 +116,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         test();
     }
 
+    /***
+     * invoked when the button is selected
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -113,18 +154,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
             @Override
             public void onClick(View v) {
                 //Can have the play list name edit text empty
-                if(playlistName.getText().toString().isEmpty()) {
+                if (playlistName.getText().toString().isEmpty()) {
                     errorMessageTextView.setText(R.string.empty_playlist_name_error);
                     errorMessageTextView.setVisibility(View.VISIBLE);
                 }
-                else if (createPlaylistDotify(playlistName.getText().toString())){
+                // Check whether there is a playlist with the exact same name
+                for (int i = 0; i < playlistList.size(); i++) {
+                    if (playlistName.getText().toString().equals(playlistList.get(i).getPlaylistName())) {
+                        errorMessageTextView.setText(R.string.duplicate_playlist_name_error);
+                        errorMessageTextView.setVisibility(View.VISIBLE);
+                        return;
+                    }
+                }
+                createPlaylistDotify(playlistName.getText().toString());
 
-                }
-                else{
-                    //A playlist with the same name already exist
-                    errorMessageTextView.setText(R.string.duplicate_playlist_name_error);
-                    errorMessageTextView.setVisibility(View.VISIBLE);
-                }
             }
         });
 
@@ -137,21 +180,58 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private boolean createPlaylistDotify(String playlistName){
         boolean playlistCreated = false;
         final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
-
         dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
         DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
+        Call<ResponseBody> addPlaylist = dotifyHttpInterface.createPlaylist(
+                getString(R.string.appKey),
+                username,
+                playlistName
+        );
+        addPlaylist.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+
+                int respCode = response.code();
+                if (respCode == Dotify.OK) {
+                    Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
+                    //DotifyUser dotifyUser = response.body();
+                    //Cache the playlist
+                    playlistList.add(new Playlist(playlistName));
+                    SharedPreferences userData = activityContext.getSharedPreferences("Playlist", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = userData.edit();
+                    editor.putString("playlist", playlistName);
+                    editor.apply();
+
+                } else {
+                    //A playlist with the same name already exist
+                    errorMessageTextView = new TextView(activityContext);
+                    errorMessageTextView.setText("Playlist exists.");
+                    errorMessageTextView.setVisibility(View.VISIBLE);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG,"Invalid failure: onFailure");
+            }
+        });
 
         return playlistCreated;
     }
 
+    /***
+     * get name of the playlist at some position in the playlist
+     * @param position - position in list
+     * @return playlist name at position
+     */
     private String getPlaylistName(int position){
         return playlistList.get(position).getPlaylistName();
     }
 
-    private void getPlaylistFromServer(){
-
-    }
-
+    /***
+     * add random playlist to list
+     */
     private void test(){
         Playlist playList = new Playlist("Hello");
         playlistList.add(playList);

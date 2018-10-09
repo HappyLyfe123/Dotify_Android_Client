@@ -14,8 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivityContainer extends AppCompatActivity implements PlaylistFragment.OnChangeFragmentListener,
-SongsListFragment.OnChangeFragmentListener{
+public class MainActivityContainer extends AppCompatActivity implements PlaylistFragment.OnChangeFragmentListener{
 
     private TextView mTextMessage;
     private SearchFragment searchFragment;
@@ -44,8 +43,13 @@ SongsListFragment.OnChangeFragmentListener{
         SONGS_LIST_PAGE,
         FULL_SCREEN_MUSIC,
         BACK_BUTTON
+
     }
 
+    /***
+     * invoked at the very beginning
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +78,10 @@ SongsListFragment.OnChangeFragmentListener{
         createBottomNavigationView();
     }
 
-
+    /***
+     * invoked when button is selected
+     * @param fragmentType
+     */
     @Override
     public void buttonClicked(MainActivityContainer.PlaylistFragmentType fragmentType) {
         switch (fragmentType){
@@ -82,7 +89,7 @@ SongsListFragment.OnChangeFragmentListener{
                 startFragment(PlaylistFragmentType.SONGS_LIST_PAGE, true, true);
                 break;
             case BACK_BUTTON:
-                getFragmentManager().popBackStackImmediate();
+                startFragment(PlaylistFragmentType.BACK_BUTTON, false, false);
         }
     }
 
