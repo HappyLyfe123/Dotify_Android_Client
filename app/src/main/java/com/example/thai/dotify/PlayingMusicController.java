@@ -2,6 +2,11 @@ package com.example.thai.dotify;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 public class PlayingMusicController {
     private static boolean isSongPlaying;
@@ -21,6 +26,29 @@ public class PlayingMusicController {
             e.printStackTrace();
         }
     }
+
+    protected static AsyncTask<Void, Void, Void> client = new AsyncTask<Void, Void, Void>() {
+        private String message = "0001";
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try{
+                InetAddress address = InetAddress.getByName("www.dotify.online");
+
+                DatagramSocket datagramSocket = new DatagramSocket();
+                DatagramPacket datagramPacket = new DatagramPacket(
+                        message.getBytes(),
+                        message.length(),
+                        address,
+                        40000
+                );
+                datagramSocket.setBroadcast(true);
+                datagramSocket.send(datagramPacket);
+            } catch(Exception ex){
+                ex.printStackTrace();
+            }
+            return null;
+        }
+    };
 
     //Set the current playing song name
     public static void setSongName(String name){

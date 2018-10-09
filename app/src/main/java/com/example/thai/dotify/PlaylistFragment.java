@@ -52,28 +52,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private Context activityContext;
     private TextView errorMessageTextView;
     private String username;
-    protected static AsyncTask<Void, Void, Void> client = new AsyncTask<Void, Void, Void>() {
-        private String message = "0001";
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try{
-                InetAddress address = InetAddress.getByName("www.dotify.online");
 
-                DatagramSocket datagramSocket = new DatagramSocket();
-                DatagramPacket datagramPacket = new DatagramPacket(
-                        message.getBytes(),
-                        message.length(),
-                        address,
-                        40000
-                );
-                datagramSocket.setBroadcast(true);
-                datagramSocket.send(datagramPacket);
-            } catch(Exception ex){
-                ex.printStackTrace();
-            }
-            return null;
-        }
-    };
 
     public PlaylistFragment()  {
     }
@@ -131,7 +110,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
             System.out.println(getPlaylistName(position));
             onChangeFragmentListener.buttonClicked(MainActivityContainer.PlaylistFragmentType.SONGS_LIST_PAGE);
             onChangeFragmentListener.setTitle(getPlaylistName(position));
-            client.execute();
+            //client.execute();
         };
 
         //Display all of the items into the recycler view
