@@ -32,17 +32,15 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
         }
     }
 
-    //Adapter for playlist listener
     public PlaylistsAdapter(List<Playlist> playlistList, RecyclerViewClickListener listener){
         this.playlistList = playlistList;
         mlistener = listener;
     }
 
-    //Update the playlist list with a new list
     public void updatePlaylist(List<Playlist> newData){
         playlistList.clear();
         playlistList.addAll(newData);
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 
     @NonNull
