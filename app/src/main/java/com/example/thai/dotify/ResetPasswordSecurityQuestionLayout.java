@@ -27,8 +27,7 @@ public class ResetPasswordSecurityQuestionLayout extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private TextView securityQuestion1, securityQuestion2;
-    private String[] listOfSecurityQuestions;
-    private static String securityToken;
+    private List<String>  listOfSecurityQuestions;
 
     public ResetPasswordSecurityQuestionLayout() {
         // Required empty public constructor
@@ -56,63 +55,10 @@ public class ResetPasswordSecurityQuestionLayout extends Fragment {
     public void onInflate(Context context, AttributeSet attrs, Bundle savedInstanceState) {
         super.onInflate(context, attrs, savedInstanceState);
         //Set the security questions to the first and second question respetively
-        securityQuestion1.setText(listOfSecurityQuestions[0]);
-        securityQuestion2.setText(listOfSecurityQuestions[1]);
+        securityQuestion1.setText(listOfSecurityQuestions.get(0));
+        securityQuestion2.setText(listOfSecurityQuestions.get(1));
 }
 
-    /**
-     * Sends a request to the server to see if the security questions are correct
-     * @param username The username of the user that you want to verify
-     * @param securityAnswer1 The answer to the first Security Question
-     * @param securityAnswer2 THe asnwer to the second Security Question
-     */
-    private void validateSecurityAnswers(final String username, final String securityAnswer1, final String securityAnswer2){
-        //Start a GET request to login the user
-        final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
-        //Add logging interceptor
-        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
-        DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
-
-        //Create the GET request
-        Call<String> request = dotifyHttpInterface.validateSecAnswers(
-                getString(R.string.appKey),
-                username,
-                securityAnswer1,
-                securityAnswer2
-        );
-
-        request.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, retrofit2.Response<String> response) {
-                if (response.isSuccessful()){
-                    int respCode = response.code();
-                    if (respCode == Dotify.ACCEPTED) {
-                        Log.d(TAG, "validateSecurityAnswers-> onResponse: Success Code : " + response.code());
-                        //We get a security token back that we send with the user to reset their password
-                        securityToken = response.body();
-                        //onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
-                    }
-                }
-                else{
-                    Log.d(TAG, "validateSecurityAnswers-> onResponse: Invalid Credentials : " + response.code());
-                    //Security Answers are incorrect. Ask user to try again
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable throwable) {
-                Log.w(TAG, "validateSecurityAnswers-> onFailure");
-            }
-        });
-    }
-
-    /**
-     * Getter method to get the security token
-     * @return the security token
-     */
-    public static String getSecurityToken(){
-        return securityToken;
-    }
 
     /**
      * This interface must be implemented by activities that contain this
