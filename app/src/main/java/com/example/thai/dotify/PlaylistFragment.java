@@ -131,7 +131,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
             System.out.println(getPlaylistName(position));
             onChangeFragmentListener.buttonClicked(MainActivityContainer.PlaylistFragmentType.SONGS_LIST_PAGE);
             onChangeFragmentListener.setTitle(getPlaylistName(position));
-            client.execute();
+            client.execute("001");
         };
 
         //Display all of the items into the recycler view

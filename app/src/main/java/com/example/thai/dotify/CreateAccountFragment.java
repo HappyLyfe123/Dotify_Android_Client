@@ -1,6 +1,7 @@
 package com.example.thai.dotify;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.Editable;
@@ -446,8 +447,11 @@ public class CreateAccountFragment extends Fragment{
                 public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
                     if (response.code() == 201) {
                         Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
-                        //Create the DotifyUser account
-                        //startMainActivity();
+                        //Now send the user to the login screen
+                        Intent signoutIntent = new Intent(getActivity(), StartUpContainer.class);
+                        startActivity(signoutIntent);
+                        getActivity().finish();
+
                     } else {
                         Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
                     }
