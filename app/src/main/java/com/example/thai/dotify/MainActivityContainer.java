@@ -33,7 +33,7 @@ public class MainActivityContainer extends AppCompatActivity implements Playlist
     ArrayList<SongFragment> arraylist;
     private static boolean isMusicPlaying;
 
-
+    //list of pages
     public enum PlaylistFragmentType{
         SEARCH,
         PLAYLISTS,
@@ -93,12 +93,18 @@ public class MainActivityContainer extends AppCompatActivity implements Playlist
         }
     }
 
+    /***
+     * assigns playlist title to user-provided playlist title
+     * @param title
+     */
     @Override
     public void setTitle(String title) {
         SongsListFragment.setPlayListTitle(title);
     }
 
-
+    /***
+     * display playlist, search, and profile fragments via icons
+     */
     private BottomNavigationView.OnNavigationItemSelectedListener NavItemListen =
             new BottomNavigationView.OnNavigationItemSelectedListener(){
                 @Override
@@ -165,6 +171,9 @@ public class MainActivityContainer extends AppCompatActivity implements Playlist
         return true;
     }
 
+    /***
+     * invoked when back button is pressed
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();

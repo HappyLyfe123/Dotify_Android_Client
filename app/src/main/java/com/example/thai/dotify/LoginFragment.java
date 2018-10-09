@@ -49,12 +49,23 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         this.onChangeFragmentListener = onChangeFragmentListener;
     }
 
+    /***
+     * invoked when context object wants to attach to login fragment object
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
             activityContext = context;
     }
 
+    /***
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return a View object
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

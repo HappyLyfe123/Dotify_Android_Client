@@ -6,6 +6,10 @@ import android.os.Bundle;
 
 public class SplashScreenActivity extends Activity {
 
+    /***
+     * invoked at beginning
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
