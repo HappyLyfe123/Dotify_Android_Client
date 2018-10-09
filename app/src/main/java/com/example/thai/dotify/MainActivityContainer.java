@@ -14,7 +14,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivityContainer extends AppCompatActivity implements PlaylistFragment.OnChangeFragmentListener{
+public class MainActivityContainer extends AppCompatActivity implements PlaylistFragment.OnChangeFragmentListener,
+SongsListFragment.OnChangeFragmentListener{
 
     private TextView mTextMessage;
     private SearchFragment searchFragment;
@@ -43,7 +44,6 @@ public class MainActivityContainer extends AppCompatActivity implements Playlist
         SONGS_LIST_PAGE,
         FULL_SCREEN_MUSIC,
         BACK_BUTTON
-
     }
 
     @Override
@@ -82,7 +82,7 @@ public class MainActivityContainer extends AppCompatActivity implements Playlist
                 startFragment(PlaylistFragmentType.SONGS_LIST_PAGE, true, true);
                 break;
             case BACK_BUTTON:
-                startFragment(PlaylistFragmentType.BACK_BUTTON, false, false);
+                getFragmentManager().popBackStackImmediate();
         }
     }
 

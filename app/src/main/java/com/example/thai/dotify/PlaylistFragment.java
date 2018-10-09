@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
@@ -36,7 +35,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private List<Playlist> playlistList = new ArrayList<>();
     private PlaylistsAdapter playlistsAdapter;
     private OnChangeFragmentListener onChangeFragmentListener;
-    private String playlistName = "";
 
     public interface OnChangeFragmentListener{
         void buttonClicked(MainActivityContainer.PlaylistFragmentType fragmentType);
@@ -67,7 +65,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
 
         //Set up recycler view click adapter
         RecyclerViewClickListener listener = (view, position) -> {
-            System.out.println(getPlaylistName(position));
             onChangeFragmentListener.buttonClicked(MainActivityContainer.PlaylistFragmentType.SONGS_LIST_PAGE);
             onChangeFragmentListener.setTitle(getPlaylistName(position));
         };
@@ -149,6 +146,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
 
     private String getPlaylistName(int position){
         return playlistList.get(position).getPlaylistName();
+    }
+
+    private void getPlaylistFromServer(){
+
     }
 
     private void test(){

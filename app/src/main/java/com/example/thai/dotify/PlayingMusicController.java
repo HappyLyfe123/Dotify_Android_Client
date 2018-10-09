@@ -1,11 +1,25 @@
 package com.example.thai.dotify;
 
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+
 public class PlayingMusicController {
     private static boolean isSongPlaying;
     private static String songName, artistName, albumName, songID;
+    private static MediaPlayer mediaPlayer;
 
     public PlayingMusicController(){
+        mediaPlayer = new MediaPlayer();
+    }
 
+    public static void getFile(){
+        try{
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            //mediaPlayer.setDataSource();
+            mediaPlayer.prepareAsync();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     //Set the current playing song name
