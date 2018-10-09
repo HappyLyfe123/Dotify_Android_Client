@@ -32,12 +32,23 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
         this.onChangeFragmentListener = onChangeFragmentListener;
     }
 
+    /***
+     * instantiate new object
+     * @return new MiniMusicControllerFragment object
+     */
     public static MiniMusicControllerFragment newInstance(){
         MiniMusicControllerFragment fragment = new MiniMusicControllerFragment();
 
         return fragment;
     }
 
+    /***
+     * create View object of fragment
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return new View object
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,7 +82,10 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
         }*/
     }
 
-
+    /***
+     * invoked when button is selected
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -100,6 +114,4 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
             playPauseMusicButton.setImageResource(R.drawable.mini_play_button_icon);
         }
     }
-
-
 }
