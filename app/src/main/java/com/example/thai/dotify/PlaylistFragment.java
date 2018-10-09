@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -220,6 +221,22 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         return playlistCreated;
     }
 
+    private boolean getPlaylist(){
+        boolean gotPlaylistList = false;
+        //Start a GET request to login the user
+        final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
+
+        dotify.addRequestInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                return null;
+            }
+        });
+
+        return gotPlaylistList;
+    }
+
+
     /***
      * get name of the playlist at some position in the playlist
      * @param position - position in list
@@ -228,6 +245,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private String getPlaylistName(int position){
         return playlistList.get(position).getPlaylistName();
     }
+
 
     /***
      * add random playlist to list
