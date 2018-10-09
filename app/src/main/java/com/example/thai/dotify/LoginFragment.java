@@ -157,7 +157,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         SharedPreferences userData = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
                         SharedPreferences.Editor editor = userData.edit();
                         editor.putString("username", username);
-                        editor.putString("password", password);
                         editor.apply();
                         onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
                     }

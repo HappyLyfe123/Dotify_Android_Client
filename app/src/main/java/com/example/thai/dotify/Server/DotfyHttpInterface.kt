@@ -35,7 +35,7 @@ interface DotifyHttpInterface {
     @GET("users/reset?")
     fun getResetQuestions(@Header("appKey") appKey: String,
                 @Header("username") username: String)
-            : Call<String>
+            : Call<DotifySecurityQuestion>
 
     /**
      * Get the token if the user answered the security questions correctly

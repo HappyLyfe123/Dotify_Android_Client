@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
+import com.example.thai.dotify.Server.DotifySecurityQuestion;
 
 import org.w3c.dom.Text;
 
@@ -46,7 +47,8 @@ public class ForgetPasswordFragment extends Fragment{
     private TextView securityQuestion1TextView, securityQuestion2TextView;
     private ViewStub usernameStub, securityQuestionStub, resetPasswordStub;
     private Context activtyContext;
-    private static String[] listOfSecQuestions;
+    private static List<String> listOfSecQuestions;
+    private String securityToken;
 
     //enum of possible fragments to display
     private enum ViewStubType{
@@ -166,7 +168,7 @@ public class ForgetPasswordFragment extends Fragment{
                 if (usernameEditText.getText().toString() == null){
                     Log.d(TAG, "Username Field is reading as null");
                 }
-                getSecurityQuestions("PenguinDan");
+                getSecurityQuestions(usernameEditText.getText().toString());
                 if (listOfSecQuestions != null){
                     usernameStub.setVisibility(View.GONE);
                     //Sent this layout to the view stub
@@ -192,6 +194,7 @@ public class ForgetPasswordFragment extends Fragment{
         securityQuestionSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                validateSecurityAnswers(usernameEditText.getText().toString(), se);
                 //Remove the current layout
                 securityQuestionStub.setVisibility(View.GONE);
                 //Sent this layout to the view stub
@@ -210,7 +213,7 @@ public class ForgetPasswordFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 if(passwordEditText.getText().equals(confirmPasswordEditText.getText())){
-                    resetPassword(ResetPasswordSecurityQuestionLayout.getSecurityToken(),
+                    resetPassword(securityToken,
                             usernameEditText.getText().toString(), passwordEditText.getText().toString());
                 }
 
@@ -231,32 +234,40 @@ public class ForgetPasswordFragment extends Fragment{
         DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
 
         //Create the GET request
-        Call<String> request = dotifyHttpInterface.getResetQuestions(
+        Call<DotifySecurityQuestion> request = dotifyHttpInterface.getResetQuestions(
                 getString(R.string.appKey),
                 username
         );
 
-        request.enqueue(new Callback<String>() {
+        request.enqueue(new Callback<DotifySecurityQuestion>() {
             @Override
-            public void onResponse(Call<String> call, retrofit2.Response<String> response) {
-                if (response.isSuccessful()){
+            public void onResponse(Call<DotifySecurityQuestion> call, retrofit2.Response<DotifySecurityQuestion> response) {
+                if (response.isSuccessful()) {
                     int respCode = response.code();
-                    if (respCode == Dotify.ACCEPTED) {
+                    if (respCode == 200) {
                         Log.d(TAG, "resetQuestions-> onResponse: Success Code : " + response.code());
-                        String securityQuestions = response.body();
-                        //now send the user to the reset password page
-                        //onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
-                    }
-                }
-                else{
-                    Log.d(TAG, "resetQuestions-> onResponse: Invalid Credentials : " + response.code());
-                    //If failed, the user needs to reenter their username
+                        DotifySecurityQuestion received = response.body();
+                        if (received.getSecurityQuestion1() != null && received.getSecurityQuestion2() != null) {
+                            String securityQuestionFirst = received.getSecurityQuestion1();
+                            String securityQuestionSecond = received.getSecurityQuestion2();
+                            listOfSecQuestions.add(securityQuestionFirst);
+                            listOfSecQuestions.add(securityQuestionSecond);
+                            //now send the user to the reset password page
+                            //onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
+                        }
+                        else{
+                            Log.d(TAG, "securityQuestion1 and/or securityQuestion2 is null");
+                        }
+                    } else {
+                        Log.d(TAG, "resetQuestions-> onResponse: Invalid Credentials : " + response.code());
+                        //If failed, the user needs to reenter their username
 
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable throwable) {
+            public void onFailure(Call<DotifySecurityQuestion> call, Throwable throwable) {
                 Log.w(TAG, "resetQuestions-> onFailure");
                 throwable.printStackTrace();
             }
@@ -311,11 +322,58 @@ public class ForgetPasswordFragment extends Fragment{
         });
 
     }
+
+    /**
+     * Sends a request to the server to see if the security questions are correct
+     * @param username The username of the user that you want to verify
+     * @param securityAnswer1 The answer to the first Security Question
+     * @param securityAnswer2 THe asnwer to the second Security Question
+     */
+    public void validateSecurityAnswers(final String username, final String securityAnswer1, final String securityAnswer2){
+        //Start a GET request to login the user
+        final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
+        //Add logging interceptor
+        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+        DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
+
+        //Create the GET request
+        Call<String> request = dotifyHttpInterface.validateSecAnswers(
+                getString(R.string.appKey),
+                username,
+                securityAnswer1,
+                securityAnswer2
+        );
+
+        request.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                if (response.isSuccessful()){
+                    int respCode = response.code();
+                    if (respCode == Dotify.ACCEPTED) {
+                        Log.d(TAG, "validateSecurityAnswers-> onResponse: Success Code : " + response.code());
+                        //We get a security token back that we send with the user to reset their password
+                        securityToken = response.body();
+                        //onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
+                    }
+                }
+                else{
+                    Log.d(TAG, "validateSecurityAnswers-> onResponse: Invalid Credentials : " + response.code());
+                    //Security Answers are incorrect. Ask user to try again
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable throwable) {
+                Log.w(TAG, "validateSecurityAnswers-> onFailure");
+            }
+        });
+    }
+
     /**
      * Returns the list of security questions from the given username
      * @return the lsit of security questions
      */
-    public static String[] getListOfSecQuestions (){
+    public static List<String> getListOfSecQuestions (){
         return listOfSecQuestions;
     }
 
