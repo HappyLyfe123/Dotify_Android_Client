@@ -23,7 +23,6 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
     private Context activityContext;
     private TextView usernameEditText;
     private LoginFragment loginFragment;
-    private LoginFragment.OnChangeFragmentListener onChangeFragmentListener;
 
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
@@ -65,16 +64,6 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
     }
 
     /**
-     * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
-     *
-     * @param onChangeFragmentListener The listener for communication
-     */
-    public void setOnChangeFragmentListener(LoginFragment.OnChangeFragmentListener onChangeFragmentListener) {
-        this.onChangeFragmentListener = onChangeFragmentListener;
-    }
-
-
-    /**
      * If the user clicks the log out button
      * @param view
      */
@@ -86,7 +75,9 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
                 editor.clear();
                 editor.apply();
                 //Send the User back to the login screen
-
+                Intent signoutIntent = new Intent(getActivity(), StartUpContainer.class);
+                startActivity(signoutIntent);
+                getActivity().finish();
                 break;
         }
     }
