@@ -18,7 +18,6 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
     private ConstraintLayout currLayout;
     private OnChangeFragmentListener onChangeFragmentListener;
 
-
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
     }
