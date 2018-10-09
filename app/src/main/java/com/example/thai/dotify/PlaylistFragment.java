@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
@@ -34,6 +35,22 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private RecyclerView playlistListRecycleView;
     private List<Playlist> playlistList = new ArrayList<>();
     private PlaylistsAdapter playlistsAdapter;
+    private OnChangeFragmentListener onChangeFragmentListener;
+    private String playlistName = "";
+
+    public interface OnChangeFragmentListener{
+        void buttonClicked(MainActivityContainer.PlaylistFragmentType fragmentType);
+        void setTitle(String title);
+    }
+
+    /**
+     * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
+     *
+     * @param onChangeFragmentListener The listener for communication
+     */
+    public void setOnChangeFragmentListener(PlaylistFragment.OnChangeFragmentListener onChangeFragmentListener) {
+        this.onChangeFragmentListener = onChangeFragmentListener;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,11 +64,21 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        playlistsAdapter = new PlaylistsAdapter(playlistList);
+
+        //Set up recycler view click adapter
+        RecyclerViewClickListener listener = (view, position) -> {
+            System.out.println(getPlaylistName(position));
+            onChangeFragmentListener.buttonClicked(MainActivityContainer.PlaylistFragmentType.SONGS_LIST_PAGE);
+            onChangeFragmentListener.setTitle(getPlaylistName(position));
+        };
+
+        //Display all of the items into the recycler view
+        playlistsAdapter = new PlaylistsAdapter(playlistList, listener);
         RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
         playlistListRecycleView.setLayoutManager(songLayoutManager);
         playlistListRecycleView.setItemAnimator(new DefaultItemAnimator());
         playlistListRecycleView.setAdapter(playlistsAdapter);
+
         test();
     }
 
@@ -118,6 +145,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
 
         return playlistCreated;
+    }
+
+    private String getPlaylistName(int position){
+        return playlistList.get(position).getPlaylistName();
     }
 
     private void test(){

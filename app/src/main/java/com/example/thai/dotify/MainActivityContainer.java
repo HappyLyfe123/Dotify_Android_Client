@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivityContainer extends AppCompatActivity{
+public class MainActivityContainer extends AppCompatActivity implements PlaylistFragment.OnChangeFragmentListener{
 
     private TextView mTextMessage;
     private SearchFragment searchFragment;
@@ -24,6 +24,7 @@ public class MainActivityContainer extends AppCompatActivity{
     private CreatePlaylistFragment createPlaylistFragment;
     private MiniMusicControllerFragment miniMusicControllerFragment;
     private FullScreenMusicControllerFragment fullScreenMusicControllerFragment;
+    private SongsListFragment songListScreenFragment;
     private BottomNavigationView bottomNavigationView;
     private FrameLayout miniMusicControllerLayout;
     private FrameLayout mainDisplayLayout;
@@ -33,8 +34,15 @@ public class MainActivityContainer extends AppCompatActivity{
     private static boolean isMusicPlaying;
 
 
-    public enum AuthFragmentType{
-        FULL_MUSIC_SCREEN,
+    public enum PlaylistFragmentType{
+        SEARCH,
+        PLAYLISTS,
+        FOR_YOU,
+        PROFILE,
+        CREATE_PLAYLIST,
+        SONGS_LIST_PAGE,
+        FULL_SCREEN_MUSIC,
+        BACK_BUTTON
 
     }
 
@@ -52,8 +60,10 @@ public class MainActivityContainer extends AppCompatActivity{
         //Instantiate fragments
         searchFragment = new SearchFragment();
         playlistFragment = new PlaylistFragment();
+        playlistFragment.setOnChangeFragmentListener(this);
         profileInfoFragment = new ProfileInfoFragment();
         forYouFragment = new ForYouFragment();
+        songListScreenFragment = new SongsListFragment();
         createPlaylistFragment = createPlaylistFragment.newInstance();
         miniMusicControllerFragment = miniMusicControllerFragment.newInstance();
         fullScreenMusicControllerFragment = new FullScreenMusicControllerFragment();
@@ -64,28 +74,43 @@ public class MainActivityContainer extends AppCompatActivity{
         createBottomNavigationView();
     }
 
+
+    @Override
+    public void buttonClicked(MainActivityContainer.PlaylistFragmentType fragmentType) {
+        switch (fragmentType){
+            case SONGS_LIST_PAGE:
+                startFragment(PlaylistFragmentType.SONGS_LIST_PAGE, true, true);
+                break;
+            case BACK_BUTTON:
+                startFragment(PlaylistFragmentType.BACK_BUTTON, false, false);
+        }
+    }
+
+    @Override
+    public void setTitle(String title) {
+        SongsListFragment.setPlayListTitle(title);
+    }
+
+
     private BottomNavigationView.OnNavigationItemSelectedListener NavItemListen =
             new BottomNavigationView.OnNavigationItemSelectedListener(){
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                     switch (item.getItemId()) {
                         case R.id.playlists:
-                            fragmentTransaction.replace(mainDisplayLayout.getId(), playlistFragment);
+                            startFragment(PlaylistFragmentType.PLAYLISTS, true, false);
                             break;
                         case R.id.search:
-                            fragmentTransaction.replace(mainDisplayLayout.getId(), searchFragment);
+                            startFragment(PlaylistFragmentType.SEARCH,true, false);
                             break;
                         case R.id.for_you:
-                            fragmentTransaction.replace(mainDisplayLayout.getId(), forYouFragment);
+                            startFragment(PlaylistFragmentType.FOR_YOU,true, false) ;
                             break;
                         case R.id.profile:
                             //go to user account
-                            fragmentTransaction.replace(mainDisplayLayout.getId(), profileInfoFragment);
+                            startFragment(PlaylistFragmentType.PROFILE,true, false);
                             break;
                     }
-                    fragmentTransaction.setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    fragmentTransaction.commit();
                     return true;
                 }
             };
@@ -93,31 +118,50 @@ public class MainActivityContainer extends AppCompatActivity{
     /**
      * Starts a fragment for the user
      *
-     * @param fragmentId The id of the fragment that is going to start
+     * @param fragmentType The id of the fragment that is going to start
      * @return True if the fragment has started correctly
      */
-    private boolean startFragment(int fragmentId) {
+    private boolean startFragment(PlaylistFragmentType fragmentType, boolean setTransition, boolean addToBackStack) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        switch (fragmentId) {
-            case R.id.search:
+        switch (fragmentType) {
+            case SEARCH:
                 fragmentTransaction.replace(mainDisplayLayout.getId(), searchFragment);
                 break;
-            case R.id.playlists:
+            case PLAYLISTS:
                 fragmentTransaction.replace(mainDisplayLayout.getId(), playlistFragment);
                 break;
-            case R.id.for_you:
+            case FOR_YOU:
                 fragmentTransaction.replace(mainDisplayLayout.getId(), forYouFragment);
                 break;
-            case R.id.profile:
+            case PROFILE:
                 fragmentTransaction.replace(mainDisplayLayout.getId(), profileInfoFragment);
                 break;
-            case R.id.create_playlist_button:
+            case CREATE_PLAYLIST:
                 fragmentTransaction.replace(mainDisplayLayout.getId(),createPlaylistFragment);
                 break;
+            case FULL_SCREEN_MUSIC:
+                fragmentTransaction.replace(R.id.main_display_frame, fullScreenMusicControllerFragment);
+                break;
+            case SONGS_LIST_PAGE:
+                fragmentTransaction.replace(R.id.main_display_frame, songListScreenFragment);
+                break;
+            case BACK_BUTTON:
+                getFragmentManager().popBackStackImmediate();
         }
-        fragmentTransaction.addToBackStack(null);
+        if(setTransition){
+            fragmentTransaction.setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        }
+        if(addToBackStack){
+            fragmentTransaction.addToBackStack(null);
+        }
         fragmentTransaction.commit();
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startFragment(PlaylistFragmentType.BACK_BUTTON, false,false);
     }
 
     /**
@@ -128,10 +172,7 @@ public class MainActivityContainer extends AppCompatActivity{
         BottomNavigationBarShiftHelp.disableShiftMode(bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.playlists);
         bottomNavigationView.setOnNavigationItemSelectedListener(NavItemListen);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(mainDisplayLayout.getId(), playlistFragment);
-        //Commit changes transaction
-        fragmentTransaction.commit();
+        startFragment(PlaylistFragmentType.PLAYLISTS, false, false);
 
     }
 
@@ -150,10 +191,7 @@ public class MainActivityContainer extends AppCompatActivity{
     public void fullMusicScreenClicked(View view) {
         miniMusicControllerLayout.setVisibility(View.GONE);
         bottomNavigationView.setVisibility(View.GONE);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_display_frame, fullScreenMusicControllerFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        startFragment(PlaylistFragmentType.FULL_SCREEN_MUSIC, false, true);
     }
 
     /**
@@ -163,6 +201,6 @@ public class MainActivityContainer extends AppCompatActivity{
         bottomNavigationView.setVisibility(View.VISIBLE);
         miniMusicControllerLayout.setVisibility(View.VISIBLE);
         miniMusicControllerFragment.changeMusicPlayerButtonImage();
-        getFragmentManager().popBackStackImmediate();
+        startFragment(PlaylistFragmentType.BACK_BUTTON, false, false);
     }
 }

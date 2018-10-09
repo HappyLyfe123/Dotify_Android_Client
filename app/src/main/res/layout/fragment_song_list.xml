@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SongListFragment">
+    tools:context=".SongsListFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:textSize="19sp"
             android:background="@android:color/darker_gray"
             android:textColor="@android:color/black"/>
     </RelativeLayout>

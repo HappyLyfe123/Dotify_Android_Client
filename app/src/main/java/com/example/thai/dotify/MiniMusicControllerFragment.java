@@ -20,7 +20,7 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
 
 
     public interface OnChangeFragmentListener {
-        void buttonClicked(MainActivityContainer.AuthFragmentType fragmentType);
+        void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
     }
 
     /**

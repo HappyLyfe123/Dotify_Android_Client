@@ -10,21 +10,31 @@ import java.util.List;
 
 public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder> {
 
-    private List<Song> songList;
+    private List<Song> songsList;
+    private RecyclerViewClickListener mListener;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView songTitle, artistName, albumName;
+        private RecyclerViewClickListener mListener;
 
-        public MyViewHolder(View view) {
+        public MyViewHolder(View view, RecyclerViewClickListener listener) {
             super(view);
             songTitle = (TextView) view.findViewById(R.id.song_info_song_title_text_view);
             artistName = (TextView) view.findViewById(R.id.song_info_artist_name_text_view);
             albumName = (TextView) view.findViewById(R.id.song_info_album_name_text_view);
+            mListener = listener;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.onItemClick(v, getAdapterPosition());
         }
     }
 
-    public SongsAdapter(List<Song> songList){
-        this.songList = songList;
+    public SongsAdapter(List<Song> songList, RecyclerViewClickListener listener){
+        this.songsList = songList;
+        mListener = listener;
     }
 
     @NonNull
@@ -34,12 +44,12 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
                 .inflate(R.layout.song_info_layout, parent, false);
 
 
-        return new MyViewHolder(itemView);
+        return new MyViewHolder(itemView, mListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Song song = songList.get(position);
+        Song song = songsList.get(position);
         holder.songTitle.setText(song.getSongName());
         holder.artistName.setText(song.getArtistName());
         holder.albumName.setText(song.getAlbumName());
@@ -47,7 +57,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
 
     @Override
     public int getItemCount() {
-        return songList.size();
+        return songsList.size();
     }
 
 

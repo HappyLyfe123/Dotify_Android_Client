@@ -4,14 +4,15 @@ public class Song {
 
     private int numOfTimeSongPlayed;
     private boolean isSongLiked;
-    private String songName, artistName, albumName;
+    private String songName, artistName, albumName, songID;
 
     public Song(String songName, String artistName, String albumName, boolean isSongLiked,
-                int numOfTimeSongPlayed){
+                String songID, int numOfTimeSongPlayed){
         this.songName = songName;
         this.artistName = artistName;
         this.albumName = albumName;
         this.isSongLiked = isSongLiked;
+        this.songID = songID;
         this.numOfTimeSongPlayed = numOfTimeSongPlayed;
 
     }
