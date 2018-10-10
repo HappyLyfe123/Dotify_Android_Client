@@ -259,8 +259,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
      * the user has created
      */
     private void getPlaylist(){
-        boolean gotPlaylistList = false;
-        //Start a GET request to login the user
+        //Start a GET request to get the list of playlists that belongs to the user
         final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
 
         dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
@@ -269,7 +268,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         Call<List<String>> getPlaylist = dotifyHttpInterface.getPlaylist(
                 getString(R.string.appKey),
                 username,
-                playlistName
+                playlistName //Why do we need this to get the list of playlists?
         );
 
         getPlaylist.enqueue(new Callback<List<String>>() {
@@ -278,16 +277,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                 int respCode = response.code();
                 if (respCode == Dotify.OK) {
                     Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
+                    //gets a list of strings of playlist names
                     myPlaylist = response.body();
-                    //Check to see if this works
+
+                    //Converts the playlist we got to a list of playlists instead of a list of strings
                     for (int i = 0; i < myPlaylist.size(); i++){
                         Playlist playlistToAdd = new Playlist(myPlaylist.get(i));
                         playlistList.add(playlistToAdd);
                     }
                 } else {
+                    //If unsucessful, show the response code
                     Log.d(TAG, "getPlaylist-> Unable to retreive playlists " + response.code());
                 }
             }
+            //If something is wrong with our request to the server, goes to this method
             @Override
             public void onFailure(Call<List<String>> call, Throwable t) {
                 Log.d(TAG, "Invalid failure: onFailure");
