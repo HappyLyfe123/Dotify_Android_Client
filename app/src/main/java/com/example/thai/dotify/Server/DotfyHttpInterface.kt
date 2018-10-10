@@ -25,8 +25,8 @@ interface DotifyHttpInterface {
      */
     @GET("users")
     fun getUser(@Header("appKey") appKey: String,
-                 @Header("username") username: String,
-                 @Header("password") password: String)
+                @Header("username") username: String,
+                @Header("password") password: String)
             : Call<DotifyUser>
 
     /**
@@ -34,7 +34,7 @@ interface DotifyHttpInterface {
      */
     @GET("users/reset?")
     fun getResetQuestions(@Header("appKey") appKey: String,
-                @Header("username") username: String)
+                          @Header("username") username: String)
             : Call<DotifySecurityQuestion>
 
     /**
@@ -42,9 +42,9 @@ interface DotifyHttpInterface {
      */
     @GET("users/reset-check")
     fun validateSecAnswers(@Header("appKey") appKey: String,
-                      @Header("username") username: String,
-                      @Header("securityAnswer1") securityAnswer1: String,
-                      @Header("securityAnswer2") securityAnswer2: String)
+                           @Header("username") username: String,
+                           @Header("securityAnswer1") securityAnswer1: String,
+                           @Header("securityAnswer2") securityAnswer2: String)
             : Call<String>
 
 
@@ -52,13 +52,21 @@ interface DotifyHttpInterface {
     fun updatePassword(@Field("token") token: String,
                        @Field("username") username: String,
                        @Field("password") password: String)
-        : Call <DotifyUser>
+            : Call<DotifyUser>
 
 
     @PUT("playlist")
     fun createPlaylist(
             @Header("appKey") appKey: String,
             @Query("username") username: String,
-            @Query("playlist") playlist: String
-    )
-    : Call<ResponseBody>
+            @Query("playlist") playlist: String)
+            : Call<ResponseBody>
+
+    @GET("playlist?")
+    fun getPlaylist(
+            @Header("appkey") appKey: String,
+            @Query("username") username: String,
+            @Query("playlistName") playlistName: String)
+            : Call<List<String>>
+
+}

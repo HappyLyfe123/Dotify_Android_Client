@@ -52,6 +52,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private Context activityContext;
     private TextView errorMessageTextView;
     private String username;
+    private List<String> myPlaylist;
+
     protected static AsyncTask<Void, Void, Void> client = new AsyncTask<Void, Void, Void>() {
         private String message = "0001";
 
@@ -128,21 +130,22 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         super.onActivityCreated(savedInstanceState);
 
         //Set up recycler view click adapter
-        RecyclerViewClickListener listener = (view, position) -> {
-            System.out.println(getPlaylistName(position));
-            onChangeFragmentListener.buttonClicked(MainActivityContainer.PlaylistFragmentType.SONGS_LIST_PAGE);
-            onChangeFragmentListener.setTitle(getPlaylistName(position));
-            client.execute("001");
-        };
+//        RecyclerViewClickListener listener = (view, position) -> {
+//            System.out.println(getPlaylistName(position));
+//            onChangeFragmentListener.buttonClicked(MainActivityContainer.PlaylistFragmentType.SONGS_LIST_PAGE);
+//            onChangeFragmentListener.setTitle(getPlaylistName(position));
+//            client.execute("001");//The song id to play
+//        };
 
         //Display all of the items into the recycler view
-        playlistsAdapter = new PlaylistsAdapter(playlistList, listener);
-        RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
-        playlistListRecycleView.setLayoutManager(songLayoutManager);
-        playlistListRecycleView.setItemAnimator(new DefaultItemAnimator());
-        playlistListRecycleView.setAdapter(playlistsAdapter);
+//        playlistsAdapter = new PlaylistsAdapter(playlistList, listener);
+//        RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
+//        playlistListRecycleView.setLayoutManager(songLayoutManager);
+//        playlistListRecycleView.setItemAnimator(new DefaultItemAnimator());
+//        playlistListRecycleView.setAdapter(playlistsAdapter);
 
-        test();
+//        test();
+        getPlaylist();
     }
 
     /***
@@ -206,7 +209,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     /**
      * Checks to see if play list can be created or not
      */
-    private boolean createPlaylistDotify(String playlistName){
+    private boolean createPlaylistDotify(final String playlistName){
         boolean playlistCreated = false;
         final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
         dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
@@ -250,19 +253,46 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         return playlistCreated;
     }
 
-    private boolean getPlaylist(){
+    /**
+     * This method sends a get request to the server to get a list of playlists
+     * The response body is a list of strings that consists of the names of the playlists that
+     * the user has created
+     */
+    private void getPlaylist(){
         boolean gotPlaylistList = false;
         //Start a GET request to login the user
         final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
 
-        dotify.addRequestInterceptor(new Interceptor() {
+        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+
+        DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
+        Call<List<String>> getPlaylist = dotifyHttpInterface.getPlaylist(
+                getString(R.string.appKey),
+                username,
+                playlistName
+        );
+
+        getPlaylist.enqueue(new Callback<List<String>>() {
             @Override
-            public Response intercept(Chain chain) throws IOException {
-                return null;
+            public void onResponse(Call<List<String>> call, retrofit2.Response<List<String>> response) {
+                int respCode = response.code();
+                if (respCode == Dotify.OK) {
+                    Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
+                    myPlaylist = response.body();
+                    //Check to see if this works
+                    for (int i = 0; i < myPlaylist.size(); i++){
+                        Playlist playlistToAdd = new Playlist(myPlaylist.get(i));
+                        playlistList.add(playlistToAdd);
+                    }
+                } else {
+                    Log.d(TAG, "getPlaylist-> Unable to retreive playlists " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                Log.d(TAG, "Invalid failure: onFailure");
             }
         });
-
-        return gotPlaylistList;
     }
 
 
@@ -276,15 +306,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     }
 
 
-    /***
-     * add random playlist to list
-     */
-    private void test(){
-        Playlist playList = new Playlist("Hello");
-        playlistList.add(playList);
-        for(int x = 0; x < 50; x++){
-            playList = new Playlist("A");
-            playlistList.add(playList);
-        }
-    }
+//    /***
+//     * add random playlist to list
+//     */
+//    private void test(){
+//        Playlist playList = new Playlist("Hello");
+//        playlistList.add(playList);
+//        for(int x = 0; x < 50; x++){
+//            playList = new Playlist("A");
+//            playlistList.add(playList);
+//        }
+//    }
 }
