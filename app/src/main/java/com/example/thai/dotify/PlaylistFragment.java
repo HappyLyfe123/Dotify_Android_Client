@@ -52,8 +52,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private Context activityContext;
     private TextView errorMessageTextView;
     private String username;
-    private List<String> myPlaylist;
-
     protected static AsyncTask<Void, Void, Void> client = new AsyncTask<Void, Void, Void>() {
         private String message = "0001";
 
@@ -118,6 +116,21 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         SharedPreferences sharedPreferences = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
 //        username = sharedPreferences.getString("username", null);
         username = "PenguinDan";
+
+        //Set up recycler view click adapter
+        RecyclerViewClickListener listener = (myView, position) -> {
+            onChangeFragmentListener.buttonClicked(MainActivityContainer.PlaylistFragmentType.SONGS_LIST_PAGE);
+            onChangeFragmentListener.setTitle(getPlaylistName(position));
+            //client.execute("001");
+        };
+
+        //Display all of the items into the recycler view
+        playlistList = new ArrayList<>();
+        playlistsAdapter = new PlaylistsAdapter(playlistList, listener);
+        RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
+        playlistListRecycleView.setLayoutManager(songLayoutManager);
+        playlistListRecycleView.setItemAnimator(new DefaultItemAnimator());
+        playlistListRecycleView.setAdapter(playlistsAdapter);
         return view;
     }
 
@@ -128,22 +141,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        //Set up recycler view click adapter
-//        RecyclerViewClickListener listener = (view, position) -> {
-//            System.out.println(getPlaylistName(position));
-//            onChangeFragmentListener.buttonClicked(MainActivityContainer.PlaylistFragmentType.SONGS_LIST_PAGE);
-//            onChangeFragmentListener.setTitle(getPlaylistName(position));
-//            client.execute("001");//The song id to play
-//        };
-
-        //Display all of the items into the recycler view
-//        playlistsAdapter = new PlaylistsAdapter(playlistList, listener);
-//        RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
-//        playlistListRecycleView.setLayoutManager(songLayoutManager);
-//        playlistListRecycleView.setItemAnimator(new DefaultItemAnimator());
-//        playlistListRecycleView.setAdapter(playlistsAdapter);
-
+        test();
 //        test();
         getPlaylist();
     }
@@ -228,8 +226,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                     Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
                     //DotifyUser dotifyUser = response.body();
                     //Cache the playlist
-                    playlistList.add(new Playlist(playlistName));
-                    playlistsAdapter.updatePlaylist(playlistList);
                     SharedPreferences userData = activityContext.getSharedPreferences("Playlist", MODE_PRIVATE);
                     SharedPreferences.Editor editor = userData.edit();
                     editor.putString("playlist", playlistName);
@@ -278,7 +274,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                 if (respCode == Dotify.OK) {
                     Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
                     //gets a list of strings of playlist names
-                    myPlaylist = response.body();
+                    List<String> myPlaylist = response.body();
 
                     //Converts the playlist we got to a list of playlists instead of a list of strings
                     for (int i = 0; i < myPlaylist.size(); i++){
@@ -309,15 +305,32 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     }
 
 
-//    /***
-//     * add random playlist to list
-//     */
-//    private void test(){
-//        Playlist playList = new Playlist("Hello");
-//        playlistList.add(playList);
-//        for(int x = 0; x < 50; x++){
-//            playList = new Playlist("A");
-//            playlistList.add(playList);
-//        }
-//    }
+    private void addPlayList(String playlistname){
+        System.out.println("I got here");
+        playlistList.add(new Playlist(playlistName));
+        playlistsAdapter.notifyItemRangeInserted(playlistList.size(), playlistList.size() + 1);
+        playlistsAdapter.notifyDataSetChanged();
+
+    }
+
+    private void removePlayList(){
+
+    }
+
+
+    /***
+     * add random playlist to list
+     */
+    private void test(){
+        Playlist playList = new Playlist("Hello");
+        playlistList.add(playList);
+        for(int x = 0; x < 2; x++){
+            playList = new Playlist("A");
+            playlistList.add(playList);
+        }
+    }
+
+    private void test1(String name){
+
+    }
 }
