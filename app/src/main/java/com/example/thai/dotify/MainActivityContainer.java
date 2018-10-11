@@ -28,9 +28,7 @@ public class MainActivityContainer extends AppCompatActivity implements Playlist
     private BottomNavigationView bottomNavigationView;
     private FrameLayout miniMusicControllerLayout;
     private FrameLayout mainDisplayLayout;
-    private ListView list;
     private SearchView searchView;
-    ArrayList<SongFragment> arraylist;
     private static boolean isMusicPlaying;
 
     //list of pages
@@ -54,7 +52,6 @@ public class MainActivityContainer extends AppCompatActivity implements Playlist
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_container);
-        arraylist = new ArrayList<>();
         //Initialize view layout
         //mTextMessage = (TextView) findViewById(R.id.message);
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
