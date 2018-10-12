@@ -14,7 +14,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivityContainer extends AppCompatActivity implements PlaylistFragment.OnChangeFragmentListener{
+public class MainActivityContainer extends AppCompatActivity
+        implements PlaylistFragment.OnChangeFragmentListener{
 
     private TextView mTextMessage;
     private SearchFragment searchFragment;
@@ -23,13 +24,13 @@ public class MainActivityContainer extends AppCompatActivity implements Playlist
     private ForYouFragment forYouFragment;
     private CreatePlaylistFragment createPlaylistFragment;
     private MiniMusicControllerFragment miniMusicControllerFragment;
-    private FullScreenMusicControllerFragment fullScreenMusicControllerFragment;
     private SongsListFragment songListScreenFragment;
     private BottomNavigationView bottomNavigationView;
     private FrameLayout miniMusicControllerLayout;
     private FrameLayout mainDisplayLayout;
     private SearchView searchView;
     private static boolean isMusicPlaying;
+    private PlayingMusicController musicController;
 
     //list of pages
     public enum PlaylistFragmentType{
@@ -65,9 +66,15 @@ public class MainActivityContainer extends AppCompatActivity implements Playlist
         profileInfoFragment = new ProfileInfoFragment();
         forYouFragment = new ForYouFragment();
         songListScreenFragment = new SongsListFragment();
+        // Set the song clicked listener for songListScreenFragment
+        songListScreenFragment.setOnChangeFragmentListener((fragmentType, musicController) -> {
+            // Set the current music controller object
+            this.musicController = musicController;
+            startFragment(PlaylistFragmentType.FULL_SCREEN_MUSIC, true,
+                    true);
+        });
         createPlaylistFragment = createPlaylistFragment.newInstance();
         miniMusicControllerFragment = miniMusicControllerFragment.newInstance();
-        fullScreenMusicControllerFragment = new FullScreenMusicControllerFragment();
 
         isMusicPlaying = false;
         //create bottom navigation bar
@@ -131,7 +138,7 @@ public class MainActivityContainer extends AppCompatActivity implements Playlist
      * @param fragmentType The id of the fragment that is going to start
      * @return True if the fragment has started correctly
      */
-    private boolean startFragment(PlaylistFragmentType fragmentType, boolean setTransition, boolean addToBackStack) {
+    private boolean startFragment(PlaylistFragmentType fragmentType, boolean setTransition, boolean addToBackStack){
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         switch (fragmentType) {
             case SEARCH:
@@ -150,6 +157,11 @@ public class MainActivityContainer extends AppCompatActivity implements Playlist
                 fragmentTransaction.replace(mainDisplayLayout.getId(),createPlaylistFragment);
                 break;
             case FULL_SCREEN_MUSIC:
+                // Initialize a FulLScreenMusicControllerFragment
+                FullScreenMusicControllerFragment fullScreenMusicControllerFragment = new FullScreenMusicControllerFragment();
+                // Set the current music controller for the FullScreenMusicControllerFragment
+                fullScreenMusicControllerFragment.setMusicController(musicController);
+                // set the fragment to be displayed
                 fragmentTransaction.replace(R.id.main_display_frame, fullScreenMusicControllerFragment);
                 break;
             case SONGS_LIST_PAGE:

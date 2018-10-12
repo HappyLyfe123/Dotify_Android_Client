@@ -114,14 +114,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         createPlaylistButton.setOnClickListener(this);
         playlistListRecycleView = view.findViewById(R.id.playlist_list_recycle_view);
         SharedPreferences sharedPreferences = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
-//        username = sharedPreferences.getString("username", null);
-        username = "PenguinDan";
+        username = sharedPreferences.getString("username", null);
 
         //Set up recycler view click adapter
         RecyclerViewClickListener listener = (myView, position) -> {
             onChangeFragmentListener.buttonClicked(MainActivityContainer.PlaylistFragmentType.SONGS_LIST_PAGE);
             onChangeFragmentListener.setTitle(getPlaylistName(position));
-            //client.execute("001");
         };
 
         //Display all of the items into the recycler view
@@ -141,8 +139,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        test();
-//        test();
         getPlaylist();
     }
 
@@ -314,23 +310,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     }
 
     private void removePlayList(){
-
-    }
-
-
-    /***
-     * add random playlist to list
-     */
-    private void test(){
-        Playlist playList = new Playlist("Hello");
-        playlistList.add(playList);
-        for(int x = 0; x < 2; x++){
-            playList = new Playlist("A");
-            playlistList.add(playList);
-        }
-    }
-
-    private void test1(String name){
 
     }
 }

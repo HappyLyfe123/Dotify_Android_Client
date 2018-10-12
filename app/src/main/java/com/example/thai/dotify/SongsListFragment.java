@@ -23,11 +23,30 @@ public class SongsListFragment extends Fragment{
     private RecyclerView songListRecycleView;
     private List<Song> songsList = new ArrayList<>();
     private SongsAdapter songsAdapter;
+    private OnChangeFragmentListener onChangeFragmentListener;
+
 
     private static String playListTitle;
 
     public SongsListFragment(){
 
+    }
+
+    /**
+     * Listener to tell the main container to switch fragments
+     */
+    public interface OnChangeFragmentListener{
+        void songClicked(MainActivityContainer.PlaylistFragmentType fragmentType,
+                         PlayingMusicController playingMusicController);
+    }
+
+    /**
+     * Sets the OnChangeFragmentLIstener to communicate from this fragment to the activity
+     *
+     * @param onChangeFragmentListener The listener for communication
+     */
+    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener){
+        this.onChangeFragmentListener = onChangeFragmentListener;
     }
 
     @Override
@@ -49,25 +68,32 @@ public class SongsListFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_song_list, container, false);
 
         backButton = (ImageButton) view.findViewById(R.id.song_list_back_image_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getFragmentManager().popBackStackImmediate();
-            }
+        backButton.setOnClickListener((backButtonView) -> {
+            getFragmentManager().popBackStackImmediate();
         });
         titleTextView = (TextView) view.findViewById(R.id.song_list_title_text_view);
         songListRecycleView = (RecyclerView) view.findViewById(R.id.song_list_recycle_view);
+
+
         return view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        RecyclerViewClickListener listener = (view, position) -> {
-            System.out.print(position);
+        // Initialize the recycler view listener
+        RecyclerViewClickListener songItemClickListener = (listView, position) -> {
+            // Create a music controller object
+            PlayingMusicController musicController = new PlayingMusicController(songsList);
+            // Set the current song to be played for the controller
+            musicController.setCurrentSong(position);
+            // Tell the main activity
+            onChangeFragmentListener.songClicked(
+                    MainActivityContainer.PlaylistFragmentType.FULL_SCREEN_MUSIC,
+                    musicController);
         };
         //Display all of the items into the recycler view
-        songsAdapter = new SongsAdapter(songsList, listener);
+        songsAdapter = new SongsAdapter(songsList, songItemClickListener);
         RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
         songListRecycleView.setLayoutManager(songLayoutManager);
         songListRecycleView.setItemAnimator(new DefaultItemAnimator());

@@ -4,27 +4,23 @@ import java.io.Serializable
 import java.util.*
 
 data class DotifyUser(val username: String,
-                      val password: String,
-                      val question1: String,
-                      val question2: String,
-                      val answer1: String,
-                      val answer2 : String) : Serializable {
-   // val token: String?
-//    var name: String?
+                      val password: String?,
+                      val question1: String?,
+                      val question2: String?,
+                      val answer1: String?,
+                      val answer2 : String?) : Serializable {
+
+    private var userImage : ByteArray?
 
     init{
- //       token = null
- //       name = null
+        userImage = null
     }
 
     /**
-     * Turns the user's information into a map
+     * Sets the user's image
      */
-    fun toMap() : HashMap<String,String?> {
-        //Initialize the HashMap
-        val userInfoMap : HashMap<String, String?> = HashMap<String,String?>()
-        userInfoMap.put("username", username)
-        userInfoMap.put("password", password)
-        return userInfoMap
+    fun setUserImage(imageBytes :ByteArray){
+        userImage = imageBytes
     }
+
 }
