@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.List;
 
 public class PlayingMusicController {
     private static boolean isSongPlaying;
@@ -27,10 +28,10 @@ public class PlayingMusicController {
         }
     }
 
-    protected static AsyncTask<Void, Void, Void> client = new AsyncTask<Void, Void, Void>() {
+    protected static AsyncTask<String, Void, Void> client = new AsyncTask<String, Void, Void>() {
         private String message = "0001";
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(String... String) {
             try{
                 InetAddress address = InetAddress.getByName("www.dotify.online");
 
@@ -73,6 +74,25 @@ public class PlayingMusicController {
     //Set weather the song is playing or not
     public static void setSongPlayingStatus(boolean currStatus){
         isSongPlaying = currStatus;
+    }
+
+    //Starting playing new music
+    public static void playSong(String songID){
+        client.execute(songID);
+    }
+
+    //Resume song
+    public static boolean resumeSong(){
+        boolean songIsPlaying = false;
+
+        return songIsPlaying;
+    }
+
+    public static boolean pauseSong(){
+        boolean songIsPause = false;
+
+
+        return songIsPause;
     }
 
     //Return the song name

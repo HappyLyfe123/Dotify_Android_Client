@@ -69,4 +69,11 @@ interface DotifyHttpInterface {
             @Query("playlistName") playlistName: String)
             : Call<List<String>>
 
+//    @GET("playlist?")
+//    fun getPlaylistSongList(
+//            @Header("appKey") appKey: String,
+//            @Query("username") username: String,
+//
+//    )
+
 }

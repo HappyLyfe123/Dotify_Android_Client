@@ -23,6 +23,8 @@ public class SongsListFragment extends Fragment{
     private RecyclerView songListRecycleView;
     private List<Song> songsList = new ArrayList<>();
     private SongsAdapter songsAdapter;
+    private final String LOCATION_PLAYLIST = "playlist";
+    private final String LOCATION_ARTIST = "artist";
 
     private static String playListTitle;
 
@@ -57,6 +59,7 @@ public class SongsListFragment extends Fragment{
         });
         titleTextView = (TextView) view.findViewById(R.id.song_list_title_text_view);
         songListRecycleView = (RecyclerView) view.findViewById(R.id.song_list_recycle_view);
+
         return view;
     }
 
@@ -64,7 +67,8 @@ public class SongsListFragment extends Fragment{
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         RecyclerViewClickListener listener = (view, position) -> {
-            System.out.print(position);
+
+
         };
         //Display all of the items into the recycler view
         songsAdapter = new SongsAdapter(songsList, listener);
@@ -73,7 +77,6 @@ public class SongsListFragment extends Fragment{
         songListRecycleView.setItemAnimator(new DefaultItemAnimator());
         songListRecycleView.setAdapter(songsAdapter);
         setFragmentTitle();
-        test();
     }
 
     //Set the title for the current fragment to playlist name
@@ -86,12 +89,21 @@ public class SongsListFragment extends Fragment{
         titleTextView.setText(playListTitle);
     }
 
-    private void test(){
-        Song song = new Song("Hi", "Hello", "Sam", true, "0001", 10);
-        songsList.add(song);
-        for(int x =0; x < 40; x++){
-            song = new Song("Hi", "Hello", "Sam", true, "0001", 10);
-            songsList.add(song);
+    /***
+     * create View object of fragment
+     * @param name the name of the item that
+     * @param location the location of where to get it from
+     *
+     */
+    private void getMusicList(String name, String location){
+        switch (location.toLowerCase()){
+            //Get the songs from playlist
+            case LOCATION_PLAYLIST:
+                break;
+            //Get the songs from a specific artist
+            case LOCATION_ARTIST:
+                break;
         }
     }
+
 }
