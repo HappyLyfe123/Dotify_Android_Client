@@ -1,6 +1,5 @@
 package com.example.thai.dotify;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,12 +34,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
     public PlaylistsAdapter(List<Playlist> playlistList, RecyclerViewClickListener listener){
         this.playlistList = playlistList;
         mlistener = listener;
-    }
-
-    public void updatePlaylist(List<Playlist> newData){
-        playlistList.clear();
-        playlistList.addAll(newData);
-        notifyDataSetChanged();
     }
 
     @NonNull

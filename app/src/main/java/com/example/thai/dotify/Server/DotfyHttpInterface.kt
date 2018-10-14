@@ -2,6 +2,8 @@ package com.example.thai.dotify.Server
 
 import com.example.thai.dotify.DotifyUser
 import okhttp3.ResponseBody
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -25,8 +27,8 @@ interface DotifyHttpInterface {
      */
     @GET("users")
     fun getUser(@Header("appKey") appKey: String,
-                 @Header("username") username: String,
-                 @Header("password") password: String)
+                @Header("username") username: String,
+                @Header("password") password: String)
             : Call<DotifyUser>
 
     /**
@@ -34,7 +36,7 @@ interface DotifyHttpInterface {
      */
     @GET("users/reset?")
     fun getResetQuestions(@Header("appKey") appKey: String,
-                @Header("username") username: String)
+                          @Header("username") username: String)
             : Call<DotifySecurityQuestion>
 
     /**
@@ -42,32 +44,38 @@ interface DotifyHttpInterface {
      */
     @GET("users/reset-check")
     fun validateSecAnswers(@Header("appKey") appKey: String,
-                      @Header("username") username: String,
-                      @Header("securityAnswer1") securityAnswer1: String,
-                      @Header("securityAnswer2") securityAnswer2: String)
+                           @Header("username") username: String,
+                           @Header("securityAnswer1") securityAnswer1: String,
+                           @Header("securityAnswer2") securityAnswer2: String)
             : Call<String>
 
 
     @PUT("users")
-    fun updatePassword(@Field("token") token: String,
-                       @Field("username") username: String,
-                       @Field("password") password: String)
-        : Call <DotifyUser>
+    fun updatePassword(@Header("appKey") appKey: String,
+                       @Query("username") username: String,
+                       @Query("password") password: String)
+            : Call<DotifyUser>
 
 
     @PUT("playlist")
     fun createPlaylist(
             @Header("appKey") appKey: String,
             @Query("username") username: String,
-            @Query("playlist") playlist: String
-    )
-    : Call<ResponseBody>
+            @Query("playlist") playlist: String)
+            : Call<ResponseBody>
 
-    @GET("users")
-    fun getPlaylistName(
-            @Header("appKey") appKey: String,
-            @Query ("username") username: String,
-            @Query ("playlist") playlist: String
-    )
-    : Call<DotifyUser>
+    @GET("playlist?")
+    fun getPlaylist(
+            @Header("appkey") appKey: String,
+            @Query("username") username: String,
+            @Query("playlistName") playlistName: String)
+            : Call<List<String>>
+
+    @GET("playlistpage?")
+    fun getSongList(
+            @Header("appkey") appKey: String,
+            @Query("username") username: String,
+            @Query("playlist") playlistName: String)
+            :Call<JSONObject>
+
 }

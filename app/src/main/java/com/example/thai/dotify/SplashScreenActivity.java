@@ -2,20 +2,26 @@ package com.example.thai.dotify;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 public class SplashScreenActivity extends Activity {
 
     /***
-     * invoked at beginning
+     * Initializes the application
      * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(SplashScreenActivity.this, StartUpContainer.class);
-        startActivity(intent);
 
+        // Check whether the User's information is cached and start the appropriate activity
+        if (UserUtilities.isLoggedIn(this) != null) {
+            startActivity(new Intent(SplashScreenActivity.this, MainActivityContainer.class));
+        } else {
+            //Change
+            startActivity(new Intent(SplashScreenActivity.this, MainActivityContainer.class));
+        }
     }
 
     @Override

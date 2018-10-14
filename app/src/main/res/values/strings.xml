@@ -6,6 +6,8 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="create_account_title">Create Account</string>
     <string name="forget_password_title">Forget Password</string>
+    <string name="connection_failed">Connection Failed, Please Try Again</string>
+    <string name="cancel">Cancel</string>
 
     <!-- App Key -->
     <string name="appKey">DotifyOnline-327</string>
@@ -50,7 +52,7 @@
     <string name="edit">Edit</string>
     <string name="create_playlist_name">Playlist Name</string>
     <string name="create_playlist">Create</string>
-    <string name="duplicate_playlist_name_error">Playlist Name Already Exist, Try Again</string>
+    <string name="duplicate_playlist_name_error">Playlist Name Already Exists, Try Again</string>
 
     <!-- Reset Password -->
     <string name="new_password">New Password</string>
@@ -61,6 +63,9 @@
     <string name="most_played">Most Played</string>
     <string name="time_spent">Time Spent</string>
     <string name="logout">Log Out</string>
+
+    <!-- Server Messages -->
+    <string name="server_down">The server is currently down. Please wait until the problem is resolved.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

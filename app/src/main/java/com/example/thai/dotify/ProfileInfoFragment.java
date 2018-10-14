@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class ProfileInfoFragment extends Fragment implements View.OnClickListener{
@@ -46,10 +48,10 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
         logoutButton.setOnClickListener(this);
 
         //Set the username to their username
-        SharedPreferences userData = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
-        String username1 = userData.getString("username", null);
-        if (username1 != null) {
-            usernameEditText.setText(username1);
+        DotifyUser userInfo = UserUtilities.getCachedUserInfo(activityContext);
+        String username = userInfo.getUsername();
+        if (username != null) {
+            usernameEditText.setText(username);
         }
         else{
             usernameEditText.setText("Not Found");
@@ -70,10 +72,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.logoutButton:
-                SharedPreferences userData = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
-                SharedPreferences.Editor editor = userData.edit();
-                editor.clear();
-                editor.apply();
+                UserUtilities.removeCachedUserInfo(activityContext);
                 //Send the User back to the login screen
                 Intent signoutIntent = new Intent(getActivity(), StartUpContainer.class);
                 startActivity(signoutIntent);

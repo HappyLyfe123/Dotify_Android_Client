@@ -18,14 +18,12 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:text="@string/create_playlist_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_playlist_button" />
+        android:textSize="16sp"/>
 
     <EditText
         android:id="@+id/playlist_name_edit_text"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="35dp"
         android:layout_marginEnd="15dp"
         android:layout_marginStart="15dp"
         android:layout_marginBottom="10dp"
@@ -46,19 +44,46 @@
         android:textColor="@android:color/holo_red_light"
         android:visibility="gone"/>
 
-    <Button
-        android:id="@+id/create_button"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="20dp"
-        android:text="@string/create_playlist"
-        android:textColor="@android:color/black"
-        android:background="@drawable/rounder_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playlist_text_view" />
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/create_playlist_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="15dp"
+            android:text="@string/cancel"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:background="@drawable/rounder_button"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/create_playlist_create_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="10dp"
+            android:text="@string/create_playlist"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:background="@drawable/rounder_button"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+
+    <ProgressBar
+        android:id="@+id/create_playlist_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:visibility="gone"/>
 
 
 </LinearLayout>

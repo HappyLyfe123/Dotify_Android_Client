@@ -1,6 +1,7 @@
 package com.example.thai.dotify;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.Editable;
@@ -41,6 +42,7 @@ public class CreateAccountFragment extends Fragment{
     private EditText securityQuestion2AnswerEditText;
     private TextView weakPasswordTextView;
     private TextView confirmPasswordErrorTextView;
+    private TextView errorMessageTextView;
     private TextView usernameTakenTextView;
     private Spinner securityQuestion1Spinner;
     private Spinner securityQuestion2Spinner;
@@ -94,6 +96,8 @@ public class CreateAccountFragment extends Fragment{
         usernameTakenTextView = (TextView) view.findViewById(R.id.user_name_error_text_view);
         securityQuestion1Spinner = (Spinner) view.findViewById(R.id.security_question_1_spinner);
         securityQuestion2Spinner = (Spinner) view.findViewById(R.id.security_question_2_spinner);
+
+        errorMessageTextView = view.findViewById(R.id.error_text_view);
 
         setTextEditFocusListener();
         setTextChange();
@@ -440,14 +444,16 @@ public class CreateAccountFragment extends Fragment{
         Call<DotifyUser> request = dotifyHttpInterface.createUser(dotifyUser.getUsername(), dotifyUser.getPassword(),
                 dotifyUser.getQuestion1(), dotifyUser.getQuestion2(), dotifyUser.getAnswer1(), dotifyUser.getAnswer2());
         //Call the request asynchronously
-//        try{
             request.enqueue(new Callback<DotifyUser>() {
                 @Override
                 public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
                     if (response.code() == 201) {
                         Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
-                        //Create the DotifyUser account
-                        //startMainActivity();
+                        //Now send the user to the login screen
+                        Intent signoutIntent = new Intent(getActivity(), StartUpContainer.class);
+                        startActivity(signoutIntent);
+                        getActivity().finish();
+
                     } else {
                         Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
                     }
@@ -457,14 +463,10 @@ public class CreateAccountFragment extends Fragment{
                 public void onFailure(Call<DotifyUser> call, Throwable t) {
                     //The request has unexpectedly failed
                     Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Unexpected request failure");
-                    t.printStackTrace();
+                    //Display error message that server is down
+                    //t.printStackTrace();
                 }
             });
-//        }
-//        catch (Exception e){
-//            Log.d(TAG, "Server not responding.");
-//        }
-
     }
 
 }

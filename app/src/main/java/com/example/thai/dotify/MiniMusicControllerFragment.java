@@ -91,12 +91,12 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
             case R.id.mini_music_player_play_pause_image_button:
                 //Check the state of the music player
 
-                if(PlayingMusicController.getSongPlayingStatus()){
-                    PlayingMusicController.setSongPlayingStatus(false);
-                }
-                else{
-                    PlayingMusicController.setSongPlayingStatus(true);
-                }
+//                if(PlayingMusicController.getSongPlayingStatus()){
+//                    PlayingMusicController.setSongPlayingStatus(false);
+//                }
+//                else{
+//                    PlayingMusicController.setSongPlayingStatus(true);
+//                }
                 changeMusicPlayerButtonImage();
                 break;
         }
@@ -104,13 +104,13 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
 
     //Change the button image according to the music state
     public void changeMusicPlayerButtonImage(){
-        if(PlayingMusicController.getSongPlayingStatus()){
-            //Pause the music and show the play button
-            playPauseMusicButton.setImageResource(R.drawable.mini_pause_button_icon);
-        }
-        else{
-            //Play the music and show the pause button
-            playPauseMusicButton.setImageResource(R.drawable.mini_play_button_icon);
-        }
+//        if(PlayingMusicController.getSongPlayingStatus()){
+//            //Pause the music and show the play button
+//            playPauseMusicButton.setImageResource(R.drawable.mini_pause_button_icon);
+//        }
+//        else{
+//            //Play the music and show the pause button
+//            playPauseMusicButton.setImageResource(R.drawable.mini_play_button_icon);
+//        }
     }
 }
