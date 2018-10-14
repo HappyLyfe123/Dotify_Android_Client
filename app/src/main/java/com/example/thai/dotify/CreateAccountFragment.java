@@ -422,7 +422,16 @@ public class CreateAccountFragment extends Fragment{
     private void createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,
                                   final String secAnswer1, final String secAnswer2) {
         //Create an dotifyUser object to send
-        DotifyUser dotifyUser = new DotifyUser(username, password, secQuestion1, secQuestion2, secAnswer1, secAnswer2);
+        DotifyUser dotifyUser = new DotifyUser(
+                username,
+                password,
+                secQuestion1,
+                secQuestion2,
+                secAnswer1,
+                secAnswer2,
+                null,
+                null
+        );
 
         //Start at POST request to create the user
         final Dotify dotify = new Dotify(getString(R.string.base_URL));
@@ -449,11 +458,13 @@ public class CreateAccountFragment extends Fragment{
                 public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
                     if (response.code() == 201) {
                         Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
-                        //Now send the user to the login screen
-                        Intent signoutIntent = new Intent(getActivity(), StartUpContainer.class);
-                        startActivity(signoutIntent);
-                        getActivity().finish();
 
+                        // Cache the user information that we jsut created
+                        UserUtilities.cacheUser(getActivity(), dotifyUser);
+
+                        //Now send the user to the login screen
+                        startActivity(new Intent(getActivity(), MainActivityContainer.class));
+                        getActivity().finish();
                     } else {
                         Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
                     }
@@ -464,7 +475,7 @@ public class CreateAccountFragment extends Fragment{
                     //The request has unexpectedly failed
                     Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Unexpected request failure");
                     //Display error message that server is down
-                    //t.printStackTrace();
+                    t.printStackTrace();
                 }
             });
     }

@@ -32,7 +32,7 @@ public class MainActivityContainer extends AppCompatActivity
     private SearchView searchView;
     private static boolean isMusicPlaying;
     private PlayingMusicController musicController;
-    private Context activityContext;
+    private DotifyUser user;
 
     //list of pages
     public enum PlaylistFragmentType{
@@ -55,8 +55,11 @@ public class MainActivityContainer extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_container);
+
+        // Initialize Main Activity Variables
+        user = UserUtilities.getCachedUserInfo(this);
+
         //Initialize view layout
-        //mTextMessage = (TextView) findViewById(R.id.message);
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         miniMusicControllerLayout = (FrameLayout) findViewById(R.id.mini_music_player_controller_frame);
         mainDisplayLayout = (FrameLayout) findViewById(R.id.main_display_frame);
