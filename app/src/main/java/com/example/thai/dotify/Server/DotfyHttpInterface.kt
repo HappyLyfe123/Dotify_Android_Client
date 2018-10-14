@@ -51,9 +51,9 @@ interface DotifyHttpInterface {
 
 
     @PUT("users")
-    fun updatePassword(@Field("token") token: String,
-                       @Field("username") username: String,
-                       @Field("password") password: String)
+    fun updatePassword(@Header("appKey") appKey: String,
+                       @Query("username") username: String,
+                       @Query("password") password: String)
             : Call<DotifyUser>
 
 

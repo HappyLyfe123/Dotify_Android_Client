@@ -1,5 +1,6 @@
 package com.example.thai.dotify;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -31,6 +32,7 @@ public class MainActivityContainer extends AppCompatActivity
     private SearchView searchView;
     private static boolean isMusicPlaying;
     private PlayingMusicController musicController;
+    private Context activityContext;
 
     //list of pages
     public enum PlaylistFragmentType{
@@ -78,6 +80,7 @@ public class MainActivityContainer extends AppCompatActivity
 
         isMusicPlaying = false;
         //create bottom navigation bar
+//        UserUtilities.getCachedUserInfo(activityContext);
         createMiniMusicControllerView();
         createBottomNavigationView();
     }

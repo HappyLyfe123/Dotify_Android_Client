@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -102,9 +101,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         createPlaylistButton = view.findViewById(R.id.create_playlist_button);
         createPlaylistButton.setOnClickListener(this);
         playlistListRecycleView = view.findViewById(R.id.playlist_list_recycle_view);
-        SharedPreferences sharedPreferences = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
-        //username = sharedPreferences.getString("username", null);
-        username = "PenguinDan";
+        DotifyUser dotifyUser = UserUtilities.getCachedUserInfo(activityContext);
+        username = dotifyUser.getUsername();
 
         //Set up recycler view click adapter
         RecyclerViewClickListener listener = (myView, position) -> {
@@ -220,6 +218,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                     editor.putString("playlist", playlistName);
                     editor.apply();
 
+                    //addPlayListR(playlistName);
+                    playlistList.add(new Playlist(playlistName));
+                    playlistsAdapter.notifyDataSetChanged();
+                    dialogBox.dismiss();
                 } else {
                     //A playlist with the same name already exist
                     displayErrorMessage(ErrorType.CREATE_PLAYLIST_DUPLICATE_NAME, createPlaylistErrorMessageTextView);
