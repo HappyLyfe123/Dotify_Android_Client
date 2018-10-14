@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,39 +45,27 @@ import static android.support.constraint.Constraints.TAG;
 public class PlaylistFragment extends Fragment implements View.OnClickListener  {
 
     private Button createPlaylistButton;
+    private Button playlistCreateButton;
     private RecyclerView playlistListRecycleView;
+    private EditText playlistNameEditText;
     private List<Playlist> playlistList = new ArrayList<>();
     private PlaylistsAdapter playlistsAdapter;
     private OnChangeFragmentListener onChangeFragmentListener;
     private String playlistName = "";
     private Context activityContext;
-    private TextView errorMessageTextView;
+    private TextView createPlaylistErrorMessageTextView;
+    private ProgressBar savingProgressBar;
     private String username;
-    protected static AsyncTask<Void, Void, Void> client = new AsyncTask<Void, Void, Void>() {
-        private String message = "0001";
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                InetAddress address = InetAddress.getByName("www.dotify.online");
-
-                DatagramSocket datagramSocket = new DatagramSocket();
-                DatagramPacket datagramPacket = new DatagramPacket(
-                        message.getBytes(),
-                        message.length(),
-                        address,
-                        40000
-                );
-                datagramSocket.setBroadcast(true);
-                datagramSocket.send(datagramPacket);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            return null;
-        }
-    };
 
     public PlaylistFragment()  {
+    }
+
+    private enum ErrorType{
+        CREATE_PLAYLIST_EMPTY_EDIT_TEXT,
+        CREATE_PLAYLIST_DUPLICATE_NAME,
+        CONNECTION_FAILED,
+        SUCCESS,
+        DUPLICATE,
     }
 
     public interface OnChangeFragmentListener{
@@ -114,7 +103,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         createPlaylistButton.setOnClickListener(this);
         playlistListRecycleView = view.findViewById(R.id.playlist_list_recycle_view);
         SharedPreferences sharedPreferences = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
-        username = sharedPreferences.getString("username", null);
+        //username = sharedPreferences.getString("username", null);
+        username = "PenguinDan";
 
         //Set up recycler view click adapter
         RecyclerViewClickListener listener = (myView, position) -> {
@@ -150,10 +140,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.create_playlist_button:
-                //case R.id.delete_playlist_button:
-                AlertDialog dialogBox = createPlaylistDialog();
-                dialogBox.show();
-                //dialogBox.cancel();
+                createPlaylistDialog();
                 break;
         }
     }
@@ -162,42 +149,48 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
      *
      * @return
      */
-    private AlertDialog createPlaylistDialog() {
+    private void createPlaylistDialog() {
         //Create an instance of the Alert Dialog
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+
         //Set the View of the Alert Dialog
         final View alertDialogView = getActivity().getLayoutInflater().inflate(R.layout.fragment_create_playlist, null);
         alertDialogBuilder.setView(alertDialogView);
-
+        //Create Alert DialogBox
+        AlertDialog currDialogBox = alertDialogBuilder.create();
+        currDialogBox.show();
 
         //Initialize Views for this Fragment
-        final Button createPlaylist = (Button) alertDialogView.findViewById(R.id.create_button);
-        final EditText playlistName = (EditText) alertDialogView.findViewById(R.id.playlist_name_edit_text);
-        final TextView errorMessageTextView = (TextView) alertDialogView.findViewById(R.id.create_playlist_error_text_view);
+        final Button cancelButton = (Button) alertDialogView.findViewById(R.id.create_playlist_cancel_button);
+        playlistCreateButton = (Button) alertDialogView.findViewById(R.id.create_playlist_create_button);
+        playlistNameEditText = (EditText) alertDialogView.findViewById(R.id.playlist_name_edit_text);
+        createPlaylistErrorMessageTextView = (TextView) alertDialogView.findViewById(R.id.create_playlist_error_text_view);
+        savingProgressBar = (ProgressBar) alertDialogView.findViewById(R.id.create_playlist_progress_bar);
 
         //Set Listeners
-        createPlaylist.setOnClickListener(new View.OnClickListener() {
+        playlistCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                savingProgressBar.setVisibility(View.VISIBLE);
                 //Can have the play list name edit text empty
-                if (playlistName.getText().toString().isEmpty()) {
-                    errorMessageTextView.setText(R.string.empty_playlist_name_error);
-                    errorMessageTextView.setVisibility(View.VISIBLE);
+                if (playlistNameEditText.getText().toString().isEmpty()) {
+                    displayErrorMessage(ErrorType.CREATE_PLAYLIST_EMPTY_EDIT_TEXT, createPlaylistErrorMessageTextView);
                 }
-                // Check whether there is a playlist with the exact same name
-                for (int i = 0; i < playlistList.size(); i++) {
-                    if (playlistName.getText().toString().equals(playlistList.get(i).getPlaylistName())) {
-                        errorMessageTextView.setText(R.string.duplicate_playlist_name_error);
-                        errorMessageTextView.setVisibility(View.VISIBLE);
-                        return;
-                    }
+                else {
+                    createPlaylistDotify(playlistNameEditText.getText().toString());
+                    addToPlaylistList(playlistNameEditText.getText().toString());
+                    currDialogBox.dismiss();
                 }
-                createPlaylistDotify(playlistName.getText().toString());
-
             }
         });
 
-        return alertDialogBuilder.create();
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currDialogBox.dismiss();
+            }
+        });
     }
 
     /**
@@ -217,10 +210,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
 
+                savingProgressBar.setVisibility(View.GONE);
                 int respCode = response.code();
                 if (respCode == Dotify.OK) {
                     Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
-                    //DotifyUser dotifyUser = response.body();
                     //Cache the playlist
                     SharedPreferences userData = activityContext.getSharedPreferences("Playlist", MODE_PRIVATE);
                     SharedPreferences.Editor editor = userData.edit();
@@ -229,9 +222,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
 
                 } else {
                     //A playlist with the same name already exist
-                    errorMessageTextView = new TextView(activityContext);
-                    errorMessageTextView.setText("Playlist exists.");
-                    errorMessageTextView.setVisibility(View.VISIBLE);
+                    displayErrorMessage(ErrorType.CREATE_PLAYLIST_DUPLICATE_NAME, createPlaylistErrorMessageTextView);
                 }
 
             }
@@ -277,6 +268,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                         Playlist playlistToAdd = new Playlist(myPlaylist.get(i));
                         playlistList.add(playlistToAdd);
                     }
+                    playlistsAdapter.notifyItemRangeInserted(0, myPlaylist.size());
+                    playlistsAdapter.notifyItemRangeChanged(0, myPlaylist.size());
                 } else {
                     //If unsucessful, show the response code
                     Log.d(TAG, "getPlaylist-> Unable to retreive playlists " + response.code());
@@ -300,16 +293,32 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         return playlistList.get(position).getPlaylistName();
     }
 
-
-    private void addPlayList(String playlistname){
-        System.out.println("I got here");
+    //Add a playlist to the playlist list
+    private void addToPlaylistList(String playlistName){
         playlistList.add(new Playlist(playlistName));
-        playlistsAdapter.notifyItemRangeInserted(playlistList.size(), playlistList.size() + 1);
-        playlistsAdapter.notifyDataSetChanged();
-
+        playlistsAdapter.notifyItemInserted(playlistList.size() - 1);
+        playlistsAdapter.notifyItemRangeChanged(playlistList.size() - 1, playlistList.size());
     }
 
     private void removePlayList(){
 
+    }
+
+    //Display error message for create playlist AlertDialog view
+    private void displayErrorMessage(ErrorType type, TextView displayTextView){
+        //Disable progress bar
+        savingProgressBar.setVisibility(View.GONE);
+        displayTextView.setVisibility(View.VISIBLE);
+        switch (type){
+            case CREATE_PLAYLIST_EMPTY_EDIT_TEXT:
+                displayTextView.setText(R.string.empty_playlist_name_error);
+                break;
+            case CREATE_PLAYLIST_DUPLICATE_NAME:
+                displayTextView.setText(R.string.duplicate_playlist_name_error);
+                break;
+            case CONNECTION_FAILED:
+                displayTextView.setText(R.string.connection_failed);
+                break;
+        }
     }
 }

@@ -19,7 +19,8 @@ public class SplashScreenActivity extends Activity {
         if (UserUtilities.isLoggedIn(this) != null) {
             startActivity(new Intent(SplashScreenActivity.this, MainActivityContainer.class));
         } else {
-            startActivity(new Intent(SplashScreenActivity.this, StartUpContainer.class));
+            //Change
+            startActivity(new Intent(SplashScreenActivity.this, MainActivityContainer.class));
         }
     }
 

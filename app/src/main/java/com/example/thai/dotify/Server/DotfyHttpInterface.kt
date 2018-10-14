@@ -2,6 +2,8 @@ package com.example.thai.dotify.Server
 
 import com.example.thai.dotify.DotifyUser
 import okhttp3.ResponseBody
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -69,11 +71,11 @@ interface DotifyHttpInterface {
             @Query("playlistName") playlistName: String)
             : Call<List<String>>
 
-//    @GET("playlist?")
-//    fun getPlaylistSongList(
-//            @Header("appKey") appKey: String,
-//            @Query("username") username: String,
-//
-//    )
+    @GET("playlistpage?")
+    fun getSongList(
+            @Header("appkey") appKey: String,
+            @Query("username") username: String,
+            @Query("playlist") playlistName: String)
+            :Call<JSONObject>
 
 }

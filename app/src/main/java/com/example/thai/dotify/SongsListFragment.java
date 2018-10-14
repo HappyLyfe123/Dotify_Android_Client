@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -10,11 +11,27 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.example.thai.dotify.Server.Dotify;
+import com.example.thai.dotify.Server.DotifyHttpInterface;
+import com.example.thai.dotify.Server.DotifySong;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+
+import static android.content.Context.MODE_PRIVATE;
+import static android.support.constraint.Constraints.TAG;
 
 public class SongsListFragment extends Fragment{
 
@@ -27,6 +44,8 @@ public class SongsListFragment extends Fragment{
 
 
     private static String playListTitle;
+    private String username;
+    private Context activityContext;
 
     public SongsListFragment(){
 
@@ -54,6 +73,12 @@ public class SongsListFragment extends Fragment{
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activityContext = context;
+    }
+
     /***
      * create View object of fragment
      * @param inflater
@@ -73,14 +98,10 @@ public class SongsListFragment extends Fragment{
         });
         titleTextView = (TextView) view.findViewById(R.id.song_list_title_text_view);
         songListRecycleView = (RecyclerView) view.findViewById(R.id.song_list_recycle_view);
+        SharedPreferences sharedPreferences = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
+        username = "PenguinDan";//sharedPreferences.getString("username", null);
 
 
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         // Initialize the recycler view listener
         RecyclerViewClickListener songItemClickListener = (listView, position) -> {
             // Create a music controller object
@@ -98,8 +119,14 @@ public class SongsListFragment extends Fragment{
         songListRecycleView.setLayoutManager(songLayoutManager);
         songListRecycleView.setItemAnimator(new DefaultItemAnimator());
         songListRecycleView.setAdapter(songsAdapter);
+        getSongList();
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         setFragmentTitle();
-        test();
     }
 
     //Set the title for the current fragment to playlist name
@@ -112,12 +139,48 @@ public class SongsListFragment extends Fragment{
         titleTextView.setText(playListTitle);
     }
 
-    private void test(){
-        Song song = new Song("Hi", "Hello", "Sam", true, "0001", 10);
-        songsList.add(song);
-        for(int x =0; x < 40; x++){
-            song = new Song("Hi", "Hello", "Sam", true, "0001", 10);
-            songsList.add(song);
-        }
+
+    private void getSongList(){
+        final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
+
+        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+
+        DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
+        Call<JSONObject> getSongList = dotifyHttpInterface.getSongList(
+                getString(R.string.appKey),
+                username,
+                playListTitle
+        );
+
+        getSongList.enqueue(new Callback<JSONObject>() {
+            @Override
+            public void onResponse(Call<JSONObject> call, retrofit2.Response<JSONObject> response) {
+                int respCode = response.code();
+                if (respCode == Dotify.OK) {
+                    Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
+                    //gets a list of strings of playlist names
+                    JSONObject mySong = response.body();
+                    try {
+                        System.out.println(mySong.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    //System.out.println(mySongList.get(2).getTitle());
+
+                    //Converts the playlist we got to a list of playlists instead of a list of strings
+
+                } else {
+                    //If unsucessful, show the response code
+                    Log.d(TAG, "getPlaylist-> Unable to retreive playlists " + response.code());
+                }
+            }
+
+
+            //If something is wrong with our request to the server, goes to this method
+            @Override
+            public void onFailure(Call<JSONObject> call, Throwable t) {
+                Log.d(TAG, "Invalid failure: onFailure");
+            }
+        });
     }
 }
