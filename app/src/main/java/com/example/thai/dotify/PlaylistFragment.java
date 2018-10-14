@@ -48,7 +48,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private Button playlistCreateButton;
     private RecyclerView playlistListRecycleView;
     private EditText playlistNameEditText;
-    private List<Playlist> playlistList = new ArrayList<>();
+    private List<String> playlistList = new ArrayList<>();
     private PlaylistsAdapter playlistsAdapter;
     private OnChangeFragmentListener onChangeFragmentListener;
     private String playlistName = "";
@@ -178,7 +178,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                 }
                 else {
                     createPlaylistDotify(playlistNameEditText.getText().toString());
-                    addToPlaylistList(playlistNameEditText.getText().toString());
                     currDialogBox.dismiss();
                 }
             }
@@ -212,15 +211,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                 int respCode = response.code();
                 if (respCode == Dotify.OK) {
                     Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
-                    //Cache the playlist
-                    SharedPreferences userData = activityContext.getSharedPreferences("Playlist", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = userData.edit();
-                    editor.putString("playlist", playlistName);
-                    editor.apply();
-
-                    //addPlayListR(playlistName);
-                    playlistList.add(new Playlist(playlistName));
-                    playlistsAdapter.notifyDataSetChanged();
+                    addToPlaylistList(playlistName);
                 } else {
                     //A playlist with the same name already exist
                     displayErrorMessage(ErrorType.CREATE_PLAYLIST_DUPLICATE_NAME, createPlaylistErrorMessageTextView);
@@ -262,15 +253,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                 if (respCode == Dotify.OK) {
                     Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
                     //gets a list of strings of playlist names
-                    List<String> myPlaylist = response.body();
+                    List<String> userPlaylist = response.body();
 
                     //Converts the playlist we got to a list of playlists instead of a list of strings
-                    for (int i = 0; i < myPlaylist.size(); i++){
-                        Playlist playlistToAdd = new Playlist(myPlaylist.get(i));
-                        playlistList.add(playlistToAdd);
+                    for (int i = 0; i < userPlaylist.size(); i++){
+                        playlistList.add(userPlaylist.get(i));
                     }
-                    playlistsAdapter.notifyItemRangeInserted(0, myPlaylist.size());
-                    playlistsAdapter.notifyItemRangeChanged(0, myPlaylist.size());
+                    playlistsAdapter.notifyItemRangeInserted(0, userPlaylist.size());
+                    playlistsAdapter.notifyItemRangeChanged(0, userPlaylist.size());
                 } else {
                     //If unsucessful, show the response code
                     Log.d(TAG, "getPlaylist-> Unable to retreive playlists " + response.code());
@@ -291,12 +281,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
      * @return playlist name at position
      */
     private String getPlaylistName(int position){
-        return playlistList.get(position).getPlaylistName();
+        return playlistList.get(position);
     }
 
     //Add a playlist to the playlist list
     private void addToPlaylistList(String playlistName){
-        playlistList.add(new Playlist(playlistName));
+        playlistList.add(playlistName);
         playlistsAdapter.notifyItemInserted(playlistList.size() - 1);
         playlistsAdapter.notifyItemRangeChanged(playlistList.size() - 1, playlistList.size());
     }
