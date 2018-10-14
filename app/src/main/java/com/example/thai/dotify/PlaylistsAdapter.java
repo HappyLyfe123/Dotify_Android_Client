@@ -10,7 +10,7 @@ import java.util.List;
 
 public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyViewHolder> {
 
-    private List<Playlist> playlistList;
+    private List<String> playlistList;
     private RecyclerViewClickListener mlistener;
 
 
@@ -31,7 +31,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
         }
     }
 
-    public PlaylistsAdapter(List<Playlist> playlistList, RecyclerViewClickListener listener){
+    public PlaylistsAdapter(List<String> playlistList, RecyclerViewClickListener listener){
         this.playlistList = playlistList;
         mlistener = listener;
     }
@@ -47,8 +47,8 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Playlist playlist = playlistList.get(position);
-        holder.playlistName.setText(playlist.getPlaylistName());
+        String playlist = playlistList.get(position);
+        holder.playlistName.setText(playlist);
     }
 
     @Override
