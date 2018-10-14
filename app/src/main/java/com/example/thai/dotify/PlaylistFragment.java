@@ -52,6 +52,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private Context activityContext;
     private TextView errorMessageTextView;
     private String username;
+    private AlertDialog dialogBox;
     protected static AsyncTask<Void, Void, Void> client = new AsyncTask<Void, Void, Void>() {
         private String message = "0001";
 
@@ -108,27 +109,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view  = inflater.inflate(R.layout.fragment_playlist, container, false);
         createPlaylistButton = view.findViewById(R.id.create_playlist_button);
         createPlaylistButton.setOnClickListener(this);
         playlistListRecycleView = view.findViewById(R.id.playlist_list_recycle_view);
-        SharedPreferences sharedPreferences = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
-        username = sharedPreferences.getString("username", null);
+        DotifyUser dotifyUser = UserUtilities.getCachedUserInfo(activityContext);
+        username = dotifyUser.getUsername();
 
         //Set up recycler view click adapter
         RecyclerViewClickListener listener = (myView, position) -> {
             onChangeFragmentListener.buttonClicked(MainActivityContainer.PlaylistFragmentType.SONGS_LIST_PAGE);
             onChangeFragmentListener.setTitle(getPlaylistName(position));
         };
-
-        //Display all of the items into the recycler view
         playlistList = new ArrayList<>();
         playlistsAdapter = new PlaylistsAdapter(playlistList, listener);
-        RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
-        playlistListRecycleView.setLayoutManager(songLayoutManager);
-        playlistListRecycleView.setItemAnimator(new DefaultItemAnimator());
-        playlistListRecycleView.setAdapter(playlistsAdapter);
         return view;
     }
 
@@ -151,7 +145,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         switch (v.getId()) {
             case R.id.create_playlist_button:
                 //case R.id.delete_playlist_button:
-                AlertDialog dialogBox = createPlaylistDialog();
+                dialogBox = createPlaylistDialog();
                 dialogBox.show();
                 //dialogBox.cancel();
                 break;
@@ -196,7 +190,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
 
             }
         });
-
         return alertDialogBuilder.create();
     }
 
@@ -220,13 +213,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                 int respCode = response.code();
                 if (respCode == Dotify.OK) {
                     Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
-                    //DotifyUser dotifyUser = response.body();
-                    //Cache the playlist
-                    SharedPreferences userData = activityContext.getSharedPreferences("Playlist", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = userData.edit();
-                    editor.putString("playlist", playlistName);
-                    editor.apply();
-
+                    //addPlayListR(playlistName);
+                    playlistList.add(new Playlist(playlistName));
+                    playlistsAdapter.notifyDataSetChanged();
+                    dialogBox.dismiss();
                 } else {
                     //A playlist with the same name already exist
                     errorMessageTextView = new TextView(activityContext);
@@ -260,7 +250,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         Call<List<String>> getPlaylist = dotifyHttpInterface.getPlaylist(
                 getString(R.string.appKey),
                 username,
-                playlistName //Why do we need this to get the list of playlists?
+                playlistName
         );
 
         getPlaylist.enqueue(new Callback<List<String>>() {
@@ -277,6 +267,12 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                         Playlist playlistToAdd = new Playlist(myPlaylist.get(i));
                         playlistList.add(playlistToAdd);
                     }
+                    //Displays playlist using adapter
+                    RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
+                    playlistListRecycleView.setLayoutManager(songLayoutManager);
+                    playlistListRecycleView.setItemAnimator(new DefaultItemAnimator());
+                    playlistListRecycleView.setAdapter(playlistsAdapter);
+
                 } else {
                     //If unsucessful, show the response code
                     Log.d(TAG, "getPlaylist-> Unable to retreive playlists " + response.code());
@@ -300,13 +296,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         return playlistList.get(position).getPlaylistName();
     }
 
-
-    private void addPlayList(String playlistname){
-        System.out.println("I got here");
+    /**
+     * Updates the recycler view to update with the new playlist name.
+     * Note: This method doesn't work for some reason.
+     * @param playlistname The playlist to add
+     */
+    private void addPlayListR(String playlistname){
+        //System.out.println("I got here");
         playlistList.add(new Playlist(playlistName));
-        playlistsAdapter.notifyItemRangeInserted(playlistList.size(), playlistList.size() + 1);
+        //playlistsAdapter.notifyItemRangeInserted(playlistList.size(), playlistList.size() + 1);
         playlistsAdapter.notifyDataSetChanged();
-
     }
 
     private void removePlayList(){

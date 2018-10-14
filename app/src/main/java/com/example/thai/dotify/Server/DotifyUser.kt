@@ -22,5 +22,4 @@ data class DotifyUser(val username: String,
     fun setUserImage(imageBytes :ByteArray){
         userImage = imageBytes
     }
-
 }

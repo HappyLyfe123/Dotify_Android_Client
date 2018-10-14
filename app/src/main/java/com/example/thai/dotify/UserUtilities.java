@@ -65,11 +65,37 @@ public class UserUtilities {
     }
 
     /**
+     * @Author Viet
+     * Removes the user's information if the user exists and is logged in
+     * @param context The context to use
+     */
+    public static void removeCachedUserInfo(Context context){
+        //Open shared preferences folder
+        SharedPreferences userPreferences = getUserSharedPreferences(context);
+        //Open the editor that contains the user information if the user is not null
+        if (userPreferences.getString(USER_INFO,null) != null){
+            SharedPreferences.Editor editor = userPreferences.edit();
+            //Clear the user informtion
+            editor.clear();
+            //Apply the information
+            editor.apply();
+        }
+    }
+
+    /**
      * Retrieves the SharedPreferences object that corresponds to the storing the User information
      * @param context
      * @return
      */
     private static SharedPreferences getUserSharedPreferences(Context context) {
         return context.getSharedPreferences(SHARED_PREF_USER_DATA, context.MODE_PRIVATE);
+    }
+
+    /**
+     * Retrieves the user's username
+     * @return the user's user name
+     */
+    public static String getUsername(){
+        return USERNAME;
     }
 }

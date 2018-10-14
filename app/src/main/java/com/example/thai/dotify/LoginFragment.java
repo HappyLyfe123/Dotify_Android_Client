@@ -129,7 +129,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * Checks to see if the credentials match for the user
+     * Checks to see if the credentials match for the user. If it matches, allows the user to be authenticated.
+     * Otherwise, give a message that the credentials are incorrect or if the server is currently down.
      */
     private void loginDotifyUser(final String username, final String password){
         //Start a GET request to login the user
@@ -153,11 +154,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     if (respCode == Dotify.ACCEPTED) {
                         Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
                         DotifyUser dotifyUser = response.body();
+                        dotifyUser = new DotifyUser(username, null, null, null, null, null);
                         //Cache the user
-                        SharedPreferences userData = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = userData.edit();
-                        editor.putString("username", username);
-                        editor.apply();
+                        UserUtilities.cacheUser(activityContext, dotifyUser);
+                        Log.d(TAG, "The user should be cached here.");
                         onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
                     }
                 }
@@ -171,6 +171,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(Call<DotifyUser> call, Throwable throwable) {
                 Log.w(TAG, "loginUser-> onFailure");
+                //Error message that the server is down
+                errorMessageTextView.setText(R.string.server_down);
             }
         });
     }
