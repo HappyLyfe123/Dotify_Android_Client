@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -207,7 +208,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         addPlaylist.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-
                 savingProgressBar.setVisibility(View.GONE);
                 int respCode = response.code();
                 if (respCode == Dotify.OK) {
@@ -221,7 +221,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                     //addPlayListR(playlistName);
                     playlistList.add(new Playlist(playlistName));
                     playlistsAdapter.notifyDataSetChanged();
-                    dialogBox.dismiss();
                 } else {
                     //A playlist with the same name already exist
                     displayErrorMessage(ErrorType.CREATE_PLAYLIST_DUPLICATE_NAME, createPlaylistErrorMessageTextView);
