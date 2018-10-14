@@ -154,8 +154,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     if (respCode == Dotify.ACCEPTED) {
                         Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
                         DotifyUser dotifyUser = response.body();
-                        dotifyUser = new DotifyUser(username, null, null, null, null, null);
-                        //Cache the user
                         UserUtilities.cacheUser(activityContext, dotifyUser);
                         Log.d(TAG, "The user should be cached here.");
                         onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
