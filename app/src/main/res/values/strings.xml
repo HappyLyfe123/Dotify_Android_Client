@@ -59,13 +59,13 @@
     <string name="reset_password">Reset Password</string>
 
     <!--Profile Info -->
-    <string name="date_joined">Date Joined</string>
-    <string name="most_played">Most Played</string>
-    <string name="time_spent">Time Spent</string>
+    <string name="date_joined">Date Joined:</string>
+    <string name="most_played">Most Played:</string>
+    <string name="time_spent">Time Spent:</string>
     <string name="logout">Log Out</string>
 
     <!-- Server Messages -->
-    <string name="server_down">The server is currently down. Please wait until the problem is resolved.</string>
+    <string name="server_down">The server is currently down. Try again later.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

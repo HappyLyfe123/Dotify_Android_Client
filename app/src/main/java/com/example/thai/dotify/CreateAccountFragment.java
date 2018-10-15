@@ -475,7 +475,7 @@ public class CreateAccountFragment extends Fragment{
                     //The request has unexpectedly failed
                     Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Unexpected request failure");
                     //Display error message that server is down
-                    t.printStackTrace();
+                    errorMessageTextView.setText(R.string.server_down);
                 }
             });
     }

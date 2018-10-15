@@ -27,11 +27,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.content.SharedPreferences;
 import android.widget.Toast;
 
 import com.example.thai.dotify.Server.Dotify;
 import com.google.gson.Gson;
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
@@ -46,7 +47,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
     private int activityToStart;
     private final int REQUEST_CODE = 1052;
     private DotifyUser user;
-    private ImageView profileImage;
+    private CircleImageView profileImage;
 
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
@@ -182,9 +183,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
 
             //Rotates the Bitmap image
             Matrix matrix = new Matrix();
-
             matrix.postRotate(90);
-
             Bitmap rotatedBitmap = Bitmap.createBitmap(userImage, 0, 0, userImage.getWidth(), userImage.getHeight(), matrix, true);
             userImage = rotatedBitmap;
 
