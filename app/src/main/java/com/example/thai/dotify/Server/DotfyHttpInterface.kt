@@ -85,4 +85,12 @@ interface DotifyHttpInterface {
             @Query("username") username : String
     ) : Call<ResponseBody>
 
+    @FormUrlEncoded
+    @PUT("users/image")
+    fun saveUserProfileImage(
+            @Header("appkey") appKey : String,
+            @Header("username") username : String,
+            @Field("image") imageByteArray : String
+    ) : Call<ResponseBody>
+
 }

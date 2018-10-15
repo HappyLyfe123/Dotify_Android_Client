@@ -429,8 +429,8 @@ public class CreateAccountFragment extends Fragment{
                 secQuestion2,
                 secAnswer1,
                 secAnswer2,
-                null,
-                null
+                "",
+                ""
         );
 
         //Start at POST request to create the user

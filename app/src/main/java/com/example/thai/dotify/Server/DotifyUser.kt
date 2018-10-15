@@ -9,5 +9,5 @@ data class DotifyUser(val username: String,
                       val question2: String?,
                       val answer1: String?,
                       val answer2 : String?,
-                      val profileImage: ByteArray?,
+                      var profileImage: String?,
                       val userQuote: String?) : Serializable

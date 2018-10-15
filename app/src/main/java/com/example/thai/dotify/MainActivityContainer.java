@@ -69,6 +69,10 @@ public class MainActivityContainer extends AppCompatActivity
         playlistFragment = new PlaylistFragment();
         playlistFragment.setOnChangeFragmentListener(this);
         profileInfoFragment = new ProfileInfoFragment();
+        profileInfoFragment.setOnUserImageUploadedListener((dotifyUser) ->
+            // Updates the current user object
+            user = dotifyUser
+        );
         forYouFragment = new ForYouFragment();
         songListScreenFragment = new SongsListFragment();
         // Set the song clicked listener for songListScreenFragment
@@ -234,6 +238,8 @@ public class MainActivityContainer extends AppCompatActivity
         miniMusicControllerFragment.changeMusicPlayerButtonImage();
         startFragment(PlaylistFragmentType.BACK_BUTTON, false, false);
     }
+
+
 
     /**
      * Returns the current user object

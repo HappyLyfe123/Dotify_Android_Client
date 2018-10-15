@@ -28,32 +28,6 @@
             android:layout_gravity="center_horizontal"
             android:textSize="30sp"/>
 
-        <TextView
-            android:id="@+id/dateJoined"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/date_joined"
-            android:layout_marginTop="60dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"/>
-
-        <TextView
-            android:id="@+id/mostPlayed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/most_played"
-            android:layout_marginTop="20dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp" />
-
-        <TextView
-            android:id="@+id/timeSpent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/time_spent"
-            android:layout_marginTop="20dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp" />
 
         <Button
             android:id="@+id/logoutButton"

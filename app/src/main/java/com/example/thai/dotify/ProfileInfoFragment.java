@@ -9,9 +9,11 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -20,6 +22,8 @@ import android.support.annotation.Nullable;
 import android.app.Fragment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +34,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.thai.dotify.Server.Dotify;
+import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.google.gson.Gson;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 import static android.app.Activity.RESULT_OK;
@@ -39,8 +53,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class ProfileInfoFragment extends Fragment implements View.OnClickListener{
 
+    private String TAG = ProfileInfoFragment.class.getSimpleName();
     private Context activityContext;
-    private TextView usernameEditText;
     private LoginFragment loginFragment;
     private final int RESULT_LOAD_PROFILE_PIC = 1;
     private boolean readPermissionGranted;
@@ -48,9 +62,50 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
     private final int REQUEST_CODE = 1052;
     private DotifyUser user;
     private CircleImageView profileImage;
+    private UserImageUploadListener userImageUploadListener;
 
-    public interface OnChangeFragmentListener {
-        void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
+    public interface UserImageUploadListener{
+        void onUserImageUploaded(DotifyUser user);
+    }
+
+    // A class that works on uploading an image to the server
+    private class UploadImage extends AsyncTask<String, Void, String>{
+        @Override
+        protected String doInBackground(final String... encodedImage) {
+            // Create a Dotify object to begin sending requests
+            final Dotify dotify = new Dotify(getString(R.string.base_URL));
+            // Add an interceptor to log what is moving back and forth
+            dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+            // Create the interface to get the route methods
+            DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
+            Call<ResponseBody> uploadImage = dotifyHttpInterface.saveUserProfileImage(
+                    getString(R.string.appKey),
+                    user.getUsername(),
+                    encodedImage[0]
+            );
+            uploadImage.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+            return encodedImage[0];
+        }
+
+        @Override
+        protected void onPostExecute(String encodedImage) {
+            super.onPostExecute(encodedImage);
+            // Cache the encoded image
+            user.setProfileImage(encodedImage);
+            UserUtilities.cacheUser(activityContext, user);
+            // Update the activitie's DotifyUser object
+            userImageUploadListener.onUserImageUploaded(user);
+        }
     }
 
     @Override
@@ -72,19 +127,17 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
         logoutButton.setOnClickListener(this);
 
         //Set the username to their username
-        user = UserUtilities.getCachedUserInfo(activityContext);
-        if (user.getUsername() != null) {
-            usernameEditText.setText(user.getUsername());
-        }
-        else{
-            usernameEditText.setText("Not Found");
-        }
+        user = ((MainActivityContainer) this.getActivity()).getCurrentUser();
+        usernameEditText.setText(user.getUsername());
+
         //Permission Granted
         readPermissionGranted = UserPermission.checkUserPermission(activityContext, UserPermission.Permission.READ_PERMISSION);
 
-        Bitmap userImage = InternalStorage.getProfilePic(activityContext, user.getUsername());
-        //Bitmap for user profile imaage
-        if (userImage!= null) {
+        // Check whether the user contains a user image
+        String encodedUserImage = user.getProfileImage();
+        if(!encodedUserImage.isEmpty()) {
+            byte[] decodedImage = Base64.decode(encodedUserImage, Base64.DEFAULT);
+            Bitmap userImage = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
             profileImage.setImageBitmap(userImage);
         }
 
@@ -181,22 +234,27 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
             Bitmap userImage = BitmapFactory.decodeFile(picturePath);
             cursor.close();
 
-            //Rotates the Bitmap image
-            Matrix matrix = new Matrix();
-            matrix.postRotate(90);
-            Bitmap rotatedBitmap = Bitmap.createBitmap(userImage, 0, 0, userImage.getWidth(), userImage.getHeight(), matrix, true);
-            userImage = rotatedBitmap;
-
             //Set the image as the user's profile image
             profileImage.setImageBitmap(userImage);
-            //Store the image received in the internal storage
-            InternalStorage.saveImageFile(activityContext, InternalStorage.ImageType.PROFILE, user.getUsername(), userImage);
 
+            // Store the image received in the server
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            userImage.compress(Bitmap.CompressFormat.PNG, 30, byteArrayOutputStream);
+            String encodedImage = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
+            UploadImage uploadImageTask = new UploadImage();
+            uploadImageTask.execute(encodedImage);
         }
-
-
 
     }
 
+    /**
+     * Allows the MainActivityContainer to update its DotifyUser value upon completion of
+     * the uploading of the user's profile image to the server
+     *
+     * @param userImageUploadedListener The listener implemented by the main activity
+     */
+    public void setOnUserImageUploadedListener(UserImageUploadListener userImageUploadedListener){
+        this.userImageUploadListener = userImageUploadedListener;
+    }
 
 }
