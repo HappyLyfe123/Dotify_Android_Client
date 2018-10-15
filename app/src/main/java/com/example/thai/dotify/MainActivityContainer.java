@@ -234,4 +234,11 @@ public class MainActivityContainer extends AppCompatActivity
         miniMusicControllerFragment.changeMusicPlayerButtonImage();
         startFragment(PlaylistFragmentType.BACK_BUTTON, false, false);
     }
+
+    /**
+     * Returns the current user object
+     */
+    public DotifyUser getCurrentUser(){
+        return user;
+    }
 }

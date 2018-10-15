@@ -46,6 +46,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
 
     private Button createPlaylistButton;
     private Button playlistCreateButton;
+    private Button editPlaylistButton;
+    private Button cancelPlaylistButton;
     private RecyclerView playlistListRecycleView;
     private EditText playlistNameEditText;
     private List<String> playlistList = new ArrayList<>();
@@ -55,7 +57,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private Context activityContext;
     private TextView createPlaylistErrorMessageTextView;
     private ProgressBar savingProgressBar;
-    private String username;
+    private DotifyUser user;
 
     public PlaylistFragment()  {
     }
@@ -98,12 +100,19 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        // Initialize Variables
+        user = ((MainActivityContainer) this.getActivity()).getCurrentUser();
+
+        // Initialize views
         View view  = inflater.inflate(R.layout.fragment_playlist, container, false);
         createPlaylistButton = view.findViewById(R.id.create_playlist_button);
         createPlaylistButton.setOnClickListener(this);
         playlistListRecycleView = view.findViewById(R.id.playlist_list_recycle_view);
-        DotifyUser dotifyUser = UserUtilities.getCachedUserInfo(activityContext);
-        username = dotifyUser.getUsername();
+        editPlaylistButton = (Button) view.findViewById(R.id.edit_playlist_button);
+        editPlaylistButton.setOnClickListener(this);
+        cancelPlaylistButton = (Button) view.findViewById(R.id.cancel_playlist_button);
+        cancelPlaylistButton.setOnClickListener(this);
+
 
         //Set up recycler view click adapter
         RecyclerViewClickListener listener = (myView, position) -> {
@@ -113,7 +122,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
 
         //Display all of the items into the recycler view
         playlistList = new ArrayList<>();
-        playlistsAdapter = new PlaylistsAdapter(playlistList, listener);
+        playlistsAdapter = new PlaylistsAdapter(getActivity(), user, playlistList, listener,
+                new PlaylistsAdapter.OnPlaylistDeletedListener() {
+                    @Override
+                    public void onPlaylistDeleted(int position) {
+                        playlistList.remove(position);
+                        playlistsAdapter.notifyDataSetChanged();
+                    }
+                });
         RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
         playlistListRecycleView.setLayoutManager(songLayoutManager);
         playlistListRecycleView.setItemAnimator(new DefaultItemAnimator());
@@ -138,9 +154,29 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.create_playlist_button:
+            case R.id.create_playlist_button: {
                 createPlaylistDialog();
-                break;
+            }
+            break;
+            case R.id.edit_playlist_button: {
+                // Update all of the views to have the delete button to appear
+                playlistsAdapter.setDeleteIconVisibility(true);
+                playlistsAdapter.notifyDataSetChanged();
+                // Make the Edit button disappear while making the
+                // cancel button appear
+                cancelPlaylistButton.setVisibility(View.VISIBLE);
+                editPlaylistButton.setVisibility(View.GONE);
+            }
+            break;
+            case R.id.cancel_playlist_button: {
+                // Update all of the views to have the delete button to disappear
+                playlistsAdapter.setDeleteIconVisibility(false);
+                playlistsAdapter.notifyDataSetChanged();
+                // Make the Edit button appear while making the cancel button disappear
+                cancelPlaylistButton.setVisibility(View.GONE);
+                editPlaylistButton.setVisibility(View.VISIBLE);
+            }
+            break;
         }
     }
     /**
@@ -201,7 +237,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
         Call<ResponseBody> addPlaylist = dotifyHttpInterface.createPlaylist(
                 getString(R.string.appKey),
-                username,
+                user.getUsername(),
                 playlistName
         );
         addPlaylist.enqueue(new Callback<ResponseBody>() {
@@ -242,7 +278,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
         Call<List<String>> getPlaylist = dotifyHttpInterface.getPlaylist(
                 getString(R.string.appKey),
-                username,
+                user.getUsername(),
                 playlistName //Why do we need this to get the list of playlists?
         );
 
@@ -275,7 +311,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     }
 
 
-    /***
+    /**
      * get name of the playlist at some position in the playlist
      * @param position - position in list
      * @return playlist name at position

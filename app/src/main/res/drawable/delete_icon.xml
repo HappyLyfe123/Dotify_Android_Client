@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="10dp"
+        android:height="1.5dp"
+        android:left="10dp"
+        android:top="14dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#ffffff"/>
+        </shape>
+    </item>
+
+    <item>
+        <shape
+            android:shape="ring"
+            android:innerRadiusRatio="3.5"
+            android:thicknessRatio="20"
+            android:useLevel="false">
+
+            <size
+                android:width="30dip"
+                android:height="30dip" />
+            <gradient
+                android:type="sweep"
+                android:useLevel="false"
+                android:startColor="#ffffff"
+                android:endColor="#ffffff"
+                android:angle="0"
+                />
+        </shape>
+    </item>
+</layer-list>

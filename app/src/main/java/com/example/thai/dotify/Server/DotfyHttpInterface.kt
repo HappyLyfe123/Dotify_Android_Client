@@ -78,4 +78,11 @@ interface DotifyHttpInterface {
             @Query("playlist") playlistName: String)
             :Call<JSONObject>
 
+    @DELETE("playlist")
+    fun deletePlaylist(
+            @Header("appkey") appKey : String,
+            @Query("playlist") playlistName : String,
+            @Query("username") username : String
+    ) : Call<ResponseBody>
+
 }
