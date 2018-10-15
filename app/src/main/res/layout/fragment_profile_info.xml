@@ -10,7 +10,7 @@
         android:id="@+id/linearlayout1"
         android:orientation="vertical">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profileImage"
             android:layout_width="150dp"
             android:layout_height="200dp"
