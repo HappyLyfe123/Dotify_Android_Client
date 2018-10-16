@@ -197,12 +197,10 @@ public class SongsListFragment extends Fragment{
                         Gson gson = new Gson();
                         for(int x = 0; x < currSongList.get("songs").getAsJsonArray().size(); x++){
                             songsList.add(gson.fromJson(currSongList.get("songs").getAsJsonArray().get(x), DotifySong.class));
-                            System.out.println(songsList.get(x).getSong());
                         }
                         songsAdapter.notifyItemRangeInserted(0, songsList.size());
                         songsAdapter.notifyItemRangeChanged(0, songsList.size());
                         songsAdapter.notifyDataSetChanged();
-                        System.out.println(songsAdapter.getItemCount());
 
                     } catch (Exception e) {
                         e.printStackTrace();

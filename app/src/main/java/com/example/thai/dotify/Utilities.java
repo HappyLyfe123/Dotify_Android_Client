@@ -12,4 +12,12 @@ public class Utilities {
     }
 
 
+    /***
+     * creates view for the object
+     * @param songID the song id to be check
+     * @return true if there's already a song with the same id in the playlist
+     */
+    public static boolean checkPlaylistForDuplicateSong(String songID){
+        return true;
+    }
 }

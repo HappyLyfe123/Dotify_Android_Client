@@ -1,21 +1,33 @@
 package com.example.thai.dotify;
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.example.thai.dotify.Server.Dotify;
+import com.example.thai.dotify.Server.DotifyHttpInterface;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+
+import static android.support.constraint.Constraints.TAG;
 
 /**
  * this object will display the information for a song object at full screen
@@ -30,10 +42,9 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
     private ImageButton playPauseImageButton;
     private ImageButton likeSongImageButton;
     private RecyclerView selectPlaylistList;
-    private SelectPlaylistAdapter selectPlaylistAdapter;
     public static SeekBar songSeekBar;
-    private static boolean isSongPlaying;
     private PlayingMusicController musicController;
+    private DotifyUser user;
 
     /**
      * create an object of type FullScreenMusicControllerFragment
@@ -76,6 +87,9 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
         playPauseImageButton.setOnClickListener(this);
         likeSongImageButton.setOnClickListener(this);
 
+        // Initialize Variables
+        user = ((MainActivityContainer) this.getActivity()).getCurrentUser();
+
         return view;
     }
 
@@ -117,7 +131,8 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.full_screen_add_to_playlist_button:
-                String playlistName = getSelectedPlaylist();
+                getSelectedPlaylist();
+
                 break;
             case R.id.full_screen_previous_track_image_button:
                 break;
@@ -139,18 +154,85 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
         }
     }
 
-    private String getSelectedPlaylist(){
-        String playlistName = "";
+    //Get the playlist name that the user want to add the song too
+    private void getSelectedPlaylist(){
+        final int[] selectPosition = {};
         //Create an instance of the Alert Dialog
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         //Set the View of the Alert Dialog
-        final View alertDialogView = getActivity().getLayoutInflater().inflate(R.layout.fragment_playlist, null);
+        final View alertDialogView = getActivity().getLayoutInflater().inflate(R.layout.fragment_select_playlist, null);
         alertDialogBuilder.setView(alertDialogView);
-        //Create Alert DialogBox
         AlertDialog currDialogBox = alertDialogBuilder.create();
+
+        //Initialize view
+        List<String> playlistsList = MainActivityContainer.getPlaylistList();
+        selectPlaylistList = alertDialogView.findViewById(R.id.select_playlist_playlist_list);
+        Button cancelButton = alertDialogView.findViewById(R.id.select_playlist_cancel_button);
+        // Initialize the recycler view listener
+        RecyclerViewClickListener playlistItemClickListener = (listView, position) -> {
+            // Create a music controller object
+            addSongToPlaylist(playlistsList.get(position));
+            currDialogBox.dismiss();
+        };
+
+        //Cancel to close the select playlist view
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                currDialogBox.dismiss();
+            }
+        });
+        PlaylistsAdapter playlistsAdapter = new PlaylistsAdapter(playlistsList, playlistItemClickListener);
+        //Display all of the items into the recycler view
+        RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
+        selectPlaylistList.setLayoutManager(songLayoutManager);
+        selectPlaylistList.setItemAnimator(new DefaultItemAnimator());
+        selectPlaylistList.setAdapter(playlistsAdapter);
+
+        //Create Alert DialogBox
         currDialogBox.show();
-
-
-        return playlistName;
     }
+
+    private void addSongToPlaylist(String playlistName){
+        System.out.println(user.getUsername());
+        final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
+        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+        DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
+        Call<ResponseBody> addSongToPlaylist = dotifyHttpInterface.addSongToPlaylist(
+                getString(R.string.appKey),
+                user.getUsername(),
+                playlistName,
+                musicController.getSongID()
+        );
+        addSongToPlaylist.enqueue(new Callback<ResponseBody>() {
+            /**
+             * server sends a reply to the client indicating successful action
+             * @param call
+             * @param response
+             */
+            @Override
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                int respCode = response.code();
+                if (respCode == Dotify.OK) {
+                    Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
+                } else {
+                    //A playlist with the same name already exist
+                }
+
+            }
+
+            /**
+             * server sends reply indicating a failure on server's side
+             * @param call
+             * @param t
+             */
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG,"Invalid failure: onFailure");
+            }
+        });
+
+    }
+
+
 }

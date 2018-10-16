@@ -46,6 +46,14 @@ public class PlayingMusicController {
         currentSong = songList.get(position);
     }
 
+    public String getSongName(){
+        return currentSong.getSong();
+    }
+
+    public String getSongID(){
+        return currentSong.getSongid();
+    }
+
     /**
      * play music
      */

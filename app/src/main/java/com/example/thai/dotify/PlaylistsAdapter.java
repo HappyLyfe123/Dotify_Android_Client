@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
+import com.example.thai.dotify.Server.DotifySong;
+
 
 import java.util.List;
 
@@ -127,6 +129,11 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
         }
     }
 
+    public PlaylistsAdapter(List<String> songList, RecyclerViewClickListener listener){
+        this.playlistList = songList;
+        mlistener = listener;
+    }
+
     /**
      * constructor w/ given values
      * @param context
@@ -188,7 +195,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
 
     /**
      * Sets whether the delete icons for each item in the views should be visible or not
-     *
      * @param isVisible Whether the items in each recycler view should be visible
      */
     public void setDeleteIconVisibility(boolean isVisible) {

@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".SelectPlaylistFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_marginTop="10dp"
+        android:text="@string/select_a_playlist"
+        android:textAlignment="center"
+        android:textSize="18sp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/select_playlist_playlist_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
     </android.support.v7.widget.RecyclerView>
 
-</FrameLayout>
+    <Button
+        android:id="@+id/select_playlist_cancel_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:background="@android:color/transparent"
+        android:layout_weight="0"
+        android:textSize="18sp" />
+
+</LinearLayout>

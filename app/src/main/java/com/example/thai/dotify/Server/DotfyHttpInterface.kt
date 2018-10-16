@@ -93,6 +93,14 @@ interface DotifyHttpInterface {
             @Field("image") imageByteArray : String
     ) : Call<ResponseBody>
 
+    @PUT("playlistpage?")
+    fun addSongToPlaylist(
+            @Header("appkey") appKey: String,
+            @Query("username") username: String,
+            @Query("playlist") playlistName: String,
+            @Query("songid") songID : String
+    ) : Call<ResponseBody>
+
     @GET("search")
     fun querySong(
             @Header("appkey") appKey: String,

@@ -17,6 +17,7 @@ import com.example.thai.dotify.Server.DotifySong;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -274,6 +275,10 @@ public class MainActivityContainer extends AppCompatActivity
 
     public void cacheSongQuery(String key, ArrayList<String> results) {
         songSearchQuery.put(key, results);
+    }
+
+    public static List<String> getPlaylistList(){
+        return PlaylistFragment.getPlaylistList();
     }
 
     public void cacheArtistQuery(String key, ArrayList<String> results) {
