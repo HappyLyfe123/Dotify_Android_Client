@@ -56,7 +56,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
     }
 
     //Update the current song list with a new song list
-    public void updateSongList(List<Song> newData){
+    public void updateSongList(List<DotifySong> newData){
         songsList.clear();
         songsList.addAll(newData);
         notifyDataSetChanged();
