@@ -24,6 +24,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -90,7 +91,7 @@ public class SearchFragment extends Fragment {
      */
     private class SearchResultAdapter<T> extends RecyclerView.Adapter<ViewHolder>{
 
-        private List<T> searchResults;
+        private ArrayList<T> searchResults;
         private Class<T> classObj;
         private RecyclerViewClickListener onItemClickedListener;
 
@@ -139,7 +140,7 @@ public class SearchFragment extends Fragment {
          * Returns the list of strings currently inside of this adapter
          * @return
          */
-        public List<T> getSearchResults() {
+        public ArrayList<T> getSearchResults() {
             return searchResults;
         }
 
@@ -236,12 +237,14 @@ public class SearchFragment extends Fragment {
                                             for (JsonElement songTitle : songQuery) {
                                                 songSearchResultAdapter.insertSearchItem(songTitle.getAsString());
                                             }
+                                            mainActivityContainer.cacheSongQuery(currSearchQuery, songSearchResultAdapter.getSearchResults());
 
                                             artistSearchResultAdapter.clearAdapterList();
                                             JsonArray artistQuery = jsonResponse.getAsJsonArray("artist");
                                             for (JsonElement artistTitle : artistQuery) {
                                                 artistSearchResultAdapter.insertSearchItem(artistTitle.getAsString());
                                             }
+                                            mainActivityContainer.cacheArtistQuery(currSearchQuery, artistSearchResultAdapter.getSearchResults());
 
                                             // Notify that both the song and artist adapter have been changed
                                             notifyRecyclerDataInsertedChanged();

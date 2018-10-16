@@ -277,11 +277,11 @@ public class MainActivityContainer extends AppCompatActivity
         songSearchQuery.put(key, results);
     }
 
-    public static List<String> getPlaylistList(){
-        return PlaylistFragment.getPlaylistList();
-    }
-
     public void cacheArtistQuery(String key, ArrayList<String> results) {
         artistSearchQuery.put(key, results);
+    }
+
+    public static List<String> getPlaylistList(){
+        return PlaylistFragment.getPlaylistList();
     }
 }
