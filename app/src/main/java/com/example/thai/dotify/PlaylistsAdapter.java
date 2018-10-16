@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
+import com.example.thai.dotify.Server.DotifySong;
+
 import java.util.List;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -122,6 +124,11 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
         public void setDeleteIconGone() {
             deleteIcon.setVisibility(View.GONE);
         }
+    }
+
+    public PlaylistsAdapter(List<String> songList, RecyclerViewClickListener listener){
+        this.playlistList = songList;
+        mlistener = listener;
     }
 
     /**

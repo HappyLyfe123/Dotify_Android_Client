@@ -14,6 +14,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * this object puts together all the parts of the application
@@ -249,8 +250,8 @@ public class MainActivityContainer extends AppCompatActivity
     }
 
 
-    public static PlaylistsAdapter getPlaylistAdapter(){
-        return PlaylistFragment.getPlaylistsAdapter();
+    public static List<String> getPlaylistList(){
+        return PlaylistFragment.getPlaylistList();
     }
 
 }

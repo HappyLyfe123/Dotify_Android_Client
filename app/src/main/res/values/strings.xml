@@ -8,6 +8,7 @@
     <string name="forget_password_title">Forget Password</string>
     <string name="connection_failed">Connection Failed, Please Try Again</string>
     <string name="cancel">Cancel</string>
+    <string name="select_a_playlist">Select A Playlist</string>
 
     <!-- App Key -->
     <string name="appKey">DotifyOnline-327</string>

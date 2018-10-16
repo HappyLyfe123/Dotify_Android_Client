@@ -56,7 +56,6 @@ interface DotifyHttpInterface {
                        @Query("password") password: String)
             : Call<DotifyUser>
 
-
     @PUT("playlist")
     fun createPlaylist(
             @Header("appKey") appKey: String,
@@ -91,6 +90,14 @@ interface DotifyHttpInterface {
             @Header("appkey") appKey : String,
             @Header("username") username : String,
             @Field("image") imageByteArray : String
+    ) : Call<ResponseBody>
+
+    @PUT("playlistpage?")
+    fun addSongToPlaylist(
+            @Header("appkey") appKey: String,
+            @Query("username") username: String,
+            @Query("playlist") playlistName: String,
+            @Query("songid") songID : String
     ) : Call<ResponseBody>
 
 }
