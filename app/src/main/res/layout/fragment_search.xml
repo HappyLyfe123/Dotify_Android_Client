@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchFragment">
+    tools:context=".SearchFragment"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/search_view_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:layout_alignParentTop="true">
-
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imageView3"
@@ -34,18 +33,64 @@
             android:textColorHint="@android:color/white"
             android:textColor="@android:color/white"
             android:layout_gravity="center"/>
-
-
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/search_result_view"
+    <LinearLayout
+        android:id="@+id/search_song_result_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignBottom="@+id/search_view_layout"
-        android:layout_marginTop="50dp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Songs"
+            android:textSize="20dp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:textColor="@color/white"
+            android:textAlignment="textStart"/>
 
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white"/>
 
-</RelativeLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/song_result_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/search_artist_result_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:text="Artists"
+            android:textColor="@color/white"
+            android:textAlignment="textStart"
+            android:layout_marginTop="3dp"/>
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/artist_result_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -38,7 +38,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private static PlaylistsAdapter playlistsAdapter;
     private OnChangeFragmentListener onChangeFragmentListener;
     private String playlistName = "";
-    private Context activityContext;
     private TextView createPlaylistErrorMessageTextView;
     private ProgressBar savingProgressBar;
     private DotifyUser user;
@@ -65,7 +64,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        activityContext = context;
     }
 
     /**
@@ -327,9 +325,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         playlistsAdapter.notifyItemRangeChanged(playlistList.size() - 1, playlistList.size());
     }
 
-    private void removePlayList(){
-
-    }
 
     //Display error message for create playlist AlertDialog view
     private void displayErrorMessage(ErrorType type, TextView displayTextView){

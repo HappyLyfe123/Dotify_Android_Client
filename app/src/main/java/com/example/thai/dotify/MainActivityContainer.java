@@ -13,7 +13,11 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.example.thai.dotify.Server.DotifySong;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * this object puts together all the parts of the application
@@ -36,6 +40,8 @@ public class MainActivityContainer extends AppCompatActivity
     private static boolean isMusicPlaying;
     private PlayingMusicController musicController;
     private DotifyUser user;
+    private Map<String, ArrayList<String>> songSearchQuery;
+    private Map<String, ArrayList<String>> artistSearchQuery;
 
     //list of pages
     public enum PlaylistFragmentType{
@@ -61,6 +67,8 @@ public class MainActivityContainer extends AppCompatActivity
 
         // Initialize Main Activity Variables
         user = UserUtilities.getCachedUserInfo(this);
+        songSearchQuery = new HashMap<>();
+        artistSearchQuery = new HashMap<>();
 
         //Initialize view layout
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
@@ -248,9 +256,27 @@ public class MainActivityContainer extends AppCompatActivity
         return user;
     }
 
-
-    public static PlaylistsAdapter getPlaylistAdapter(){
-        return PlaylistFragment.getPlaylistsAdapter();
+    /**
+     * Checks whether a specific search query's result has been cached for songs
+     * and returns a list of DotifySong objects if it has been cached and null otherwise
+     */
+    public ArrayList<String> isSongQueryCached(String key) {
+        return songSearchQuery.get(key);
     }
 
+    /**
+     * Checks whether a specific search query's result has been cached for artists
+     * and returns a list of DotifySong objects if it has been cached and null otherwise
+     */
+    public ArrayList<String> isArtistQueryCached(String key) {
+        return artistSearchQuery.get(key);
+    }
+
+    public void cacheSongQuery(String key, ArrayList<String> results) {
+        songSearchQuery.put(key, results);
+    }
+
+    public void cacheArtistQuery(String key, ArrayList<String> results) {
+        artistSearchQuery.put(key, results);
+    }
 }

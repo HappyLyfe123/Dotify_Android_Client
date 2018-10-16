@@ -93,4 +93,10 @@ interface DotifyHttpInterface {
             @Field("image") imageByteArray : String
     ) : Call<ResponseBody>
 
+    @GET("search")
+    fun querySong(
+            @Header("appkey") appKey: String,
+            @Query("search") query: String
+    ) : Call<ResponseBody>
+
 }
