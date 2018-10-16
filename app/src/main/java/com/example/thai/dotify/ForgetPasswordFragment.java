@@ -20,7 +20,11 @@ import android.widget.TextView;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.example.thai.dotify.Server.DotifySecurityQuestion;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
@@ -30,6 +34,7 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okhttp3.internal.Util;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -251,32 +256,34 @@ public class ForgetPasswordFragment extends Fragment{
         DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
 
         //Create the GET request
-        Call<DotifySecurityQuestion> request = dotifyHttpInterface.getResetQuestions(
+        Call<ResponseBody> request = dotifyHttpInterface.getResetQuestions(
                 getString(R.string.appKey),
                 username
         );
 
-        request.enqueue(new Callback<DotifySecurityQuestion>() {
+        request.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<DotifySecurityQuestion> call, retrofit2.Response<DotifySecurityQuestion> response) {
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     int respCode = response.code();
                     if (respCode == 200) {
-                        Log.d(TAG, "resetQuestions-> onResponse: Success Code : " + response.code());
-                        DotifySecurityQuestion received = response.body();
-                        if (received.getSecurityQuestion1() != null && received.getSecurityQuestion2() != null) {
-//                            String securityQuestionFirst = received.getSecurityQuestion1();
-//                            String securityQuestionSecond = received.getSecurityQuestion2();
-//                            listOfSecQuestions.add(securityQuestionFirst);
-//                            listOfSecQuestions.add(securityQuestionSecond);
-                            //now send the user to the reset password page
-                            //onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
+                        Log.d(TAG, "getSecurityQuestions-> onResponse: Success Code : " + response.code());
+                        ResponseBody obtained = response.body();
+                        try{
+                            String ob = obtained.toString();
+                            Gson gson = Utilities.stringToJson(ob);
+                            DotifySecurityQuestion securityQuestions = gson.fromJson(ob, DotifySecurityQuestion.class);
+                            listOfSecQuestions.add(securityQuestions.getSecurityQuestion1());
+                            listOfSecQuestions.add(securityQuestions.getSecurityQuestion2());
+                            Log.d(TAG, "The security questions are "+listOfSecQuestions.get(0)+listOfSecQuestions.get(1));
                         }
-                        else{
-                            Log.d(TAG, "securityQuestion1 and/or securityQuestion2 is null");
+                        catch(Exception ex){
+                            Log.d(TAG, "This didn't work.");
                         }
+                        //now send the user to the reset password page
+                        //onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
                     } else {
-                        Log.d(TAG, "resetQuestions-> onResponse: Invalid Credentials : " + response.code());
+                        Log.d(TAG, "getSecurityQuestions-> onResponse: Invalid Credentials : " + response.code());
                         //If failed, the user needs to reenter their username
 
                     }
@@ -284,7 +291,7 @@ public class ForgetPasswordFragment extends Fragment{
             }
 
             @Override
-            public void onFailure(Call<DotifySecurityQuestion> call, Throwable throwable) {
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
                 Log.w(TAG, "resetQuestions-> onFailure");
                 throwable.printStackTrace();
             }
@@ -321,10 +328,9 @@ public class ForgetPasswordFragment extends Fragment{
         request.enqueue(new Callback<DotifyUser>() {
             @Override
             public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
-                if (response.code() == 201) {
+                if (response.code() == 200) {
                     Log.d(TAG, "upDateDotifyUser-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
-                    //Create the DotifyUser account
-                    //startMainActivity();
+                    //Send the user to the login screen
                 } else {
                     Log.d(TAG, "updateDotifyUser-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
                 }
@@ -333,7 +339,7 @@ public class ForgetPasswordFragment extends Fragment{
             @Override
             public void onFailure(Call<DotifyUser> call, Throwable t) {
                 //The request has unexpectedly failed
-                Log.d(TAG, "updateDotifyUser -> onClick-> onSuccess-> onResponse: Unexpected request failure");
+                Log.d(TAG, "updateDotifyUser -> onClick-> onFailure-> onResponse: Unexpected request failure");
                 t.printStackTrace();
             }
         });
