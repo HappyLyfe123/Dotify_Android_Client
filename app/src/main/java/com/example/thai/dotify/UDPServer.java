@@ -2,6 +2,10 @@ package com.example.thai.dotify;
 
 import java.net.*;
 import java.io.*;
+
+/**
+ * the UDPServer class runs the server-side portion of our application
+ */
 public class UDPServer{
     public static void main(String args[])
     {

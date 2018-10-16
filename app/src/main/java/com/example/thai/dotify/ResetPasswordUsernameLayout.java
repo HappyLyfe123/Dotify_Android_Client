@@ -8,16 +8,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+/**
+ * the ResetPasswordUsernameLayout object allows user to enter a new username
+ */
 public class ResetPasswordUsernameLayout extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-
+    /**
+     * add a Bundle object to the ResetPasswordUsernameLayout object
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * create a View object to display the ResetPasswordUsernameLayout object
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -25,18 +38,30 @@ public class ResetPasswordUsernameLayout extends Fragment {
         return inflater.inflate(R.layout.forget_password_username_layout, container, false);
     }
 
-
+    /**
+     * inflate the ResetPasswordUsernameLayout object
+     * @param context
+     * @param attrs
+     * @param savedInstanceState
+     */
     @Override
     public void onInflate(Context context, AttributeSet attrs, Bundle savedInstanceState) {
 
         super.onInflate(context, attrs, savedInstanceState);
     }
 
+    /**
+     * add information about app's environment to the ResetPasswordUsernameLayout object
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }
 
+    /**
+     * detach fragment
+     */
     @Override
     public void onDetach() {
         super.onDetach();

@@ -13,7 +13,11 @@ public class UserUtilities {
     private static final String USERNAME = "username";
 
 
-    // Caches the user's information
+    /**
+     *  Caches the user's information
+     * @param context
+     * @param user - DotifyUser object containing the user's information
+     */
     public static void cacheUser(Context context, DotifyUser user){
         // Retrieve the user's shared preferences folder
         SharedPreferences userPreferences = getUserSharedPreferences(context);
@@ -45,7 +49,6 @@ public class UserUtilities {
     /**
      * Retrieves the user's information that is cached, if there isn't anything cached, it means
      * that the user is not logged in
-     *
      * @return A DotifyUser object if the user's information is currently cached
      */
     public static DotifyUser getCachedUserInfo(Context context){
@@ -84,8 +87,8 @@ public class UserUtilities {
 
     /**
      * Retrieves the SharedPreferences object that corresponds to the storing the User information
-     * @param context
-     * @return
+     * @param context - context object to use
+     * @return new SharedPreferences object
      */
     private static SharedPreferences getUserSharedPreferences(Context context) {
         return context.getSharedPreferences(SHARED_PREF_USER_DATA, context.MODE_PRIVATE);

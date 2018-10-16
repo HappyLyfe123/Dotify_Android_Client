@@ -27,7 +27,9 @@ import retrofit2.Callback;
 import static android.content.Context.MODE_PRIVATE;
 import static android.support.constraint.Constraints.TAG;
 
-
+/**
+ * this object represents the data for the login page
+ */
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private EditText usernameEditText;
@@ -36,13 +38,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private OnChangeFragmentListener onChangeFragmentListener;
     private Context activityContext;
 
+    /**
+     * object's personal interface
+     */
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
     }
 
     /**
      * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
-     *
      * @param onChangeFragmentListener The listener for communication
      */
     public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
@@ -50,7 +54,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     /***
-     * invoked when context object wants to attach to login fragment object
+     * invoked when context object will provide information about app's environment
      * @param context
      */
     @Override
@@ -60,7 +64,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     /***
-     *
+     * creates the view object for the login page
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -91,7 +95,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     /**
      * Initializes the main components of the fragment
-     *
      * @param savedInstanceState The saved instance of the fragment
      */
     @Override
@@ -102,14 +105,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     /**
      * Gets called upon the user clicking an interactive item on screen
-     *
      * @param view The current view
      */
     public void onClick(View view) {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         switch (view.getId()) {
-            case R.id.sign_in_button:
+            case R.id.sign_in_button: //user selects sign in
                 //Username or password edit field is empty
                 if(username.trim().isEmpty() || password.trim().isEmpty()) {
                     errorMessageTextView.setText(R.string.empty_login_entry);
@@ -119,10 +121,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     loginDotifyUser(username, password);
                 }
                 break;
-            case R.id.sign_up_button:
+            case R.id.sign_up_button: //user selects sign up
                 onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.CREATE_ACCOUNT);
                 break;
-            case R.id.forget_password_button:
+            case R.id.forget_password_button: //user selects forget password
                 onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.FORGOT_PASSWORD);
                 break;
         }

@@ -15,7 +15,9 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
-
+/**
+ * this object will display the information for a song object at full screen
+ */
 public class FullScreenMusicControllerFragment extends Fragment implements View.OnClickListener{
 
     private TextView songInfoTextView;
@@ -29,11 +31,23 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
     private static boolean isSongPlaying;
     private PlayingMusicController musicController;
 
+    /**
+     * create an object of type FullScreenMusicControllerFragment
+     * @param currController - object of type PlayingMusicController to attach to new object
+     * @return
+     */
     public static FullScreenMusicControllerFragment newInstance(PlayingMusicController currController){
         FullScreenMusicControllerFragment fragment = new FullScreenMusicControllerFragment();
         return fragment;
     }
 
+    /**
+     * creates view for FullScreenMusicControllerFragment object
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return new View object
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,6 +75,11 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
         return view;
     }
 
+    /**
+     * add extra fragments or stuff to object
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -86,6 +105,10 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
         musicController = playingMusicController;
     }
 
+    /**
+     * invoked when user wants to do something with the song
+     * @param v - View object displaying the FullScreenMusicControllerFragment object
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()){

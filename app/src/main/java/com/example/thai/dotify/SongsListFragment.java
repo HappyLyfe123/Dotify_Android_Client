@@ -33,6 +33,9 @@ import retrofit2.Callback;
 import static android.content.Context.MODE_PRIVATE;
 import static android.support.constraint.Constraints.TAG;
 
+/**
+ * the SongsListFragment object allows the user to do various functions with a list of songs
+ */
 public class SongsListFragment extends Fragment{
 
     private ImageButton backButton;
@@ -47,6 +50,9 @@ public class SongsListFragment extends Fragment{
     private String username;
     private Context activityContext;
 
+    /**
+     * default constructor
+     */
     public SongsListFragment(){
 
     }
@@ -60,19 +66,26 @@ public class SongsListFragment extends Fragment{
     }
 
     /**
-     * Sets the OnChangeFragmentLIstener to communicate from this fragment to the activity
-     *
+     * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
      * @param onChangeFragmentListener The listener for communication
      */
     public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener){
         this.onChangeFragmentListener = onChangeFragmentListener;
     }
 
+    /**
+     * add a Bundle object to the SongsListFragment object
+     * @param savedInstanceState - Bundle object
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * add information about app's environment to the SongsListFragment object
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -123,23 +136,34 @@ public class SongsListFragment extends Fragment{
         return view;
     }
 
+    /**
+     * add extra features when the activity object has been created
+     * @param savedInstanceState
+     */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setFragmentTitle();
     }
 
-    //Set the title for the current fragment to playlist name
+    /**
+     * Set the title for the current fragment to playlist name
+     * @param title - fragment title
+     */
     public static void setPlayListTitle(String title){
         playListTitle = title;
     }
 
-    //Set the title for the current fragment to playlist name
+    /**
+     * Set the title for the text view to title of current fragment
+     */
     private void setFragmentTitle(){
         titleTextView.setText(playListTitle);
     }
 
-
+    /**
+     * display the song list
+     */
     private void getSongList(){
         final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
 
@@ -153,6 +177,11 @@ public class SongsListFragment extends Fragment{
         );
 
         getSongList.enqueue(new Callback<JSONObject>() {
+            /**
+             * display a success message
+             * @param call - request to server
+             * @param response - server's response
+             */
             @Override
             public void onResponse(Call<JSONObject> call, retrofit2.Response<JSONObject> response) {
                 int respCode = response.code();
@@ -176,7 +205,11 @@ public class SongsListFragment extends Fragment{
             }
 
 
-            //If something is wrong with our request to the server, goes to this method
+            /**
+             * If something is wrong with our request to the server, goes to this method
+             * @param call - request to server
+             * @param t - unnecessary parameter
+             */
             @Override
             public void onFailure(Call<JSONObject> call, Throwable t) {
                 Log.d(TAG, "Invalid failure: onFailure");

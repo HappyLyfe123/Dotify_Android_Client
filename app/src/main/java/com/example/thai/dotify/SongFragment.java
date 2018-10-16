@@ -13,7 +13,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-
+/**
+ * the song fragment object allows the song to be displayed; getters and setters description are
+ * the same as the Song class
+ */
 public class SongFragment
 {
     static int id = 100;
@@ -24,6 +27,14 @@ public class SongFragment
     private byte[] music;
     private int songId;
 
+    /**
+     * constructor w/ given values
+     * @param song - name of song
+     * @param Artist - artist of song
+     * @param Alb - alubm containing the song name
+     * @param pic
+     * @param mus
+     */
     public SongFragment(String song, String Artist, String Alb, byte[] pic, byte[] mus)
     {
         title = song;
@@ -78,6 +89,12 @@ public class SongFragment
         music = song;
     }
 
+    /**
+     * convert the SongFragment object into a JSON object
+     * @param obj - generic object
+     * @return JSON Object
+     * @throws JSONException
+     */
     public static String Stringify(Object obj) throws JSONException
     {
         SongFragment song = (SongFragment) obj;

@@ -17,6 +17,13 @@ public class SearchFragment extends Fragment {
     private EditText searchEditText;
     private RecyclerView searchResult;
 
+    /**
+     * create the View object to display the SearchFragment object
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -29,6 +36,9 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
+    /**
+     * add the search listener
+     */
     private void setSearchListiner(){
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override

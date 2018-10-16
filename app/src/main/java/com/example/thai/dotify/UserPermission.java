@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 
+/**
+ * the UserPermission object checks for permissions the user allowed the app to have
+ */
 public class UserPermission {
 
     public enum Permission{

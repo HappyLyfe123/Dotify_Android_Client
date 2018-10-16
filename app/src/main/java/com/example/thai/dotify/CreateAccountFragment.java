@@ -32,7 +32,9 @@ import retrofit2.Callback;
 
 import static android.support.constraint.Constraints.TAG;
 
-
+/**
+ * this object gets the user input for each attribute for the account
+ */
 public class CreateAccountFragment extends Fragment{
 
     private EditText usernameEditText;
@@ -52,13 +54,15 @@ public class CreateAccountFragment extends Fragment{
         securityQuestion2Filled;
     private CreateAccountListener fragmentController;
 
+    /**
+     * interface that enables the "Create" button when all fields have some text
+     */
     public interface CreateAccountListener {
         void enableCreateButton(boolean enableCreateAccountButton);
     }
 
     /**
      * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
-     *
      * @param onChangeFragmentListener The listener for communication
      */
     public void setOnChangeFragmentListener(CreateAccountListener onChangeFragmentListener) {
@@ -109,7 +113,7 @@ public class CreateAccountFragment extends Fragment{
 
     /***
      * invoked when context object wants to attach to fragment
-     * @param context
+     * @param context - object of type Context to attach to fragment
      */
     @Override
     public void onAttach(Context context) {
@@ -123,7 +127,6 @@ public class CreateAccountFragment extends Fragment{
 
     /**
      * Initializes the main components of the fragment
-     *
      * @param savedInstanceState The saved instance of the fragment
      */
     @Override
@@ -133,12 +136,16 @@ public class CreateAccountFragment extends Fragment{
     }
 
     /**
-     * Create focus listener for edit text
-     *
+     * Create focus listener for edit text for username and password
      */
     private void setTextEditFocusListener(){
 
         usernameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            /**
+             * check if text field for username is empty
+             * @param v
+             * @param hasFocus
+             */
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
@@ -150,6 +157,11 @@ public class CreateAccountFragment extends Fragment{
         });
 
         passwordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            /**
+             * check if password is weak or has no text in text field
+             * @param v
+             * @param hasFocus
+             */
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
@@ -171,6 +183,11 @@ public class CreateAccountFragment extends Fragment{
         });
 
         confirmPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            /**
+             * check if text fields for password confirmation and password are equal
+             * @param v - view Object for CreateAccountFragment
+             * @param hasFocus - verifies if cursor is focused on second text field
+             */
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
@@ -218,13 +235,19 @@ public class CreateAccountFragment extends Fragment{
 
     /**
      * Create text change listener for edit text
-     *
      */
     private void setTextChange(){
         usernameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
+            /**
+             * when user changes their input
+             * @param s - user input sequence
+             * @param start
+             * @param before
+             * @param count
+             */
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
@@ -353,7 +376,6 @@ public class CreateAccountFragment extends Fragment{
 
     /**
      * Add the item to the spinner
-     *
      */
     private void populateSpinner(){
 
@@ -361,14 +383,10 @@ public class CreateAccountFragment extends Fragment{
 
 
     /**
-     * Enable create account button
-     *
+     * Enable create account button to change button color to black
      */
-    private void enableCreateAccountButton(){
-
-        /**
-         *Enable crate button to be able to click and change the color to black
-         */
+    private void enableCreateAccountButton()
+    {
         if(usernameFilled && passwordFilled && confirmedPasswordFilled && securityQuestion1Filled
                 && securityQuestion2Filled && !isWeakPasswordEnable && isPasswordMatch){
             fragmentController.enableCreateButton(true);
@@ -379,8 +397,7 @@ public class CreateAccountFragment extends Fragment{
     }
 
     /**
-     * Sent the user information to the server
-     *
+     * Sends the user information to the server
      */
     public boolean createAccount(){
         boolean isAccountCreated = true;
@@ -399,9 +416,7 @@ public class CreateAccountFragment extends Fragment{
 
     /**
      * Checks the user's password to make sure it is strong enough to prevent dictionary attacks
-     *
      * @param password The user's desired password
-     *
      * @return True if the password is strong enough and false otherwise
      */
     private boolean passwordGuidelineCheck(String password) {
@@ -416,7 +431,6 @@ public class CreateAccountFragment extends Fragment{
 
     /**
      * Creates an Dotify User from the federated identities
-     *
      * @param username The user's chosen username
      */
     private void createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,

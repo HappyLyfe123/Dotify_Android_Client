@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-
+/**
+ * this object allows the user to play a song
+ */
 public class MiniMusicControllerFragment extends Fragment implements View.OnClickListener{
 
     private ImageButton playPauseMusicButton;
@@ -18,13 +20,15 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
     private ConstraintLayout currLayout;
     private OnChangeFragmentListener onChangeFragmentListener;
 
+    /**
+     * object's own interface
+     */
     public interface OnChangeFragmentListener {
         void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
     }
 
     /**
      * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
-     *
      * @param onChangeFragmentListener The listener for communication
      */
     public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
@@ -63,13 +67,20 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
         return view;
     }
 
-
+    /**
+     * add extra features to fragment after it's created
+     * @param savedInstanceState
+     */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
     }
 
+    /**
+     * add information about app's environment
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -82,8 +93,8 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
     }
 
     /***
-     * invoked when button is selected
-     * @param v
+     * invoked when one of the buttons on the page is selected
+     * @param v - View object displaying the buttons
      */
     @Override
     public void onClick(View v) {

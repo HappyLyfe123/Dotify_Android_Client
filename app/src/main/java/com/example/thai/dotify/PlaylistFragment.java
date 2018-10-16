@@ -1,8 +1,6 @@
 package com.example.thai.dotify;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -17,31 +15,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
-
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
-
-import okhttp3.logging.HttpLoggingInterceptor;
-
-import static android.content.Context.MODE_PRIVATE;
 import static android.support.constraint.Constraints.TAG;
 
+//the fragment object that represents the home page for the profile page
 public class PlaylistFragment extends Fragment implements View.OnClickListener  {
 
     private Button createPlaylistButton;
@@ -59,6 +43,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private ProgressBar savingProgressBar;
     private DotifyUser user;
 
+    //default constructor
     public PlaylistFragment()  {
     }
 
@@ -70,11 +55,13 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         DUPLICATE,
     }
 
+    //interface that changes fragment view
     public interface OnChangeFragmentListener{
         void buttonClicked(MainActivityContainer.PlaylistFragmentType fragmentType);
         void setTitle(String title);
     }
 
+    //attaches context object to fragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -83,7 +70,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
 
     /**
      * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
-     *
      * @param onChangeFragmentListener The listener for communication
      */
     public void setOnChangeFragmentListener(PlaylistFragment.OnChangeFragmentListener onChangeFragmentListener) {
@@ -153,12 +139,15 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
      */
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.create_playlist_button: {
-                createPlaylistDialog();
-            }
+        switch (v.getId())
+        {
+            case R.id.create_playlist_button: //user selects create
+                {
+                    createPlaylistDialog();
+                }
             break;
-            case R.id.edit_playlist_button: {
+            case R.id.edit_playlist_button: //user selects edit
+                {
                 // Update all of the views to have the delete button to appear
                 playlistsAdapter.setDeleteIconVisibility(true);
                 playlistsAdapter.notifyDataSetChanged();
@@ -168,7 +157,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                 editPlaylistButton.setVisibility(View.GONE);
             }
             break;
-            case R.id.cancel_playlist_button: {
+            case R.id.cancel_playlist_button: //user selects cancel
+                {
                 // Update all of the views to have the delete button to disappear
                 playlistsAdapter.setDeleteIconVisibility(false);
                 playlistsAdapter.notifyDataSetChanged();
@@ -180,7 +170,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         }
     }
     /**
-     * Create an AlertDialog object to allow the user to create
+     * Create an AlertDialog object to allow the user to create a playlist
      *
      * @return
      */
@@ -188,10 +178,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         //Create an instance of the Alert Dialog
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
-
         //Set the View of the Alert Dialog
         final View alertDialogView = getActivity().getLayoutInflater().inflate(R.layout.fragment_create_playlist, null);
         alertDialogBuilder.setView(alertDialogView);
+
         //Create Alert DialogBox
         AlertDialog currDialogBox = alertDialogBuilder.create();
         currDialogBox.show();
@@ -241,6 +231,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                 playlistName
         );
         addPlaylist.enqueue(new Callback<ResponseBody>() {
+            /***
+             * server sends a reply to the client indicating successful action
+             * @param call
+             * @param response
+             */
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
                 savingProgressBar.setVisibility(View.GONE);
@@ -255,6 +250,11 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
 
             }
 
+            /**
+             * server sends reply indicating a failure on server's side
+             * @param call
+             * @param t
+             */
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d(TAG,"Invalid failure: onFailure");
@@ -265,8 +265,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     }
 
     /**
-     * This method sends a get request to the server to get a list of playlists
-     * The response body is a list of strings that consists of the names of the playlists that
+     * This method sends a get request to the server to get a list of playlist
+     * The response body is a list of strings that consists of the names of the playlist that
      * the user has created
      */
     private void getPlaylist(){
@@ -298,8 +298,8 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                     playlistsAdapter.notifyItemRangeInserted(0, userPlaylist.size());
                     playlistsAdapter.notifyItemRangeChanged(0, userPlaylist.size());
                 } else {
-                    //If unsucessful, show the response code
-                    Log.d(TAG, "getPlaylist-> Unable to retreive playlists " + response.code());
+                    //If unsuccessful, show the response code
+                    Log.d(TAG, "getPlaylist-> Unable to retrieve playlist " + response.code());
                 }
             }
             //If something is wrong with our request to the server, goes to this method

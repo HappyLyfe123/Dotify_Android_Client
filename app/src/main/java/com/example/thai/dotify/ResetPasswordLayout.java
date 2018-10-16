@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * the ResetPasswordLayout object represents account data to be updated
+ */
 public class ResetPasswordLayout extends Fragment {
 
     private EditText resetPasswordEditText;
@@ -31,6 +34,13 @@ public class ResetPasswordLayout extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    /**
+     * creates the View object to display the ResetPasswordLayout object
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return new View object
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

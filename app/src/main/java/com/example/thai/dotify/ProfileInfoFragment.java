@@ -51,6 +51,9 @@ import retrofit2.Response;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
+/**
+ * the ProfileInfoFragment object displays data for the account
+ */
 public class ProfileInfoFragment extends Fragment implements View.OnClickListener{
 
     private String TAG = ProfileInfoFragment.class.getSimpleName();
@@ -64,11 +67,16 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
     private CircleImageView profileImage;
     private UserImageUploadListener userImageUploadListener;
 
+    /**
+     * interface to upload some image for the profile
+     */
     public interface UserImageUploadListener{
         void onUserImageUploaded(DotifyUser user);
     }
 
-    // A class that works on uploading an image to the server
+    /**
+     *  A class that works on uploading an image to the server
+     */
     private class UploadImage extends AsyncTask<String, Void, String>{
         @Override
         protected String doInBackground(final String... encodedImage) {
@@ -97,6 +105,10 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
             return encodedImage[0];
         }
 
+        /**
+         * update DotifyUser object by adding the uploaded image
+         * @param encodedImage
+         */
         @Override
         protected void onPostExecute(String encodedImage) {
             super.onPostExecute(encodedImage);
@@ -108,6 +120,13 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
         }
     }
 
+    /**
+     * creates the View object for the ProfileInfoFragment object
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -145,6 +164,10 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
         return view;
     }
 
+    /**
+     * attach information about app's environment to the ProfileInfoFragment object
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -186,7 +209,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
 
 
     /**
-     * Method for onClick buttons
+     * Method invoked when profile image is selected
      * @param view
      */
     public void onClick(View view) {
@@ -203,7 +226,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
                 break;
             }
             //For log out
-            case R.id.logoutButton:
+            case R.id.logoutButton: //user wants to log out of app
                 UserUtilities.removeCachedUserInfo(activityContext);
                 //Send the User back to the login screen
                 Intent signoutIntent = new Intent(getActivity(), StartUpContainer.class);

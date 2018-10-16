@@ -1,38 +1,39 @@
 package com.example.thai.dotify;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.example.thai.dotify.Server.Dotify;
-import com.example.thai.dotify.Server.DotifyHttpInterface;
-
 import java.util.List;
 
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
 
-import static android.support.constraint.Constraints.TAG;
-
-
+/**
+ * the ResetPasswordSecurityQuestionLayout object represents data for security questions and answers
+ */
 public class ResetPasswordSecurityQuestionLayout extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private TextView securityQuestion1, securityQuestion2;
     private List<String>  listOfSecurityQuestions;
 
+    /**
+     * default constructor
+     */
     public ResetPasswordSecurityQuestionLayout() {
         // Required empty public constructor
     }
 
+    /**
+     * creates the View object to display the ResetPasswordSecurityQuestionLayout object
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,6 +52,12 @@ public class ResetPasswordSecurityQuestionLayout extends Fragment {
 //        super.onInflate(activity, attrs, savedInstanceState);
 //    }
 
+    /**
+     * inflate the object by getting the security questions the user answered
+     * @param context
+     * @param attrs
+     * @param savedInstanceState
+     */
     @Override
     public void onInflate(Context context, AttributeSet attrs, Bundle savedInstanceState) {
         super.onInflate(context, attrs, savedInstanceState);

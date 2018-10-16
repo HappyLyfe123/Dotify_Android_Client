@@ -10,6 +10,9 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+/**
+ * the StartUpContainer object represents the app's home apge
+ */
 public class StartUpContainer extends AppCompatActivity implements LoginFragment.OnChangeFragmentListener,
         CreateAccountFragment.CreateAccountListener, ForgetPasswordFragment.OnChangeFragmentListener,
         View.OnClickListener {
@@ -33,6 +36,10 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
 
     }
 
+    /**
+     * initialize the StartUpContainer object
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +75,6 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
 
     /**
      * Helper method that replaces the current fragment with one that is specified
-     *
      * @param fragmentType   The fragment that should now appear
      * @param setTransition  If the fragment should be transitioned in to the viewer
      * @param addToBackStack If the fragment should be added to the activity's back-stack
@@ -99,6 +105,10 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
         fragmentTransaction.commit();
     }
 
+    /**
+     * invoked when a user selects one of the buttons in the StartUpContainer object is selected
+     * @param fragmentType
+     */
     @Override
     public void buttonClicked(AuthFragmentType fragmentType) {
         switch (fragmentType){
@@ -119,7 +129,10 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
         }
     }
 
-    //Button Click listener for the activity
+    /**
+     * event handler for the buttons in the StartUpContainer object
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -135,6 +148,10 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
         }
     }
 
+    /**
+     * check if create button is enabled
+     * @param enableCreateAccountButton - boolean variable to verify button is enabled
+     */
     @Override
     public void enableCreateButton(boolean enableCreateAccountButton){
         //Enable create account button and change it color
@@ -149,7 +166,9 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
         }
     }
 
-    //Handle default back button
+    /**
+     * Handle default back button
+     */
     @Override
     public void onBackPressed() {
         //If the current page is the login page then will will go to the
@@ -160,7 +179,9 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
         goBackPreviousPage();
     }
 
-    //Remove current viewing screen and go back to previous screen
+    /**
+     * Remove current viewing screen and go back to previous screen
+     */
     private void goBackPreviousPage(){
 
         //Remove the current view of back stack

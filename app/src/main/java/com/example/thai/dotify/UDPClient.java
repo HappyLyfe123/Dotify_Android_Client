@@ -2,6 +2,10 @@ package com.example.thai.dotify;
 
 import java.net.*;
 import java.io.*;
+
+/**
+ * the UDPClient class runs the client-side portion of our application
+ */
 public class UDPClient{
     public static void main(String args[]) {
         // args give message contents and server hostname

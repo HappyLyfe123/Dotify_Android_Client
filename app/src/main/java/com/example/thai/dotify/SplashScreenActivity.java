@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+/**
+ * the SplashScreenActivity object is the starting point for the application
+ */
 public class SplashScreenActivity extends Activity {
 
     /***
@@ -23,6 +26,9 @@ public class SplashScreenActivity extends Activity {
         }
     }
 
+    /**
+     * stops the application
+     */
     @Override
     protected void onStop() {
         super.onStop();

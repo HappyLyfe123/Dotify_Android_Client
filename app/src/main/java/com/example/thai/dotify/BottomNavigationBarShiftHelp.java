@@ -7,6 +7,9 @@ import android.support.design.widget.BottomNavigationView;
 import android.util.Log;
 import java.lang.reflect.Field;
 
+/**
+ * the BottomNavigationBarShiftHelp object is a helper object for the navigation bar located in the bottom of our app
+ */
 @SuppressLint("RestrictedApi")
 class BottomNavigationBarShiftHelp {
     /**

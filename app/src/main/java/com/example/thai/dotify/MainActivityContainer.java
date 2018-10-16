@@ -15,6 +15,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/**
+ * this object puts together all the parts of the application
+ */
 public class MainActivityContainer extends AppCompatActivity
         implements PlaylistFragment.OnChangeFragmentListener{
 
@@ -48,7 +51,7 @@ public class MainActivityContainer extends AppCompatActivity
     }
 
     /***
-     * invoked at the very beginning
+     * creates the main object
      * @param savedInstanceState
      */
     @Override
@@ -93,7 +96,7 @@ public class MainActivityContainer extends AppCompatActivity
     }
 
     /***
-     * invoked when button is selected
+     * invoked when a playlist is selected
      * @param fragmentType
      */
     @Override
@@ -109,7 +112,7 @@ public class MainActivityContainer extends AppCompatActivity
 
     /***
      * assigns playlist title to user-provided playlist title
-     * @param title
+     * @param title - user-provided playlist title
      */
     @Override
     public void setTitle(String title) {
@@ -124,7 +127,7 @@ public class MainActivityContainer extends AppCompatActivity
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()) {
-                        case R.id.playlists:
+                        case R.id.playlists: //user selects playlists
                             startFragment(PlaylistFragmentType.PLAYLISTS, true, false);
                             break;
                         case R.id.search:
@@ -144,7 +147,6 @@ public class MainActivityContainer extends AppCompatActivity
 
     /**
      * Starts a fragment for the user
-     *
      * @param fragmentType The id of the fragment that is going to start
      * @return True if the fragment has started correctly
      */

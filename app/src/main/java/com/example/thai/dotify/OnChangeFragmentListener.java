@@ -1,5 +1,8 @@
 package com.example.thai.dotify;
 
+/**
+ * main interface for the main activity fragment
+ */
 public interface OnChangeFragmentListener {
 
     // List of fragments to be used throughout the project

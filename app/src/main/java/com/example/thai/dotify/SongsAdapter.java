@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.List;
 
+//object that manipulates song data
 public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder> {
 
     private List<Song> songsList;
@@ -17,6 +18,11 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
         public TextView songTitle, artistName, albumName;
         private RecyclerViewClickListener mListener;
 
+        /***
+         * constructor w/ given objects
+         * @param view - View object displaying song information
+         * @param listener
+         */
         public MyViewHolder(View view, RecyclerViewClickListener listener) {
             super(view);
             songTitle = (TextView) view.findViewById(R.id.song_info_song_title_text_view);
@@ -26,12 +32,21 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
             view.setOnClickListener(this);
         }
 
+        /***
+         * invoked when a song is selected
+         * @param v
+         */
         @Override
         public void onClick(View v) {
             mListener.onItemClick(v, getAdapterPosition());
         }
     }
 
+    /**
+     * constructor with given list of songs
+     * @param songList - list of songs
+     * @param listener
+     */
     public SongsAdapter(List<Song> songList, RecyclerViewClickListener listener){
         this.songsList = songList;
         mListener = listener;
@@ -44,6 +59,12 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
         notifyDataSetChanged();
     }
 
+    /**
+     * display the list of songs
+     * @param parent
+     * @param viewType
+     * @return MyViewHolder object
+     */
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -54,6 +75,11 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
         return new MyViewHolder(itemView, mListener);
     }
 
+    /**
+     * binds song data to a MyViewHolder object
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Song song = songsList.get(position);
@@ -62,6 +88,10 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
         holder.albumName.setText(song.getAlbumName());
     }
 
+    /**
+     * get size of list of songs
+     * @return songsList.size()
+     */
     @Override
     public int getItemCount() {
         return songsList.size();
