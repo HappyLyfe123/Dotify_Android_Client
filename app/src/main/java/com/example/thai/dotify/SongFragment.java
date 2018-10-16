@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 /**
  * the song fragment object allows the song to be displayed; getters and setters description are
- * the same as the Song class
+ * the same as the DotifySong class
  */
 public class SongFragment
 {

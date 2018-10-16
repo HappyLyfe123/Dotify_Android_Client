@@ -39,8 +39,8 @@ public class PlayingMusicController {
     }
 
     /**
-     * assigns song being played in a playlist to the Song object
-     * @param position - Song at specified position
+     * assigns song being played in a playlist to the DotifySong object
+     * @param position - song at specified position
      */
     public void setCurrentSong(int position){
         currentSong = songList.get(position);
