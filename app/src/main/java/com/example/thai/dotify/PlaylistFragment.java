@@ -35,7 +35,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
     private RecyclerView playlistListRecycleView;
     private EditText playlistNameEditText;
     private List<String> playlistList = new ArrayList<>();
-    private PlaylistsAdapter playlistsAdapter;
+    private static PlaylistsAdapter playlistsAdapter;
     private OnChangeFragmentListener onChangeFragmentListener;
     private String playlistName = "";
     private Context activityContext;
@@ -348,4 +348,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                 break;
         }
     }
+
+
+    public static PlaylistsAdapter getPlaylistsAdapter(){
+        return playlistsAdapter;
+    }
+
 }

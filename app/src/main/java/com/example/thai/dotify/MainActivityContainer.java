@@ -241,12 +241,16 @@ public class MainActivityContainer extends AppCompatActivity
         startFragment(PlaylistFragmentType.BACK_BUTTON, false, false);
     }
 
-
-
     /**
      * Returns the current user object
      */
     public DotifyUser getCurrentUser(){
         return user;
     }
+
+
+    public static PlaylistsAdapter getPlaylistAdapter(){
+        return PlaylistFragment.getPlaylistsAdapter();
+    }
+
 }

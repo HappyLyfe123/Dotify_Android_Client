@@ -3,6 +3,10 @@ package com.example.thai.dotify;
 
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+
+import com.example.thai.dotify.Server.Dotify;
+import com.example.thai.dotify.Server.DotifySong;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -13,15 +17,15 @@ import java.util.List;
  */
 public class PlayingMusicController {
     private boolean isSongPlaying;
-    private  Song currentSong;
+    private DotifySong currentSong;
     private MediaPlayer mediaPlayer;
-    private List<Song> songList;
+    private List<DotifySong> songList;
 
     /**
      * constructor with given list of songs
      * @param songList - list of songs to add
      */
-    public PlayingMusicController(List<Song> songList){
+    public PlayingMusicController(List<DotifySong> songList){
         this.songList = songList;
         mediaPlayer = new MediaPlayer();
     }

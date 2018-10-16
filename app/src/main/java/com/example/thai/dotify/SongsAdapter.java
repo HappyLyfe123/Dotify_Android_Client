@@ -6,12 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.thai.dotify.Server.DotifySong;
+
 import java.util.List;
 
 //object that manipulates song data
 public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder> {
 
-    private List<Song> songsList;
+    private List<DotifySong> songsList;
     private RecyclerViewClickListener mListener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -47,7 +50,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
      * @param songList - list of songs
      * @param listener
      */
-    public SongsAdapter(List<Song> songList, RecyclerViewClickListener listener){
+    public SongsAdapter(List<DotifySong> songList, RecyclerViewClickListener listener){
         this.songsList = songList;
         mListener = listener;
     }
@@ -82,10 +85,10 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
      */
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Song song = songsList.get(position);
-        holder.songTitle.setText(song.getSongName());
-        holder.artistName.setText(song.getArtistName());
-        holder.albumName.setText(song.getAlbumName());
+        DotifySong song = songsList.get(position);
+        holder.songTitle.setText(song.getSong());
+        holder.artistName.setText(song.getArtist());
+        holder.albumName.setText(song.getAlbum());
     }
 
     /**

@@ -1,10 +1,12 @@
 package com.example.thai.dotify;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,8 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
     private ImageButton nextSongImageButton;
     private ImageButton playPauseImageButton;
     private ImageButton likeSongImageButton;
+    private RecyclerView selectPlaylistList;
+    private SelectPlaylistAdapter selectPlaylistAdapter;
     public static SeekBar songSeekBar;
     private static boolean isSongPlaying;
     private PlayingMusicController musicController;
@@ -113,7 +117,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.full_screen_add_to_playlist_button:
-
+                String playlistName = getSelectedPlaylist();
                 break;
             case R.id.full_screen_previous_track_image_button:
                 break;
@@ -133,5 +137,20 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
                 likeSongImageButton.setImageResource(R.drawable.already_like_song_icon);
                 break;
         }
+    }
+
+    private String getSelectedPlaylist(){
+        String playlistName = "";
+        //Create an instance of the Alert Dialog
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        //Set the View of the Alert Dialog
+        final View alertDialogView = getActivity().getLayoutInflater().inflate(R.layout.fragment_playlist, null);
+        alertDialogBuilder.setView(alertDialogView);
+        //Create Alert DialogBox
+        AlertDialog currDialogBox = alertDialogBuilder.create();
+        currDialogBox.show();
+
+
+        return playlistName;
     }
 }

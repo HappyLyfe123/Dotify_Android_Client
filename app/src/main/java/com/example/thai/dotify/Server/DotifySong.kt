@@ -1,8 +1,9 @@
 package com.example.thai.dotify.Server
 
 class DotifySong {
-    var songID: String? = null
-    var album: String? = null
+    var songid: String? = null
+    var song: String? = null
     var artist: String? = null
-    var title: String? = null
+    var album: String? = null
+    var liked: Boolean? = null
 }

@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,11 +20,14 @@ import android.widget.TextView;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.example.thai.dotify.Server.DotifySong;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,7 +43,7 @@ public class SongsListFragment extends Fragment{
     private ImageButton backButton;
     private TextView titleTextView;
     private RecyclerView songListRecycleView;
-    private List<Song> songsList = new ArrayList<>();
+    private List<DotifySong> songsList = new ArrayList<>();
     private SongsAdapter songsAdapter;
     private OnChangeFragmentListener onChangeFragmentListener;
 
@@ -112,9 +114,9 @@ public class SongsListFragment extends Fragment{
         titleTextView = (TextView) view.findViewById(R.id.song_list_title_text_view);
         songListRecycleView = (RecyclerView) view.findViewById(R.id.song_list_recycle_view);
         SharedPreferences sharedPreferences = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
-        username = "PenguinDan";//sharedPreferences.getString("username", null);
+        username = "Penguin";//sharedPreferences.getString("username", null);
 
-
+        songsList = new ArrayList<>();
         // Initialize the recycler view listener
         RecyclerViewClickListener songItemClickListener = (listView, position) -> {
             // Create a music controller object
@@ -133,6 +135,7 @@ public class SongsListFragment extends Fragment{
         songListRecycleView.setItemAnimator(new DefaultItemAnimator());
         songListRecycleView.setAdapter(songsAdapter);
         getSongList();
+
         return view;
     }
 
@@ -170,33 +173,40 @@ public class SongsListFragment extends Fragment{
         dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
 
         DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
-        Call<JSONObject> getSongList = dotifyHttpInterface.getSongList(
+        Call<ResponseBody> getSongList = dotifyHttpInterface.getSongList(
                 getString(R.string.appKey),
                 username,
                 playListTitle
         );
 
-        getSongList.enqueue(new Callback<JSONObject>() {
+        getSongList.enqueue(new Callback<ResponseBody>() {
             /**
              * display a success message
              * @param call - request to server
              * @param response - server's response
              */
             @Override
-            public void onResponse(Call<JSONObject> call, retrofit2.Response<JSONObject> response) {
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
                 int respCode = response.code();
                 if (respCode == Dotify.OK) {
                     Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
                     //gets a list of strings of playlist names
-                    JSONObject mySong = response.body();
+                    ResponseBody mySong = response.body();
                     try {
-                        System.out.println(mySong.toString());
+                        JsonObject currSongList= Utilities.ConvertStringToJSON(mySong.string());
+                        Gson gson = new Gson();
+                        for(int x = 0; x < currSongList.get("songs").getAsJsonArray().size(); x++){
+                            songsList.add(gson.fromJson(currSongList.get("songs").getAsJsonArray().get(x), DotifySong.class));
+                            System.out.println(songsList.get(x).getSong());
+                        }
+                        songsAdapter.notifyItemRangeInserted(0, songsList.size());
+                        songsAdapter.notifyItemRangeChanged(0, songsList.size());
+                        songsAdapter.notifyDataSetChanged();
+                        System.out.println(songsAdapter.getItemCount());
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    //System.out.println(mySongList.get(2).getTitle());
-
-                    //Converts the playlist we got to a list of playlists instead of a list of strings
 
                 } else {
                     //If unsucessful, show the response code
@@ -211,9 +221,10 @@ public class SongsListFragment extends Fragment{
              * @param t - unnecessary parameter
              */
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d(TAG, "Invalid failure: onFailure");
             }
         });
     }
+
 }
