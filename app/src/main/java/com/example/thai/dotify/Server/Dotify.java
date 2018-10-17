@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.example.thai.dotify.BuildConfig;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -121,35 +123,6 @@ public class Dotify{
         return sharedPreferences.getString(Dotify.DOTIFY_USERNAME, null);
     }
 
-//    public static String getCachedAstralTokens(final Context context) {
-//        //Open the folder containing Astral's information
-//        SharedPreferences sharedPreferences = getAstralSharedPreferences(context);
-//        return sharedPreferences.getString(Astral.ASTRAL_TOKEN, null);
-//    }
-
-//    /**
-//     * Stores the User's tokens to perform any other transactions later
-//     * @param userToken The token item received from an Astral Request
-//     */
-//    public static void storeAstralUserToken(Context context, String userToken) {
-//        SharedPreferences sharedPreferences = getAstralSharedPreferences(context);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putString(Astral.ASTRAL_TOKEN, userToken);
-//        editor.apply();
-//    }
-
-//    /**\
-//     * Removes the astral token from cache
-//     *
-//     * @param context The activity in which this method was called
-//     */
-//    public static void removeAstralToken(final Context context) {
-//        SharedPreferences sharedPreferences = getAstralSharedPreferences(context);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.remove(Astral.ASTRAL_TOKEN);
-//        editor.apply();
-//    }
-
     /**
      * Removes the User's username that is cached
      *
@@ -159,8 +132,16 @@ public class Dotify{
         SharedPreferences sharedPreferences = getDotifySharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(DOTIFY_USERNAME);
-        //editor.remove(ASTRAL_TOKEN);
         editor.apply();
+    }
+
+    /**
+     * Adds timeout to the retrofit builder
+     */
+    public void addTimeout(){
+        okHttpClientBuilder.connectTimeout(5, TimeUnit.MINUTES);
+        okHttpClientBuilder.readTimeout(5, TimeUnit.MINUTES);
+        okHttpClientBuilder.writeTimeout(5, TimeUnit.MINUTES);
     }
 
     /**

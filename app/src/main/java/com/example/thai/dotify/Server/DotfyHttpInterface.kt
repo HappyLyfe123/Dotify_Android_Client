@@ -47,13 +47,15 @@ interface DotifyHttpInterface {
                            @Header("username") username: String,
                            @Header("securityAnswer1") securityAnswer1: String,
                            @Header("securityAnswer2") securityAnswer2: String)
-            : Call<String>
+            : Call<ResponseBody>
 
 
+    @FormUrlEncoded
     @PUT("users")
-    fun updatePassword(@Header("appKey") appKey: String,
-                       @Query("username") username: String,
-                       @Query("password") password: String)
+    fun updatePassword(@Header("appKey") appKey:String,
+                       @Field("token") token:String,
+                       @Field("username") username:String,
+                       @Field("password") password:String)
             : Call<DotifyUser>
 
 

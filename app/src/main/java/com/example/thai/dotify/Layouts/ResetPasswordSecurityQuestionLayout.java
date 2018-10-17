@@ -1,5 +1,6 @@
 package com.example.thai.dotify.Layouts;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.example.thai.dotify.Fragments.ForgetPasswordFragment;
 import com.example.thai.dotify.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,7 +24,6 @@ public class ResetPasswordSecurityQuestionLayout extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private TextView securityQuestion1, securityQuestion2;
-    private List<String>  listOfSecurityQuestions;
 
     /**
      * default constructor
@@ -43,18 +44,10 @@ public class ResetPasswordSecurityQuestionLayout extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.forget_password_security_question_layout, container, false);
-        securityQuestion1 = getActivity().findViewById(R.id.forget_password_security_question_1_text_view);
-        securityQuestion2 = getActivity().findViewById(R.id.forget_password_security_question_2_text_view);
-        listOfSecurityQuestions = ForgetPasswordFragment.getListOfSecQuestions();
+        securityQuestion1 = (TextView) view.findViewById(R.id.forget_password_security_question_1_text_view);
+        securityQuestion2 = (TextView) view.findViewById(R.id.forget_password_security_question_2_text_view);
         return view;
     }
-
-//    @Override
-//    public void onInflate(Activity activity, AttributeSet attrs, Bundle savedInstanceState) {
-//        securityQuestion1.setText("Hello");
-//        securityQuestion2.setText("There");
-//        super.onInflate(activity, attrs, savedInstanceState);
-//    }
 
     /**
      * inflate the object by getting the security questions the user answered
@@ -66,8 +59,8 @@ public class ResetPasswordSecurityQuestionLayout extends Fragment {
     public void onInflate(Context context, AttributeSet attrs, Bundle savedInstanceState) {
         super.onInflate(context, attrs, savedInstanceState);
         //Set the security questions to the first and second question respetively
-        securityQuestion1.setText(listOfSecurityQuestions.get(0));
-        securityQuestion2.setText(listOfSecurityQuestions.get(1));
+        securityQuestion1.setText(ForgetPasswordFragment.getListOfSecQuestions().get(0));
+        securityQuestion2.setText(ForgetPasswordFragment.getListOfSecQuestions().get(1));
 }
 
 
