@@ -1,4 +1,4 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Layouts;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.thai.dotify.R;
 
 /**
  * the ResetPasswordUsernameLayout object allows user to enter a new username

@@ -1,7 +1,9 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import com.example.thai.dotify.DotifyUser;
 import com.google.gson.*;
 
 /**

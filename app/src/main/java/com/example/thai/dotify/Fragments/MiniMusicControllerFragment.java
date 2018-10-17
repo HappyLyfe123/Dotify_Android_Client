@@ -1,4 +1,4 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.example.thai.dotify.R;
+import com.example.thai.dotify.StartUpContainer;
 
 /**
  * this object allows the user to play a song

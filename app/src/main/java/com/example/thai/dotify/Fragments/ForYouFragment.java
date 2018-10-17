@@ -1,4 +1,4 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,6 +8,9 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.thai.dotify.R;
+import com.example.thai.dotify.StartUpContainer;
 
 public class ForYouFragment extends Fragment implements View.OnClickListener {
 

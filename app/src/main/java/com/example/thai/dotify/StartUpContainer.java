@@ -10,6 +10,10 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.thai.dotify.Fragments.CreateAccountFragment;
+import com.example.thai.dotify.Fragments.ForgetPasswordFragment;
+import com.example.thai.dotify.Fragments.LoginFragment;
+
 /**
  * the StartUpContainer object represents the app's home apge
  */

@@ -1,11 +1,11 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Utilities;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 
-public class Utilities {
+public class JSONUtilities {
 
     public static JsonObject ConvertStringToJSON(String convertString){
         JsonParser parser = new JsonParser();
@@ -34,13 +34,4 @@ public class Utilities {
         return gson;
     }
 
-
-    /***
-     * creates view for the object
-     * @param songID the song id to be check
-     * @return true if there's already a song with the same id in the playlist
-     */
-    public static boolean checkPlaylistForDuplicateSong(String songID){
-        return true;
-    }
 }

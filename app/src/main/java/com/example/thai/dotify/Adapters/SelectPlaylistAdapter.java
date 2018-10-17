@@ -1,4 +1,4 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

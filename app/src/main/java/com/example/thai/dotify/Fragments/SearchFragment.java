@@ -1,6 +1,5 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Fragments;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.NonNull;
@@ -16,18 +15,19 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.thai.dotify.MainActivityContainer;
+import com.example.thai.dotify.R;
+import com.example.thai.dotify.RecyclerViewClickListener;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
-import com.example.thai.dotify.Server.DotifySong;
+import com.example.thai.dotify.Utilities.JSONUtilities;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -230,7 +230,7 @@ public class SearchFragment extends Fragment {
                                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                         try {
                                             String serverResponse = response.body().string();
-                                            JsonObject jsonResponse = Utilities.ConvertStringToJSON(serverResponse);
+                                            JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
 
                                             JsonArray songQuery = jsonResponse.getAsJsonArray("songs");
                                             songSearchResultAdapter.clearAdapterList();

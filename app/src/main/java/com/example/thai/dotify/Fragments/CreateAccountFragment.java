@@ -1,4 +1,4 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,10 +14,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.thai.dotify.DotifyUser;
+import com.example.thai.dotify.MainActivityContainer;
+import com.example.thai.dotify.R;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 
-import com.example.thai.dotify.Server.DotifyHttpInterface;
+import com.example.thai.dotify.Utilities.UserUtilities;
 
 import java.io.IOException;
 import java.util.regex.Matcher;

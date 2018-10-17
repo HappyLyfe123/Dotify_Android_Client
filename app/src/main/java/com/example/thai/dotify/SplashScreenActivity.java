@@ -2,8 +2,9 @@ package com.example.thai.dotify;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+
+import com.example.thai.dotify.Utilities.UserUtilities;
 
 /**
  * the SplashScreenActivity object is the starting point for the application

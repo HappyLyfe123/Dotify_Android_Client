@@ -1,4 +1,4 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,6 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.thai.dotify.DotifyUser;
+import com.example.thai.dotify.MainActivityContainer;
+import com.example.thai.dotify.Adapters.PlaylistsAdapter;
+import com.example.thai.dotify.R;
+import com.example.thai.dotify.RecyclerViewClickListener;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 import java.util.ArrayList;

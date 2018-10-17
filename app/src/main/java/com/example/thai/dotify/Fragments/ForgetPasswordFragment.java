@@ -1,9 +1,6 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Fragments;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.AttributeSet;
@@ -14,18 +11,16 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.thai.dotify.DotifyUser;
+import com.example.thai.dotify.R;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.example.thai.dotify.Server.DotifySecurityQuestion;
+import com.example.thai.dotify.StartUpContainer;
+import com.example.thai.dotify.Utilities.JSONUtilities;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,12 +29,10 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.internal.Util;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-import static android.content.Context.MODE_PRIVATE;
 import static android.support.constraint.Constraints.TAG;
 
 /**
@@ -271,7 +264,7 @@ public class ForgetPasswordFragment extends Fragment{
                         ResponseBody obtained = response.body();
                         try{
                             String ob = obtained.toString();
-                            Gson gson = Utilities.stringToJson(ob);
+                            Gson gson = JSONUtilities.stringToJson(ob);
                             DotifySecurityQuestion securityQuestions = gson.fromJson(ob, DotifySecurityQuestion.class);
                             listOfSecQuestions.add(securityQuestions.getSecurityQuestion1());
                             listOfSecQuestions.add(securityQuestions.getSecurityQuestion2());

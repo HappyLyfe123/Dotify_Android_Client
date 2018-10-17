@@ -1,4 +1,4 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.thai.dotify.R;
+import com.example.thai.dotify.RecyclerViewClickListener;
 import com.example.thai.dotify.Server.DotifySong;
 
 import java.util.List;

@@ -1,6 +1,5 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Fragments;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -12,19 +11,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.content.Context;
 
+import com.example.thai.dotify.DotifyUser;
+import com.example.thai.dotify.R;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
+import com.example.thai.dotify.StartUpContainer;
+import com.example.thai.dotify.Utilities.UserUtilities;
 
-import java.io.IOException;
-
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-import static android.content.Context.MODE_PRIVATE;
 import static android.support.constraint.Constraints.TAG;
 
 /**

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SongsListFragment">
+    tools:context=".Fragments.SongsListFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -1,10 +1,9 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Fragments;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,15 +16,17 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.thai.dotify.MainActivityContainer;
+import com.example.thai.dotify.PlayingMusicController;
+import com.example.thai.dotify.R;
+import com.example.thai.dotify.RecyclerViewClickListener;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.example.thai.dotify.Server.DotifySong;
+import com.example.thai.dotify.Adapters.SongsAdapter;
+import com.example.thai.dotify.Utilities.JSONUtilities;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -193,7 +194,7 @@ public class SongsListFragment extends Fragment{
                     //gets a list of strings of playlist names
                     ResponseBody mySong = response.body();
                     try {
-                        JsonObject currSongList= Utilities.ConvertStringToJSON(mySong.string());
+                        JsonObject currSongList= JSONUtilities.ConvertStringToJSON(mySong.string());
                         Gson gson = new Gson();
                         for(int x = 0; x < currSongList.get("songs").getAsJsonArray().size(); x++){
                             songsList.add(gson.fromJson(currSongList.get("songs").getAsJsonArray().get(x), DotifySong.class));

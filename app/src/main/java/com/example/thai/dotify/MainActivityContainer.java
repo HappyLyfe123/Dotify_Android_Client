@@ -1,6 +1,5 @@
 package com.example.thai.dotify;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,11 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.example.thai.dotify.Server.DotifySong;
+import com.example.thai.dotify.Fragments.CreatePlaylistFragment;
+import com.example.thai.dotify.Fragments.ForYouFragment;
+import com.example.thai.dotify.Fragments.FullScreenMusicControllerFragment;
+import com.example.thai.dotify.Fragments.MiniMusicControllerFragment;
+import com.example.thai.dotify.Fragments.PlaylistFragment;
+import com.example.thai.dotify.Fragments.ProfileInfoFragment;
+import com.example.thai.dotify.Fragments.SearchFragment;
+import com.example.thai.dotify.Fragments.SongsListFragment;
+import com.example.thai.dotify.Utilities.UserUtilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +30,7 @@ import java.util.Map;
  * this object puts together all the parts of the application
  */
 public class MainActivityContainer extends AppCompatActivity
-        implements PlaylistFragment.OnChangeFragmentListener{
+        implements PlaylistFragment.OnChangeFragmentListener, SearchFragment.OnChangeFragmentListener{
 
     private TextView mTextMessage;
     private SearchFragment searchFragment;
@@ -43,6 +49,16 @@ public class MainActivityContainer extends AppCompatActivity
     private DotifyUser user;
     private Map<String, ArrayList<String>> songSearchQuery;
     private Map<String, ArrayList<String>> artistSearchQuery;
+
+    @Override
+    public void onSongResultClicked(String song) {
+
+    }
+
+    @Override
+    public void onArtistResultClicked() {
+
+    }
 
     //list of pages
     public enum PlaylistFragmentType{

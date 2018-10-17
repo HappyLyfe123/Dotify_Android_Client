@@ -1,4 +1,4 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Fragments;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -16,11 +16,16 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.thai.dotify.DotifyUser;
+import com.example.thai.dotify.MainActivityContainer;
+import com.example.thai.dotify.PlayingMusicController;
+import com.example.thai.dotify.Adapters.PlaylistsAdapter;
+import com.example.thai.dotify.R;
+import com.example.thai.dotify.RecyclerViewClickListener;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
