@@ -47,18 +47,8 @@ public class MainActivityContainer extends AppCompatActivity
     private static boolean isMusicPlaying;
     private PlayingMusicController musicController;
     private DotifyUser user;
-    private Map<String, ArrayList<String>> songSearchQuery;
+    private Map<String, ArrayList<SearchResultSongs>> songSearchQuery;
     private Map<String, ArrayList<String>> artistSearchQuery;
-
-    @Override
-    public void onSongResultClicked(String song) {
-
-    }
-
-    @Override
-    public void onArtistResultClicked() {
-
-    }
 
     //list of pages
     public enum PlaylistFragmentType{
@@ -94,6 +84,7 @@ public class MainActivityContainer extends AppCompatActivity
 
         //Instantiate fragments
         searchFragment = new SearchFragment();
+        searchFragment.setOnChangeFragmentListener(this);
         playlistFragment = new PlaylistFragment();
         playlistFragment.setOnChangeFragmentListener(this);
         profileInfoFragment = new ProfileInfoFragment();
@@ -277,7 +268,7 @@ public class MainActivityContainer extends AppCompatActivity
      * Checks whether a specific search query's result has been cached for songs
      * and returns a list of DotifySong objects if it has been cached and null otherwise
      */
-    public ArrayList<String> isSongQueryCached(String key) {
+    public ArrayList<SearchResultSongs> isSongQueryCached(String key) {
         return songSearchQuery.get(key);
     }
 
@@ -289,7 +280,7 @@ public class MainActivityContainer extends AppCompatActivity
         return artistSearchQuery.get(key);
     }
 
-    public void cacheSongQuery(String key, ArrayList<String> results) {
+    public void cacheSongQuery(String key, ArrayList<SearchResultSongs> results) {
         songSearchQuery.put(key, results);
     }
 
@@ -300,4 +291,15 @@ public class MainActivityContainer extends AppCompatActivity
     public static List<String> getPlaylistList(){
         return PlaylistFragment.getPlaylistList();
     }
+
+    @Override
+    public void onSongResultClicked(String songID) {
+        System.out.println(songID);
+    }
+
+    @Override
+    public void onArtistResultClicked(String artistName) {
+
+    }
+
 }

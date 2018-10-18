@@ -9,19 +9,18 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
-import com.example.thai.dotify.Server.DotifySong;
+import com.example.thai.dotify.SearchResultSongs;
 
 import java.util.List;
 
-//object that manipulates song data
-public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHolder> {
+public class SearchResultSongAdapter extends RecyclerView.Adapter<SearchResultSongAdapter.ItemsViewHolder>{
 
-    private List<DotifySong> songsList;
-    private RecyclerViewClickListener mListener;
+    private List<SearchResultSongs> songsList;
+    private RecyclerViewClickListener itemClickListener;
 
     public class ItemsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView songTitle, artistName, albumName;
-        private RecyclerViewClickListener mListener;
+        public TextView songTitle;
+        private RecyclerViewClickListener itemClickListener;
 
         /***
          * constructor w/ given objects
@@ -31,9 +30,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
         public ItemsViewHolder(View view, RecyclerViewClickListener listener) {
             super(view);
             songTitle = (TextView) view.findViewById(R.id.song_info_song_title_text_view);
-            artistName = (TextView) view.findViewById(R.id.song_info_artist_name_text_view);
-            albumName = (TextView) view.findViewById(R.id.song_info_album_name_text_view);
-            mListener = listener;
+
+            itemClickListener = listener;
             view.setOnClickListener(this);
         }
 
@@ -43,7 +41,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
          */
         @Override
         public void onClick(View v) {
-            mListener.onItemClick(v, getAdapterPosition());
+            itemClickListener.onItemClick(v, getAdapterPosition());
         }
     }
 
@@ -52,16 +50,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
      * @param songList - list of songs
      * @param listener
      */
-    public SongsAdapter(List<DotifySong> songList, RecyclerViewClickListener listener){
+    public SearchResultSongAdapter(List<SearchResultSongs> songList, RecyclerViewClickListener listener){
         this.songsList = songList;
-        mListener = listener;
-    }
-
-    //Update the current song list with a new song list
-    public void updateSongList(List<DotifySong> newData){
-        songsList.clear();
-        songsList.addAll(newData);
-        notifyDataSetChanged();
+        itemClickListener = listener;
     }
 
     /**
@@ -72,12 +63,11 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
      */
     @NonNull
     @Override
-    public ItemsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SearchResultSongAdapter.ItemsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.song_info_layout, parent, false);
+                .inflate(R.layout.search_recycler_item_layout, parent, false);
 
-
-        return new ItemsViewHolder(itemView, mListener);
+        return new SearchResultSongAdapter.ItemsViewHolder(itemView, itemClickListener);
     }
 
     /**
@@ -86,11 +76,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
      * @param position
      */
     @Override
-    public void onBindViewHolder(@NonNull ItemsViewHolder holder, int position) {
-        DotifySong song = songsList.get(position);
-        holder.songTitle.setText(song.getSong());
-        holder.artistName.setText(song.getArtist());
-        holder.albumName.setText(song.getAlbum());
+    public void onBindViewHolder(@NonNull SearchResultSongAdapter.ItemsViewHolder holder, int position) {
+        SearchResultSongs song = songsList.get(position);
+        holder.songTitle.setText(song.getSong_info());
     }
 
     /**
@@ -101,6 +89,4 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
     public int getItemCount() {
         return songsList.size();
     }
-
-
 }

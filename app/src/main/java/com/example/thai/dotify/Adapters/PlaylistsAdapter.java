@@ -28,7 +28,7 @@ import retrofit2.Response;
 /**
  * this object manipulates playlist data
  */
-public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyViewHolder> {
+public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.ItemsViewHolder> {
 
     private List<String> playlistList;
     private RecyclerViewClickListener mlistener;
@@ -47,7 +47,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
     /**
      * the MyViewHolder object allows user to delete a playlist
      */
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ItemsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView playlistName;
         private ImageView deleteIcon;
         private RecyclerViewClickListener mListener;
@@ -57,7 +57,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
          * @param view - View object that will display playlist_list_layout layout file
          * @param listener
          */
-        public MyViewHolder(View view, RecyclerViewClickListener listener) {
+        public ItemsViewHolder(View view, RecyclerViewClickListener listener) {
             super(view);
             playlistName = (TextView) view.findViewById(R.id.playlist_list_name_text_view);
             // Delete icon that handles the event that the user wants to delete a playlist
@@ -161,11 +161,11 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
      */
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ItemsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.playlist_list_layout, parent, false);
 
-        return new MyViewHolder(itemView, mlistener);
+        return new ItemsViewHolder(itemView, mlistener);
     }
 
     /**
@@ -174,7 +174,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.MyVi
      * @param position
      */
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ItemsViewHolder holder, int position) {
         String playlist = playlistList.get(position);
         holder.playlistName.setText(playlist);
         // Check whether the boolean for whether the delete icon should be visible is
