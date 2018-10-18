@@ -121,7 +121,7 @@ public class SongsListFragment extends Fragment{
         // Initialize the recycler view listener
         RecyclerViewClickListener songItemClickListener = (listView, position) -> {
             // Create a music controller object
-            PlayingMusicController musicController = new PlayingMusicController(songsList);
+            PlayingMusicController musicController = new PlayingMusicController(getContext(), songsList);
             // Set the current song to be played for the controller
             musicController.setCurrentSong(position);
             // Tell the main activity

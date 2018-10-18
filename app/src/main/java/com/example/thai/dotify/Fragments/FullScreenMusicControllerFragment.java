@@ -24,6 +24,7 @@ import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
+import com.example.thai.dotify.Server.DotifySong;
 
 import java.util.List;
 
@@ -106,16 +107,9 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         // Get the current song's information and display it to the screen
-
-//        if(PlayingMusicController.getSongPlayingStatus()){
-//            playPauseImageButton.setImageResource(R.drawable.big_pause_button_icon);
-//        }
-//        else{
-//            playPauseImageButton.setImageResource(R.drawable.big_play_button_icon);
-//        }
-
+        String currSongName = musicController.getCurrSongName();
+        songInfoTextView.setText(currSongName);
     }
 
 
@@ -143,16 +137,10 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
                 break;
             case R.id.full_screen_next_track_image_button:
                 break;
-            case R.id.full_screen_play_pause_image_button:
-//                if(PlayingMusicController.getSongPlayingStatus()){
-//                    playPauseImageButton.setImageResource(R.drawable.big_play_button_icon);
-//                    PlayingMusicController.setSongPlayingStatus(false);
-//                }
-//                else{
-//                    playPauseImageButton.setImageResource(R.drawable.big_pause_button_icon);
-//                    PlayingMusicController.setSongPlayingStatus(true);
-//                }
-                break;
+            case R.id.full_screen_play_pause_image_button:{
+                musicController.requestCurrentSong();
+            }
+            break;
             case R.id.full_screen_like_button_image:
                 likeSongImageButton.setImageResource(R.drawable.already_like_song_icon);
                 break;
@@ -207,7 +195,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
                 getString(R.string.appKey),
                 user.getUsername(),
                 playlistName,
-                musicController.getSongID()
+                musicController.getCurrentSongID()
         );
         addSongToPlaylist.enqueue(new Callback<ResponseBody>() {
             /**
