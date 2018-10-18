@@ -138,7 +138,13 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
             case R.id.full_screen_next_track_image_button:
                 break;
             case R.id.full_screen_play_pause_image_button:{
-                musicController.requestCurrentSong();
+                if (!musicController.musicIsPlaying()) {
+                    musicController.requestCurrentSong();
+                    playPauseImageButton.setImageResource(R.drawable.big_pause_button_icon);
+                } else {
+                    playPauseImageButton.setImageResource(R.drawable.big_play_button_icon);
+                    musicController.pauseMusic();
+                }
             }
             break;
             case R.id.full_screen_like_button_image:
