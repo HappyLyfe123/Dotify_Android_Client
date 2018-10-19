@@ -28,7 +28,6 @@ import java.util.List;
  * this object allows the user to move the media player
  */
 public class PlayingMusicController {
-    private boolean isSongPlaying;
     private int currSongPosition;
     private List<DotifySong> songList;
     private Context activityContext;
@@ -181,10 +180,17 @@ public class PlayingMusicController {
         }
     }
 
+    //Pause Music
     public void pauseMusic() {
         mediaPlayer.pause();
     }
 
+    //Play music
+    public void playMusic(){
+        mediaPlayer.start();
+    }
+
+    //Check if the music is playing
     public boolean musicIsPlaying(){
         return mediaPlayer.isPlaying();
     }

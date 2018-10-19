@@ -1,9 +1,8 @@
 package com.example.thai.dotify.Fragments;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,11 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.thai.dotify.Adapters.PlaylistsAdapter;
+import com.example.thai.dotify.Adapters.SearchArtistAdapter;
+import com.example.thai.dotify.Adapters.SearchSongAdapter;
 import com.example.thai.dotify.DotifyUser;
 import com.example.thai.dotify.MainActivityContainer;
 import com.example.thai.dotify.R;
@@ -27,9 +26,7 @@ import com.example.thai.dotify.RecyclerViewClickListener;
 import com.example.thai.dotify.SearchResultSongs;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
-import com.example.thai.dotify.Server.DotifySong;
 import com.example.thai.dotify.Utilities.JSONUtilities;
-import com.example.thai.dotify.Utilities.UserUtilities;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -52,15 +49,15 @@ import static android.support.constraint.Constraints.TAG;
 
 
 //Allow user to search for songs, artists, albums
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment{
 
     // Instantiate the Fragment Views
     private EditText searchEditText;
     private RecyclerView songSearchResultRecycler;
     private RecyclerView artistSearchResultRecycler;
     private RecyclerView selectPlaylistList;
-    private SearchResultAdapter<SearchResultSongs> songSearchResultAdapter;
-    private SearchResultAdapter<String> artistSearchResultAdapter;
+    private SearchSongAdapter songSearchResultAdapter;
+    private SearchArtistAdapter artistSearchResultAdapter;
     private OnChangeFragmentListener onChangeFragmentListener;
     private Date textChangedTimer;
     private String currSearchQuery;
@@ -69,143 +66,6 @@ public class SearchFragment extends Fragment {
     private LinearLayout artistQueryLayout;
     private DotifyUser user;
 
-    /**
-     * A View object for each item in a corresponding RecyclerView
-     */
-    private class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener{
-
-        private TextView resultText;
-        private ImageView addToPlaylistView;
-        private RecyclerViewClickListener itemClickedListener;
-
-        ViewHolder(View view, RecyclerViewClickListener listener) {
-            super(view);
-            this.itemClickedListener = listener;
-
-            // Initialize the text from the search result item
-            resultText = (TextView) view.findViewById(R.id.search_result_item_recycler_view);
-            //Set listen for the text view
-            resultText.setOnClickListener(this);
-            addToPlaylistView = (ImageView) view.findViewById(R.id.search_add_to_play_list_image_view);
-            //Set listen for image view
-            addToPlaylistView.setOnClickListener(this);
-
-        }
-
-
-        /**
-         * Sets the text for the current item in the recycler view
-         * @param text
-         */
-        public void setViewText(String text) {
-            resultText.setText(text);
-        }
-
-        public void disableAddToPlaylistView(){
-            addToPlaylistView.setVisibility(View.GONE);
-        }
-
-
-        @Override
-        public void onClick(View view) {
-            itemClickedListener.onItemClick(view, getAdapterPosition());
-        }
-    }
-
-    /**
-     * Adapter class for the RecyclerViews being utilized in this Fragment
-     */
-    private class SearchResultAdapter<T> extends RecyclerView.Adapter<ViewHolder>{
-
-        private ArrayList<T> searchResults;
-        private Class<T> classObj;
-        private RecyclerViewClickListener onItemClickedListener;
-
-        /**
-         * Constructor for SearchResultAdapter
-         * @param listener The listener for the item clicks
-         */
-        SearchResultAdapter(Class<T> classObj, RecyclerViewClickListener listener) {
-            // Initialize the items for this class
-            this.searchResults = new ArrayList<>();
-            // Set the listener for each recycler item
-            onItemClickedListener = listener;
-            // Set the object types that we are going to be receiving
-            this.classObj = classObj;
-        }
-
-        /**
-         * Initializes each Recycler View Item
-         *
-         * @param parent The parent ViewGroup calling this
-         * @param viewType
-         *
-         * @return A new ViewHolder object
-         */
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.search_recycler_item_layout, parent, false);
-
-            return new ViewHolder(itemView, onItemClickedListener);
-        }
-
-        @Override
-        public int getItemCount() {
-            return searchResults.size();
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            String inputResult = null;
-            if(classObj == SearchResultSongs.class){
-                inputResult = ((SearchResultSongs) searchResults.get(position)).getSong_info();
-            }
-            else{
-                inputResult = (String) searchResults.get(position);
-                holder.disableAddToPlaylistView();
-            }
-            holder.setViewText(inputResult);
-        }
-
-        /**
-         * Returns the list of strings currently inside of this adapter
-         * @return
-         */
-        public ArrayList<T> getSearchResults() {
-            return searchResults;
-        }
-
-        /**
-         * Inserts search items inside of the search item of this adapter
-         *
-         * @param searchItem A item received back from the server
-         */
-        public void insertSearchItem(T searchItem) {
-            searchResults.add(searchItem);
-        }
-
-        /**
-         * Retrieves an item from the class list in the specified index
-         *
-         * @param index The position in which the item is to be retrieved from
-         *
-         * @return The T object from the list
-         */
-        public T get(int index){
-            return searchResults.get(index);
-        }
-
-        public void clearAdapterList() {
-            searchResults.clear();
-        }
-
-        public  void setAdapterList(ArrayList<T> newAdapterList) {
-            searchResults = newAdapterList;
-        }
-    }
 
     /**
      * Listener for the Fragment to tell the main activity to change fragments
@@ -238,8 +98,6 @@ public class SearchFragment extends Fragment {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 currSearchQuery = charSequence.toString();
                 if (currSearchQuery.isEmpty()) {
-                    songSearchResultAdapter.clearAdapterList();
-                    artistSearchResultAdapter.clearAdapterList();
                     notifyRecyclerDataRemovedChanged();
                     changeQueryLayoutStates();
                     return;
@@ -249,8 +107,6 @@ public class SearchFragment extends Fragment {
                 ArrayList<String> cachedArtistQuery = mainActivityContainer.isArtistQueryCached(currSearchQuery);
 
                 if(cachedSongQuery != null && cachedArtistQuery != null) {
-                    songSearchResultAdapter.setAdapterList(cachedSongQuery);
-                    artistSearchResultAdapter.setAdapterList(cachedArtistQuery);
                     changeQueryLayoutStates();
                 } else {
                     textChangedTimer = new Date();
@@ -277,20 +133,17 @@ public class SearchFragment extends Fragment {
                                             JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
 
                                             JsonArray songQuery = jsonResponse.getAsJsonArray("songs");
-                                            System.out.println(songQuery);
-                                            songSearchResultAdapter.clearAdapterList();
                                             Gson gson = new Gson();
-                                            for(int x = 0; x < songQuery.size(); x++){
-                                                songSearchResultAdapter.insertSearchItem(gson.fromJson(songQuery.get(x), SearchResultSongs.class));
+                                            for(JsonElement songInfo : songQuery){
+                                                songSearchResultAdapter.insertSearchResultItem(gson.fromJson(
+                                                        songInfo, SearchResultSongs.class
+                                                ));
                                             }
-                                            mainActivityContainer.cacheSongQuery(currSearchQuery, songSearchResultAdapter.getSearchResults());
-
-                                            artistSearchResultAdapter.clearAdapterList();
                                             JsonArray artistQuery = jsonResponse.getAsJsonArray("artist");
-                                            for (JsonElement artistTitle : artistQuery) {
-                                                artistSearchResultAdapter.insertSearchItem(artistTitle.getAsString());
+                                            for (JsonElement artistName : artistQuery) {
+                                                artistSearchResultAdapter.addSearchResultItem(artistName.toString());
+
                                             }
-                                            mainActivityContainer.cacheArtistQuery(currSearchQuery, artistSearchResultAdapter.getSearchResults());
 
                                             // Notify that both the song and artist adapter have been changed
                                             notifyRecyclerDataInsertedChanged();
@@ -346,13 +199,15 @@ public class SearchFragment extends Fragment {
         songQueryLayout = (LinearLayout) view.findViewById(R.id.search_song_result_layout);
         artistQueryLayout = (LinearLayout) view.findViewById(R.id.search_artist_result_layout);
 
+
+
         // Create the adapters to interact with each recycler view item
-        songSearchResultAdapter = new SearchResultAdapter<>(SearchResultSongs.class, new RecyclerViewClickListener() {
+        songSearchResultAdapter = new SearchSongAdapter(new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 System.out.println(v.getId());
                 if(v.getId() == R.id.search_result_item_recycler_view) {
-                    onChangeFragmentListener.onSongResultClicked(songSearchResultAdapter.get(position).getSongId());
+                    onChangeFragmentListener.onSongResultClicked(songSearchResultAdapter.getSongID(position));
                 }
                 else if(v.getId() == R.id.search_add_to_play_list_image_view){
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -368,7 +223,7 @@ public class SearchFragment extends Fragment {
                     // Initialize the recycler view listener
                     RecyclerViewClickListener playlistItemClickListener = (listView, tempPosition) -> {
                         // Create a music controller object
-                        addSongToPlaylist(playlistsList.get(tempPosition), songSearchResultAdapter.get(position).getSongId());
+                        addSongToPlaylist(playlistsList.get(tempPosition), songSearchResultAdapter.getSongID(tempPosition));
                         currDialogBox.dismiss();
                     };
 
@@ -392,7 +247,8 @@ public class SearchFragment extends Fragment {
 
             }
         });
-        artistSearchResultAdapter = new SearchResultAdapter<>(String.class, new RecyclerViewClickListener() {
+
+        artistSearchResultAdapter = new SearchArtistAdapter(new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View v, int position) {
 

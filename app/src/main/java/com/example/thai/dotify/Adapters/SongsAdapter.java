@@ -19,33 +19,6 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
     private List<DotifySong> songsList;
     private RecyclerViewClickListener mListener;
 
-    public class ItemsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView songTitle, artistName, albumName;
-        private RecyclerViewClickListener mListener;
-
-        /***
-         * constructor w/ given objects
-         * @param view - View object displaying song information
-         * @param listener
-         */
-        public ItemsViewHolder(View view, RecyclerViewClickListener listener) {
-            super(view);
-            songTitle = (TextView) view.findViewById(R.id.song_info_song_title_text_view);
-            artistName = (TextView) view.findViewById(R.id.song_info_artist_name_text_view);
-            albumName = (TextView) view.findViewById(R.id.song_info_album_name_text_view);
-            mListener = listener;
-            view.setOnClickListener(this);
-        }
-
-        /***
-         * invoked when a song is selected
-         * @param v
-         */
-        @Override
-        public void onClick(View v) {
-            mListener.onItemClick(v, getAdapterPosition());
-        }
-    }
 
     /**
      * constructor with given list of songs
@@ -57,12 +30,6 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
         mListener = listener;
     }
 
-    //Update the current song list with a new song list
-    public void updateSongList(List<DotifySong> newData){
-        songsList.clear();
-        songsList.addAll(newData);
-        notifyDataSetChanged();
-    }
 
     /**
      * display the list of songs
@@ -102,5 +69,37 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
         return songsList.size();
     }
 
+
+
+    /**
+     * A View object for each item in a corresponding RecyclerView
+     */
+    public class ItemsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public TextView songTitle, artistName, albumName;
+        private RecyclerViewClickListener mListener;
+
+        /***
+         * constructor w/ given objects
+         * @param view - View object displaying song information
+         * @param listener
+         */
+        public ItemsViewHolder(View view, RecyclerViewClickListener listener) {
+            super(view);
+            songTitle = (TextView) view.findViewById(R.id.song_info_song_title_text_view);
+            artistName = (TextView) view.findViewById(R.id.song_info_artist_name_text_view);
+            albumName = (TextView) view.findViewById(R.id.song_info_album_name_text_view);
+            mListener = listener;
+            view.setOnClickListener(this);
+        }
+
+        /***
+         * invoked when a song is selected
+         * @param v
+         */
+        @Override
+        public void onClick(View v) {
+            mListener.onItemClick(v, getAdapterPosition());
+        }
+    }
 
 }

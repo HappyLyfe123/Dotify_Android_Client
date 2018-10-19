@@ -109,4 +109,10 @@ interface DotifyHttpInterface {
             @Query("search") query: String
     ) : Call<ResponseBody>
 
+    @GET("artist")
+    fun getSongsByArtist(
+            @Header("appkey") appKey: String,
+            @Query("artist") artistName: String
+    ) : Call<ResponseBody>
+
 }
