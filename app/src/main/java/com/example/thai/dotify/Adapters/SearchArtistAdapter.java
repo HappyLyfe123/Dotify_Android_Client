@@ -15,7 +15,7 @@ import java.util.List;
 
 public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapter.ItemsViewHolder> {
 
-    private List<String> searchResultArtists;
+    private ArrayList<String> searchResultArtists;
     private RecyclerViewClickListener onItemClickedListener;
 
     //Default constructor
@@ -43,13 +43,17 @@ public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapte
         searchResultArtists = new ArrayList<>();
     }
 
+    public ArrayList<String> getQueryArtistsList(){
+        return searchResultArtists;
+    }
+
     /**
      * Update searchResultSong with new result
      *
      * @param newResult new result
      *
      */
-    public void updateSearchResult(List<String> newResult){
+    public void updateSearchResult(ArrayList<String> newResult){
         searchResultArtists = newResult;
     }
 

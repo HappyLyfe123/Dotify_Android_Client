@@ -44,7 +44,7 @@ public class SongsListFragment extends Fragment{
     private ImageButton backButton;
     private TextView titleTextView;
     private RecyclerView songListRecycleView;
-    private List<DotifySong> songsList = new ArrayList<>();
+    private ArrayList<DotifySong> songsList = new ArrayList<>();
     private SongsAdapter songsAdapter;
     private OnChangeFragmentListener onChangeFragmentListener;
 
@@ -115,7 +115,7 @@ public class SongsListFragment extends Fragment{
         titleTextView = (TextView) view.findViewById(R.id.song_list_title_text_view);
         songListRecycleView = (RecyclerView) view.findViewById(R.id.song_list_recycle_view);
         SharedPreferences sharedPreferences = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
-        username = "Penguin";//sharedPreferences.getString("username", null);
+        username = sharedPreferences.getString("username", null);
 
         songsList = new ArrayList<>();
         // Initialize the recycler view listener

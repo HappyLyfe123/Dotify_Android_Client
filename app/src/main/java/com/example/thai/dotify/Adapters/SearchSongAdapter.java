@@ -17,9 +17,7 @@ import java.util.List;
 
 public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.ItemsViewHolder>{
 
-
-
-    private List<SearchResultSongs> searchResultsSongs;
+    private ArrayList<SearchResultSongs> searchResultsSongs;
     private RecyclerViewClickListener onItemClickedListener;
 
     public SearchSongAdapter(RecyclerViewClickListener listener){
@@ -51,12 +49,22 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
     }
 
     /**
+     * Get song list
+     *
+     * @return  Current query songs list
+     *
+     */
+    public ArrayList<SearchResultSongs> getQuerySongsList(){
+        return searchResultsSongs;
+    }
+
+    /**
      * Update old search result to the new search result
      *
      * @param newSearchResult new result
      *
      */
-    public void updateSearchResult(List<SearchResultSongs> newSearchResult){
+    public void updateSearchResult(ArrayList<SearchResultSongs> newSearchResult){
         searchResultsSongs = newSearchResult;
     }
 
@@ -89,7 +97,6 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
     public String getSongID(int position){
         return searchResultsSongs.get(position).getSongId();
     }
-
 
     //Get the number of items in the searchResult list
     @Override

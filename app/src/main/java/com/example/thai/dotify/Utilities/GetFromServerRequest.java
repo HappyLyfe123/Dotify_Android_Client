@@ -115,13 +115,16 @@ public class GetFromServerRequest {
                 appKey,
                 artistName
         );
-
+        //Ask anthony to get rid of quotation mark
+        System.out.println(artistName);
         getSongsByArtist.enqueue(new Callback<ResponseBody>() {
+
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     String serverResponse = response.body().string();
                     JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
+                    System.out.println(jsonResponse);
 
 
                 } catch (IOException e) {

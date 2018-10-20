@@ -228,7 +228,6 @@ public class MainActivityContainer extends AppCompatActivity
         startFragment(PlaylistFragmentType.PLAYLISTS, false, false);
 
     }
-
     /**
      * Create mini music controller view
      */
@@ -264,30 +263,7 @@ public class MainActivityContainer extends AppCompatActivity
         return user;
     }
 
-    /**
-     * Checks whether a specific search query's result has been cached for songs
-     * and returns a list of DotifySong objects if it has been cached and null otherwise
-     */
-    public ArrayList<SearchResultSongs> isSongQueryCached(String key) {
-        return songSearchQuery.get(key);
-    }
-
-    /**
-     * Checks whether a specific search query's result has been cached for artists
-     * and returns a list of DotifySong objects if it has been cached and null otherwise
-     */
-    public ArrayList<String> isArtistQueryCached(String key) {
-        return artistSearchQuery.get(key);
-    }
-
-    public void cacheSongQuery(String key, ArrayList<SearchResultSongs> results) {
-        songSearchQuery.put(key, results);
-    }
-
-    public void cacheArtistQuery(String key, ArrayList<String> results) {
-        artistSearchQuery.put(key, results);
-    }
-
+    //Return the current playlist information
     public static List<String> getPlaylistList(){
         return PlaylistFragment.getPlaylistList();
     }
