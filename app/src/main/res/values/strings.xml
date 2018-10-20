@@ -66,6 +66,9 @@
     <string name="time_spent">Time Spent:</string>
     <string name="logout">Log Out</string>
 
+    <!--Search Fragment-->
+    <string name="search_info">Search For Songs and Artists</string>
+
     <!-- Server Messages -->
     <string name="server_down">The server is currently down. Try again later.</string>
 

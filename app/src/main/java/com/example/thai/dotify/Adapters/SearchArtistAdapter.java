@@ -39,6 +39,10 @@ public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapte
         holder.setViewText(searchResultArtists.get(position));
     }
 
+    public void newResult(){
+        searchResultArtists = new ArrayList<>();
+    }
+
     /**
      * Update searchResultSong with new result
      *

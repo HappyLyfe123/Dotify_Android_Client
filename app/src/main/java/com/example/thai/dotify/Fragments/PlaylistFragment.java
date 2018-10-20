@@ -231,7 +231,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
         DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
         Call<ResponseBody> addPlaylist = dotifyHttpInterface.createPlaylist(
                 getString(R.string.appKey),
-                user.getUsername(),
+                "PenguinDan",
                 playlistName
         );
         addPlaylist.enqueue(new Callback<ResponseBody>() {

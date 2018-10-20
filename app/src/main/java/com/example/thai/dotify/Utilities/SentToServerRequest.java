@@ -74,7 +74,6 @@ public class SentToServerRequest {
             }
         });
 
-
         return errorCodeNum[0];
     }
 }

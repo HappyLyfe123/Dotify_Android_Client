@@ -2,16 +2,21 @@ package com.example.thai.dotify.Utilities;
 
 import android.util.Log;
 
-import com.example.thai.dotify.R;
+import com.example.thai.dotify.Fragments.SearchFragment;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -23,7 +28,7 @@ public class GetFromServerRequest {
     private static String username;
 
 
-    public GetFromServerRequest(String baseURL, String appKey, String username){
+    public GetFromServerRequest(String baseURL, String appKey, String username) {
         //Start a GET request to get the list of playlists that belongs to the user
         dotify = new Dotify(baseURL);
         dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
@@ -32,10 +37,9 @@ public class GetFromServerRequest {
         this.username = username;
     }
 
-
-    public static List<String> getPlaylistRequest(String playlistName){
+    //
+    public static List<String> getPlaylist(String playlistName) {
         List<String> playlistList = new ArrayList<>();
-
         Call<List<String>> getPlaylist = dotifyHttpInterface.getPlaylist(
                 appKey,
                 username,
@@ -52,7 +56,7 @@ public class GetFromServerRequest {
                     List<String> userPlaylist = response.body();
 
                     //Converts the playlist we got to a list of playlists instead of a list of strings
-                    for (int i = 0; i < userPlaylist.size(); i++){
+                    for (int i = 0; i < userPlaylist.size(); i++) {
                         playlistList.add(userPlaylist.get(i));
                     }
                 } else {
@@ -60,6 +64,7 @@ public class GetFromServerRequest {
                     Log.d(TAG, "getPlaylist-> Unable to retrieve playlist " + response.code());
                 }
             }
+
             //If something is wrong with our request to the server, goes to this method
             @Override
             public void onFailure(Call<List<String>> call, Throwable t) {
@@ -70,4 +75,64 @@ public class GetFromServerRequest {
         return playlistList;
     }
 
+    //
+    public static void getSearchResult(String currSearchQuery) {
+        Call<ResponseBody> querySearch = dotifyHttpInterface.querySong(
+                appKey,
+                currSearchQuery
+        );
+
+        querySearch.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    if(response.code() == Dotify.OK) {
+                        String serverResponse = response.body().string();
+                        JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
+
+                        JsonArray songQuery = jsonResponse.getAsJsonArray("songs");
+                        JsonArray artistQuery = jsonResponse.getAsJsonArray("artist");
+                        //Call the method to display the result
+                        SearchFragment.displaySearchResultSong(songQuery);
+                        SearchFragment.displaySearchResultArtists(artistQuery);
+
+                    }
+
+                } catch (IOException ex) {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public static void getSongByArtist(String artistName){
+        Call<ResponseBody> getSongsByArtist = dotifyHttpInterface.getSongsByArtist(
+                appKey,
+                artistName
+        );
+
+        getSongsByArtist.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String serverResponse = response.body().string();
+                    JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
+
+
+                } catch (IOException e) {
+
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
 }
+

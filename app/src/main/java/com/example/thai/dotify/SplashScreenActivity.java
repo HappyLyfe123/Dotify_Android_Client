@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
 
 /**
@@ -22,6 +23,7 @@ public class SplashScreenActivity extends Activity {
         // Check whether the User's information is cached and start the appropriate activity
         if (UserUtilities.isLoggedIn(this) != null) {
             startActivity(new Intent(SplashScreenActivity.this, MainActivityContainer.class));
+            new GetFromServerRequest(getString(R.string.base_URL), getString(R.string.appKey), UserUtilities.getUsername());
         } else {
             startActivity(new Intent(SplashScreenActivity.this, StartUpContainer.class));
         }
