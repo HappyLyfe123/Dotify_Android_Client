@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.thai.dotify.DotifyUser;
 import com.example.thai.dotify.MainActivityContainer;
 import com.example.thai.dotify.PlayingMusicController;
 import com.example.thai.dotify.R;
@@ -25,6 +26,7 @@ import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.example.thai.dotify.Server.DotifySong;
 import com.example.thai.dotify.Adapters.SongsAdapter;
 import com.example.thai.dotify.Utilities.JSONUtilities;
+import com.example.thai.dotify.Utilities.UserUtilities;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -114,8 +116,10 @@ public class SongsListFragment extends Fragment{
         });
         titleTextView = (TextView) view.findViewById(R.id.song_list_title_text_view);
         songListRecycleView = (RecyclerView) view.findViewById(R.id.song_list_recycle_view);
-        SharedPreferences sharedPreferences = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
-        username = "Penguin";//sharedPreferences.getString("username", null);
+//        SharedPreferences sharedPreferences = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
+//        username = "Penguin";//sharedPreferences.getString("username", null);
+        DotifyUser dotifyUser = UserUtilities.getCachedUserInfo(activityContext);
+        username = dotifyUser.getUsername();
 
         songsList = new ArrayList<>();
         // Initialize the recycler view listener

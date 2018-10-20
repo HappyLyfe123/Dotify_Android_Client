@@ -1,5 +1,6 @@
 package com.example.thai.dotify;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -19,6 +20,7 @@ import com.example.thai.dotify.Fragments.PlaylistFragment;
 import com.example.thai.dotify.Fragments.ProfileInfoFragment;
 import com.example.thai.dotify.Fragments.SearchFragment;
 import com.example.thai.dotify.Fragments.SongsListFragment;
+import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
 
 import java.util.ArrayList;
@@ -49,6 +51,8 @@ public class MainActivityContainer extends AppCompatActivity
     private DotifyUser user;
     private Map<String, ArrayList<SearchResultSongs>> songSearchQuery;
     private Map<String, ArrayList<String>> artistSearchQuery;
+    private Context activityContext;
+    public static SentToServerRequest sentToServerRequest;
 
     //list of pages
     public enum PlaylistFragmentType{
@@ -72,10 +76,13 @@ public class MainActivityContainer extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_container);
 
-        // Initialize Main Activity Variables
+        //Initialize Main Activity Variables
         user = UserUtilities.getCachedUserInfo(this);
         songSearchQuery = new HashMap<>();
         artistSearchQuery = new HashMap<>();
+
+        //Send to server request
+        sentToServerRequest = new SentToServerRequest(getString(R.string.base_URL), getString(R.string.appKey), user.getUsername());
 
         //Initialize view layout
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
@@ -106,10 +113,10 @@ public class MainActivityContainer extends AppCompatActivity
 
         isMusicPlaying = false;
         //create bottom navigation bar
-//        UserUtilities.getCachedUserInfo(activityContext);
-        createMiniMusicControllerView();
+        // createMiniMusicControllerView();
         createBottomNavigationView();
     }
+
 
     /***
      * invoked when a playlist is selected

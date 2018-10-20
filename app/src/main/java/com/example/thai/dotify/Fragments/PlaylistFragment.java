@@ -207,7 +207,20 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener  
                     displayErrorMessage(ErrorType.CREATE_PLAYLIST_EMPTY_EDIT_TEXT, createPlaylistErrorMessageTextView);
                 }
                 else {
-                    createPlaylistDotify(playlistNameEditText.getText().toString());
+                    //createPlaylistDotify(playlistNameEditText.getText().toString());
+                    int errorcodeNum = MainActivityContainer.sentToServerRequest.createPlaylist(playlistNameEditText.getText().toString());
+                    switch (errorcodeNum){
+                        case 0:
+                            playlistList.add(playlistNameEditText.getText().toString());
+                            break;
+                        case 1:
+                            //Playlist name already exists
+                            displayErrorMessage(ErrorType.CREATE_PLAYLIST_DUPLICATE_NAME, createPlaylistErrorMessageTextView);
+                            break;
+                        case 2:
+                            //OnFailure Error Message
+                            break;
+                    }
                     currDialogBox.dismiss();
                 }
             }
