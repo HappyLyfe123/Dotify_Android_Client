@@ -1,4 +1,4 @@
-package com.example.thai.dotify.Utilities;
+package com.example.thai.dotify.Adapters;
 
 import android.content.Intent;
 import android.util.Log;
@@ -31,14 +31,21 @@ public class SentToServerRequest {
     private static String appKey;
     private static String username;
 
+
+    public SentToServerRequest(String baseURL, String appKey){
+        dotify = new Dotify(baseURL);
+        this.appKey = appKey;
+        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+        dotifyHttpInterface = dotify.getHttpInterface();
+    }
+
     public SentToServerRequest(String baseURL, String appKey, String username){
         //Start a GET request to get the list of playlists that belongs to the user
         dotify = new Dotify(baseURL);
-        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
-        dotifyHttpInterface = dotify.getHttpInterface();
         this.appKey = appKey;
         this.username = username;
-
+        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+        dotifyHttpInterface = dotify.getHttpInterface();
     }
 
     /**
@@ -140,7 +147,6 @@ public class SentToServerRequest {
         return dotifyUser;
     }
 
-
     /**
      * Method to create a playlist
      * @param playlistName The name of the playlist that is being created
@@ -186,5 +192,36 @@ public class SentToServerRequest {
         return errorCodeNum[0];
     }
 
+    /**
+     * Method to create a playlist
+     * @param playlistName The name of the playlist that is being created
+     * @return An integer detailing what error code to use
+     */
+    public static void deletePlaylist(String playlistName){
+        final int[] errorCodeNum = new int[1];
 
+        Call<ResponseBody> deletePlaylist = dotifyHttpInterface.deletePlaylist(
+                appKey,
+                playlistName,
+                username
+        );
+
+        /**
+         * send a reply to user after the playlist is deleted
+         */
+        deletePlaylist.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                Log.d("PlaylistsAdapter",
+                        "MyViewHolder -> onClick -> onResponse: Reponse Code = " + response.code());
+                if (response.code() == Dotify.OK){
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
 }

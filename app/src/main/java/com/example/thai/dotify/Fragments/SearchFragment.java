@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.example.thai.dotify.Adapters.PlaylistsAdapter;
 import com.example.thai.dotify.Adapters.SearchArtistAdapter;
 import com.example.thai.dotify.Adapters.SearchSongAdapter;
 import com.example.thai.dotify.MainActivityContainer;
@@ -128,7 +127,6 @@ public class SearchFragment extends Fragment implements TextWatcher{
                     AlertDialog currDialogBox = alertDialogBuilder.create();
 
                     //Initialize view
-                    List<String> playlistsList = MainActivityContainer.getPlaylistList();
                     selectPlaylistList = alertDialogView.findViewById(R.id.select_playlist_playlist_list);
                     Button cancelButton = alertDialogView.findViewById(R.id.select_playlist_cancel_button);
                     // Initialize the recycler view listener
@@ -145,6 +143,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
                         }
                     });
                     //PlaylistsAdapter playlistsAdapter = new PlaylistsAdapter(playlistsList, playlistItemClickListener);
+
                     //Display all of the items into the recycler view
                     RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
                     selectPlaylistList.setLayoutManager(songLayoutManager);
@@ -301,12 +300,18 @@ public class SearchFragment extends Fragment implements TextWatcher{
         return artistSearchQuery.containsKey(key);
     }
 
-
+    /**
+     * Cache song query result with the given string
+     * @param key - the user search query
+     */
     private static void cacheSongQuery(String key, ArrayList<SearchResultSongs> results) {
         songSearchQuery.put(key, results);
     }
 
-
+    /**
+     * Cache artist query result with the given string
+     * @param key - the user search query
+     */
     private static void cacheArtistQuery(String key, ArrayList<String> results) {
         artistSearchQuery.put(key, results);
     }

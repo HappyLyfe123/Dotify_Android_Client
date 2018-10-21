@@ -1,9 +1,13 @@
 package com.example.thai.dotify.Utilities;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
+import com.example.thai.dotify.Fragments.LoginFragment;
+import com.example.thai.dotify.Fragments.PlaylistFragment;
 import com.example.thai.dotify.Fragments.SearchFragment;
+import com.example.thai.dotify.Fragments.SongsListFragment;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.google.gson.JsonArray;
@@ -36,6 +40,14 @@ public class GetFromServerRequest {
     private static String appKey;
     private static String username;
 
+    private static final int SUCCESS = 0;
+
+    public GetFromServerRequest(String baseURL, String appKey){
+        dotify = new Dotify(baseURL);
+        this.appKey = appKey;
+        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+        dotifyHttpInterface = dotify.getHttpInterface();
+    }
     /**
      * Constructor
      * @param baseURL baseURL inside the strings folder
@@ -45,18 +57,12 @@ public class GetFromServerRequest {
     public GetFromServerRequest(String baseURL, String appKey, String username){
         //Start a GET request to get the list of playlists that belongs to the user
         dotify = new Dotify(baseURL);
-        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
-        dotifyHttpInterface = dotify.getHttpInterface();
         this.appKey = appKey;
         this.username = username;
-    }
+        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+        dotifyHttpInterface = dotify.getHttpInterface();
 
-//        /**
-//         * Method to get the list of playlists
-//         */
-//    public static List<String> getPlaylist(String playlistName){
-//            List<String> playlistList = new ArrayList<>();
-//        }
+    }
 
     /**
      * Checks to see if the user's credentials match. If they do, allow them access.
@@ -64,8 +70,7 @@ public class GetFromServerRequest {
      * @param password The password to authenticatre
      * @return a number that correlates with success
      */
-    public static int loginDotifyUser(final String username, final String password){
-        final int[] errorCodeNum = new int[1];
+    public static void loginDotifyUser(final String username, final String password, final Context activityContext){
 
         //Create the GET request
         Call<DotifyUser> request = dotifyHttpInterface.getUser(
@@ -80,13 +85,15 @@ public class GetFromServerRequest {
                 if (response.isSuccessful()){
                     int respCode = response.code();
                     if (respCode == Dotify.ACCEPTED) {
-                        errorCodeNum[0] = 0;
+                        DotifyUser dotifyUser = response.body();
+                        UserUtilities.cacheUser(activityContext, dotifyUser);
+                        LoginFragment.loginResponse(LoginFragment.ResponseCode.SUCCESS);
                     }
                 }
                 else{
                     Log.d(TAG, "loginUser-> onResponse: Invalid Credentials : " + response.code());
-                    errorCodeNum[0] = 1;
                     //User needs to retry to log in
+                    LoginFragment.loginResponse(LoginFragment.ResponseCode.FAIL);
                 }
             }
 
@@ -94,10 +101,11 @@ public class GetFromServerRequest {
             public void onFailure(Call<DotifyUser> call, Throwable throwable) {
                 Log.w(TAG, "loginUser-> onFailure");
                 //Error message that the server is down
-                errorCodeNum[0] = 2;
+                LoginFragment.loginResponse(LoginFragment.ResponseCode.SERVER_ERROR);
+
             }
         });
-        return errorCodeNum[0];
+
     }
 
     /**
@@ -204,22 +212,16 @@ public class GetFromServerRequest {
         return securityToken;
     }
 
-
     /**
      * Method that gets the playlists
-     * @param playlistName
      * @return The string of playlists
      */
-    public static List<String> getPlaylistRequest(String playlistName){
-        final List<String> playlistList = new ArrayList<>();
-
-        Call<List<String>> getPlaylist = dotifyHttpInterface.getPlaylist(
+    public static void getUserplaylistsList(){
+        Call<List<String>> getPlaylistsList = dotifyHttpInterface.getPlaylistsList(
                 appKey,
-                username,
-                playlistName
+                username
         );
-
-        getPlaylist.enqueue(new Callback<List<String>>() {
+        getPlaylistsList.enqueue(new Callback<List<String>>() {
             @Override
             public void onResponse(Call<List<String>> call, retrofit2.Response<List<String>> response) {
                 int respCode = response.code();
@@ -228,10 +230,7 @@ public class GetFromServerRequest {
                     //gets a list of strings of playlist names
                     List<String> userPlaylist = response.body();
 
-                    //Converts the playlist we got to a list of playlists instead of a list of strings
-                    for (int i = 0; i < userPlaylist.size(); i++) {
-                        playlistList.add(userPlaylist.get(i));
-                    }
+                    PlaylistFragment.displayPlaylistsList(userPlaylist);
                 } else {
                     //If unsuccessful, show the response code
                     Log.d(TAG, "getPlaylist-> Unable to retrieve playlist " + response.code());
@@ -245,7 +244,59 @@ public class GetFromServerRequest {
             }
         });
 
-        return playlistList;
+    }
+
+    /**
+     * display the song lists given the playlist
+     * @param playListTitle the playlist to get the song from
+     * @return songsList the list of dotifysongs
+     */
+    public static void getSongsFromPlaylist(String playListTitle){
+
+        //Start Get Request
+        Call<ResponseBody> getSongsFromPlaylist = dotifyHttpInterface.getSongsFromPlaylist(
+                appKey,
+                username,
+                playListTitle
+        );
+
+        getSongsFromPlaylist.enqueue(new Callback<ResponseBody>() {
+            /**
+             * display a success message
+             * @param call - request to server
+             * @param response - server's response
+             */
+            @Override
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                int respCode = response.code();
+                if (respCode == Dotify.OK) {
+                    Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
+                    //gets a list of strings of playlist names
+                    ResponseBody mySong = response.body();
+                    try {
+                        JsonObject currSongList= JSONUtilities.ConvertStringToJSON(mySong.string());
+                        SongsListFragment.displaySongsList(currSongList.getAsJsonArray("songs"));
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    //If unsucessful, show the response code
+                    Log.d(TAG, "getPlaylist-> Unable to retreive playlists " + response.code());
+                }
+            }
+
+            /**
+             * If something is wrong with our request to the server, goes to this method
+             * @param call - request to server
+             * @param t - unnecessary parameter
+             */
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG, "Invalid failure: onFailure");
+            }
+        });
     }
 
     /**
@@ -288,7 +339,7 @@ public class GetFromServerRequest {
 
     /**
      * Method that is used in search.
-     * @param artistName
+     * @param artistName The artist name to query
      */
     public static void getSongByArtist(String artistName){
         Call<ResponseBody> getSongsByArtist = dotifyHttpInterface.getSongsByArtist(
@@ -296,7 +347,6 @@ public class GetFromServerRequest {
                 artistName
         );
         //Ask anthony to get rid of quotation mark
-        System.out.println(artistName);
         getSongsByArtist.enqueue(new Callback<ResponseBody>() {
 
             @Override
@@ -318,60 +368,4 @@ public class GetFromServerRequest {
         });
     }
 
-    /**
-     * display the song lists given the playlist
-     * @param playListTitle the playlist to get the song from
-     * @return songsList the list of dotifysongs
-     */
-    public static List<DotifySong> getSongList(String playListTitle){
-        List<DotifySong> songsList = new ArrayList<>();
-
-        //Start Get Request
-        Call<ResponseBody> getSongList = dotifyHttpInterface.getSongList(
-                appKey,
-                username,
-                playListTitle
-        );
-
-        getSongList.enqueue(new Callback<ResponseBody>() {
-            /**
-             * display a success message
-             * @param call - request to server
-             * @param response - server's response
-             */
-            @Override
-            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                int respCode = response.code();
-                if (respCode == Dotify.OK) {
-                    Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
-                    //gets a list of strings of playlist names
-                    ResponseBody mySong = response.body();
-                    try {
-                        JsonObject currSongList= JSONUtilities.ConvertStringToJSON(mySong.string());
-                        Gson gson = new Gson();
-                        for(int x = 0; x < currSongList.get("songs").getAsJsonArray().size(); x++){
-                            songsList.add(gson.fromJson(currSongList.get("songs").getAsJsonArray().get(x), DotifySong.class));
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } else {
-                    //If unsucessful, show the response code
-                    Log.d(TAG, "getPlaylist-> Unable to retreive playlists " + response.code());
-                }
-            }
-
-            /**
-             * If something is wrong with our request to the server, goes to this method
-             * @param call - request to server
-             * @param t - unnecessary parameter
-             */
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(TAG, "Invalid failure: onFailure");
-            }
-        });
-        return songsList;
-    }
 }

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -25,9 +26,11 @@ import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.example.thai.dotify.Server.DotifySong;
 import com.example.thai.dotify.Adapters.SongsAdapter;
+import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.JSONUtilities;
 import com.example.thai.dotify.Utilities.UserUtilities;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import okhttp3.ResponseBody;
@@ -41,33 +44,28 @@ import static android.support.constraint.Constraints.TAG;
 /**
  * the SongsListFragment object allows the user to do various functions with a list of songs
  */
-public class SongsListFragment extends Fragment{
+public class SongsListFragment extends Fragment implements View.OnClickListener,
+    RecyclerViewClickListener{
 
     private ImageButton backButton;
+    private Button editSongButton;
+    private Button cancelDeleteSongButton;
     private TextView titleTextView;
     private RecyclerView songListRecycleView;
-    private ArrayList<DotifySong> songsList = new ArrayList<>();
-    private SongsAdapter songsAdapter;
+    private static SongsAdapter songsListAdapter;
     private OnChangeFragmentListener onChangeFragmentListener;
-
-
-    private static String playListTitle;
-    private String username;
-    private Context activityContext;
+    private String playlistName;
 
     /**
      * default constructor
      */
-    public SongsListFragment(){
-
-    }
+    public SongsListFragment(){ }
 
     /**
      * Listener to tell the main container to switch fragments
      */
     public interface OnChangeFragmentListener{
-        void songClicked(MainActivityContainer.PlaylistFragmentType fragmentType,
-                         PlayingMusicController playingMusicController);
+        void songClicked(String songID);
     }
 
     /**
@@ -94,7 +92,6 @@ public class SongsListFragment extends Fragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        activityContext = context;
     }
 
     /***
@@ -111,33 +108,24 @@ public class SongsListFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_song_list, container, false);
 
         backButton = (ImageButton) view.findViewById(R.id.song_list_back_image_button);
-        backButton.setOnClickListener((backButtonView) -> {
-            getFragmentManager().popBackStackImmediate();
-        });
         titleTextView = (TextView) view.findViewById(R.id.song_list_title_text_view);
         songListRecycleView = (RecyclerView) view.findViewById(R.id.song_list_recycle_view);
-        SharedPreferences sharedPreferences = activityContext.getSharedPreferences("UserData", MODE_PRIVATE);
-        username = sharedPreferences.getString("username", null);
+        editSongButton = (Button) view.findViewById(R.id.song_list_edit_song_button);
+        cancelDeleteSongButton = (Button) view.findViewById(R.id.song_list_cancel_song_button);
 
-        songsList = new ArrayList<>();
-        // Initialize the recycler view listener
-        RecyclerViewClickListener songItemClickListener = (listView, position) -> {
-            // Create a music controller object
-            PlayingMusicController musicController = new PlayingMusicController(getContext(), songsList);
-            // Set the current song to be played for the controller
-            musicController.setCurrentSong(position);
-            // Tell the main activity
-            onChangeFragmentListener.songClicked(
-                    MainActivityContainer.PlaylistFragmentType.FULL_SCREEN_MUSIC,
-                    musicController);
-        };
         //Display all of the items into the recycler view
-        songsAdapter = new SongsAdapter(songsList, songItemClickListener);
         RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
         songListRecycleView.setLayoutManager(songLayoutManager);
         songListRecycleView.setItemAnimator(new DefaultItemAnimator());
-        songListRecycleView.setAdapter(songsAdapter);
-        getSongList();
+
+        //Set listener
+        backButton.setOnClickListener(this);
+        editSongButton.setOnClickListener(this);
+        cancelDeleteSongButton.setOnClickListener(this);
+        songsListAdapter = new SongsAdapter(this);
+
+        songListRecycleView.setAdapter(songsListAdapter);
+        GetFromServerRequest.getSongsFromPlaylist(playlistName);
 
         return view;
     }
@@ -153,79 +141,67 @@ public class SongsListFragment extends Fragment{
     }
 
     /**
-     * Set the title for the current fragment to playlist name
-     * @param title - fragment title
-     */
-    public static void setPlayListTitle(String title){
-        playListTitle = title;
-    }
-
-    /**
      * Set the title for the text view to title of current fragment
      */
     private void setFragmentTitle(){
-        titleTextView.setText(playListTitle);
+        titleTextView.setText(playlistName);
     }
 
-    /**
-     * display the song list
-     */
-    private void getSongList(){
-        final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
+    //
+    public void setPlaylistTitle(String name){
+        playlistName = name;
+    }
 
-        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+    //Display all of the songs in the playlist
+    public static void displaySongsList(JsonArray songsList){
+        Gson gson = new Gson();
+        for(int x = 0; x < songsList.size(); x++){
+            songsListAdapter.insertSongToSongsList(x, gson.fromJson(
+                    songsList.get(x), DotifySong.class
+            ));
+        }
+        notifyRecyclerDataInsertedChanged();
 
-        DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
-        Call<ResponseBody> getSongList = dotifyHttpInterface.getSongList(
-                getString(R.string.appKey),
-                username,
-                playListTitle
-        );
+    }
 
-        getSongList.enqueue(new Callback<ResponseBody>() {
-            /**
-             * display a success message
-             * @param call - request to server
-             * @param response - server's response
-             */
-            @Override
-            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                int respCode = response.code();
-                if (respCode == Dotify.OK) {
-                    Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
-                    //gets a list of strings of playlist names
-                    ResponseBody mySong = response.body();
-                    try {
-                        JsonObject currSongList= JSONUtilities.ConvertStringToJSON(mySong.string());
-                        Gson gson = new Gson();
-                        for(int x = 0; x < currSongList.get("songs").getAsJsonArray().size(); x++){
-                            songsList.add(gson.fromJson(currSongList.get("songs").getAsJsonArray().get(x), DotifySong.class));
-                        }
-                        songsAdapter.notifyItemRangeInserted(0, songsList.size());
-                        songsAdapter.notifyItemRangeChanged(0, songsList.size());
-                        songsAdapter.notifyDataSetChanged();
+    private static void notifyRecyclerDataInsertedChanged() {
+        songsListAdapter.notifyItemRangeChanged(0, songsListAdapter.getItemCount());
+        songsListAdapter.notifyItemRangeInserted(0, songsListAdapter.getItemCount());
+        songsListAdapter.notifyDataSetChanged();
+    }
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+    //OnClickListener
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.song_list_back_image_button:
+                getFragmentManager().popBackStackImmediate();
+                break;
+            case R.id.song_list_edit_song_button:
+                // Update all of the views to have the delete button to appear
+                songsListAdapter.setDeleteIconVisibility(true);
+                songsListAdapter.notifyDataSetChanged();
+                // Make the Edit button disappear while making the
+                // cancel button appear
+                cancelDeleteSongButton.setVisibility(View.VISIBLE);
+                editSongButton.setVisibility(View.GONE);
+                break;
+            case R.id.song_list_cancel_song_button:
+                // Update all of the views to have the delete button to disappear
+                songsListAdapter.setDeleteIconVisibility(false);
+                songsListAdapter.notifyDataSetChanged();
+                // Make the Edit button appear while making the cancel button disappear
+                cancelDeleteSongButton.setVisibility(View.GONE);
+                editSongButton.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
 
-                } else {
-                    //If unsucessful, show the response code
-                    Log.d(TAG, "getPlaylist-> Unable to retreive playlists " + response.code());
-                }
-            }
+    //RecyclerViewClickListener
+    @Override
+    public void onItemClick(View v, int position) {
 
 
-            /**
-             * If something is wrong with our request to the server, goes to this method
-             * @param call - request to server
-             * @param t - unnecessary parameter
-             */
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(TAG, "Invalid failure: onFailure");
-            }
-        });
     }
 
 }

@@ -16,6 +16,7 @@ import com.example.thai.dotify.R;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.example.thai.dotify.StartUpContainer;
+import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
 
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -31,9 +32,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private EditText usernameEditText;
     private EditText passwordEditText;
-    private TextView errorMessageTextView;
-    private OnChangeFragmentListener onChangeFragmentListener;
+    private static TextView errorMessageTextView;
+    private static OnChangeFragmentListener onChangeFragmentListener;
     private Context activityContext;
+
+    public enum ResponseCode{
+        SUCCESS,
+        FAIL,
+        SERVER_ERROR
+    }
 
     /**
      * object's personal interface
@@ -57,7 +64,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-            activityContext = context;
+        activityContext = context;
     }
 
     /***
@@ -115,7 +122,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 }
                 else{
                     //Tries the login for the username and password
-                    loginDotifyUser(username, password);
+                    GetFromServerRequest.loginDotifyUser(username, password, activityContext);
                 }
                 break;
             case R.id.sign_up_button: //user selects sign up
@@ -131,47 +138,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      * Checks to see if the credentials match for the user. If it matches, allows the user to be authenticated.
      * Otherwise, give a message that the credentials are incorrect or if the server is currently down.
      */
-    private void loginDotifyUser(final String username, final String password){
-        //Start a GET request to login the user
-        final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
-        //Add logging interceptor
-        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
-        DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
-
-        //Create the GET request
-        Call<DotifyUser> request = dotifyHttpInterface.getUser(
-                getString(R.string.appKey),
-                username,
-                password
-        );
-
-        request.enqueue(new Callback<DotifyUser>() {
-            @Override
-            public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
-                if (response.isSuccessful()){
-                    int respCode = response.code();
-                    if (respCode == Dotify.ACCEPTED) {
-                        Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
-                        DotifyUser dotifyUser = response.body();
-                        UserUtilities.cacheUser(activityContext, dotifyUser);
-                        Log.d(TAG, "The user should be cached here.");
-                        onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
-                    }
-                }
-                else{
-                    Log.d(TAG, "loginUser-> onResponse: Invalid Credentials : " + response.code());
-                    errorMessageTextView.setText(R.string.invalid_credential);
-                    //User needs to retry to log in
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DotifyUser> call, Throwable throwable) {
-                Log.w(TAG, "loginUser-> onFailure");
-                //Error message that the server is down
-                errorMessageTextView.setText(R.string.server_down);
-            }
-        });
+    public static void loginResponse(ResponseCode codeType){
+        if(codeType == ResponseCode.SUCCESS){
+            onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
+        }
+        else if(codeType == ResponseCode.FAIL){
+            errorMessageTextView.setText(R.string.invalid_credential);
+        }
+        else if(codeType == ResponseCode.SERVER_ERROR){
+            errorMessageTextView.setText(R.string.connection_failed);
+        }
     }
+
+
+
 
 }

@@ -5,31 +5,34 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
+import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifySong;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 //object that manipulates song data
 public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHolder> {
 
-    private List<DotifySong> songsList;
-    private RecyclerViewClickListener mListener;
+    private HashMap<Integer ,DotifySong> songsList;
+    private RecyclerViewClickListener itemsClickListener;
+    private boolean deleteIconIsVisible = false;
 
 
     /**
      * constructor with given list of songs
-     * @param songList - list of songs
      * @param listener
      */
-    public SongsAdapter(List<DotifySong> songList, RecyclerViewClickListener listener){
-        this.songsList = songList;
-        mListener = listener;
+    public SongsAdapter(RecyclerViewClickListener listener){
+        this.songsList = new HashMap<>();
+        itemsClickListener = listener;
     }
-
 
     /**
      * display the list of songs
@@ -43,8 +46,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.song_info_layout, parent, false);
 
-
-        return new ItemsViewHolder(itemView, mListener);
+        return new ItemsViewHolder(itemView, itemsClickListener);
     }
 
     /**
@@ -55,9 +57,38 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
     @Override
     public void onBindViewHolder(@NonNull ItemsViewHolder holder, int position) {
         DotifySong song = songsList.get(position);
-        holder.songTitle.setText(song.getSong());
-        holder.artistName.setText(song.getArtist());
-        holder.albumName.setText(song.getAlbum());
+        holder.setSongTitle(song.getSong());
+        holder.setArtistName(song.getArtist());
+        holder.setAlbumName(song.getAlbum());
+
+        // Check whether the boolean for whether the delete icon should be visible is
+        // set to true
+        if (deleteIconIsVisible) {
+            holder.setDeleteIconVisible();
+        } else {
+            holder.setDeleteIconGone();
+        }
+    }
+
+
+    /**
+     * Sets whether the delete icons for each item in the views should be visible or not
+     * @param isVisible Whether the items in each recycler view should be visible
+     */
+    public void setDeleteIconVisibility(boolean isVisible) {
+        deleteIconIsVisible = isVisible;
+    }
+
+    /**
+     * constructor with given list of songs
+     * @param newSong new song to insert into the playlist
+     */
+    public void insertSongToSongsList(int songID,DotifySong newSong){
+        songsList.put(songID, newSong);
+    }
+
+    public void deleteSongFromSongsList(){
+
     }
 
     /**
@@ -70,13 +101,14 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
     }
 
 
-
     /**
      * A View object for each item in a corresponding RecyclerView
      */
     public class ItemsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView songTitle, artistName, albumName;
-        private RecyclerViewClickListener mListener;
+
+        private TextView songTitleTextView, artistNameTextView, albumNameTextView;
+        private ImageView deleteIcon;
+        private RecyclerViewClickListener itemsClickListener;
 
         /***
          * constructor w/ given objects
@@ -85,11 +117,52 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
          */
         public ItemsViewHolder(View view, RecyclerViewClickListener listener) {
             super(view);
-            songTitle = (TextView) view.findViewById(R.id.song_info_song_title_text_view);
-            artistName = (TextView) view.findViewById(R.id.song_info_artist_name_text_view);
-            albumName = (TextView) view.findViewById(R.id.song_info_album_name_text_view);
-            mListener = listener;
+            itemsClickListener = listener;
+            songTitleTextView = (TextView) view.findViewById(R.id.song_info_song_title_text_view);
+            artistNameTextView = (TextView) view.findViewById(R.id.song_info_artist_name_text_view);
+            albumNameTextView = (TextView) view.findViewById(R.id.song_info_album_name_text_view);
+            deleteIcon = (ImageView) view.findViewById(R.id.song_info_song_delete_icon);
+
+            deleteIcon.setOnClickListener(this);
             view.setOnClickListener(this);
+        }
+
+        /**
+         *  Set song title
+         *  @param songName
+         */
+        public void setSongTitle(String songName){
+            songTitleTextView.setText(songName);
+        }
+
+        /**
+         * Set artist name
+         * @param artistName
+         */
+        public void setArtistName(String artistName){
+            artistNameTextView.setText(artistName);
+        }
+
+        /**
+         * Set album name
+         * @param albumName
+         */
+        public void setAlbumName(String albumName){
+            albumNameTextView.setText(albumName);
+        }
+
+        /**
+         * Sets the delete icon corresponding with the current recycler view item to be visible
+         */
+        public void setDeleteIconVisible(){
+            deleteIcon.setVisibility(View.VISIBLE);
+        }
+
+        /**
+         * Sets the delete icon corresponding with the current recycler view item to disappear
+         */
+        public void setDeleteIconGone(){
+            deleteIcon.setVisibility(View.GONE);
         }
 
         /***
@@ -98,7 +171,12 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
          */
         @Override
         public void onClick(View v) {
-            mListener.onItemClick(v, getAdapterPosition());
+            if(v.getId() == R.id.song_info_song_delete_icon){
+                System.out.println("I'm here");
+            }
+            else {
+                itemsClickListener.onItemClick(v, getAdapterPosition());
+            }
         }
     }
 

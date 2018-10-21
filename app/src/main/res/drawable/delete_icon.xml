@@ -6,7 +6,7 @@
         android:left="10dp"
         android:top="14dp">
         <shape android:shape="rectangle">
-            <solid android:color="#ffffff"/>
+            <solid android:color="@android:color/white"/>
         </shape>
     </item>
 
@@ -23,8 +23,8 @@
             <gradient
                 android:type="sweep"
                 android:useLevel="false"
-                android:startColor="#ffffff"
-                android:endColor="#ffffff"
+                android:startColor="@android:color/holo_red_light"
+                android:endColor="@android:color/holo_red_light"
                 android:angle="0"
                 />
         </shape>

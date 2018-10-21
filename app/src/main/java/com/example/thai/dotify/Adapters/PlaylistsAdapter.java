@@ -17,6 +17,7 @@ import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -30,12 +31,9 @@ import retrofit2.Response;
  */
 public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.ItemsViewHolder> {
 
-    private List<String> playlistList;
-    private RecyclerViewClickListener mlistener;
+    private ArrayList<String> playlistsListName;
+    private RecyclerViewClickListener itemClickListener;
     private boolean deleteIconIsVisible = false;
-    private OnPlaylistDeletedListener onPlaylistDeletedListener;
-    private Context context;
-    private DotifyUser user;
 
     /**
      * interface for deleting a playlist
@@ -45,12 +43,107 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Item
     }
 
     /**
+     * constructor w/ given values
+     * @param listener
+     */
+    public PlaylistsAdapter(RecyclerViewClickListener listener){
+        this.playlistsListName = new ArrayList<>();
+        itemClickListener = listener;
+    }
+
+
+    /**
+     * create the view object containing data for file "playlist_list_layout"
+     * @param parent
+     * @param viewType
+     * @return new MyViewHolder object
+     */
+    @NonNull
+    @Override
+    public ItemsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.playlist_list_layout, parent, false);
+
+        return new ItemsViewHolder(itemView, itemClickListener);
+    }
+
+    /**
+     * bind data to the PlaylistsAdapter object
+     * @param holder - MyViewHolder object NOT null
+     * @param position
+     */
+    @Override
+    public void onBindViewHolder(@NonNull ItemsViewHolder holder, int position) {
+        holder.setViewPlaylistName(playlistsListName.get(position));
+        // Check whether the boolean for whether the delete icon should be visible is
+        // set to true
+        if (deleteIconIsVisible) {
+            holder.setDeleteIconVisible();
+        } else {
+            holder.setDeleteIconGone();
+        }
+    }
+
+    public String getPlaylistName(int position){
+        return playlistsListName.get(position);
+    }
+
+    /**
+     * get the size of the playlist list
+     * @return
+     */
+    @Override
+    public int getItemCount() {
+        return playlistsListName.size();
+    }
+
+    /**
+     * Sets whether the delete icons for each item in the views should be visible or not
+     * @param isVisible Whether the items in each recycler view should be visible
+     */
+    public void setDeleteIconVisibility(boolean isVisible) {
+        deleteIconIsVisible = isVisible;
+    }
+
+    /**
+     * Get all of the names of playlist playlistList
+     * @return Name of playlist
+     */
+    public ArrayList<String> playlistListName(){
+        return playlistsListName;
+    }
+
+    /**
+     * Replace the current playlistsList with a new playlistList
+     * @param newPlaylistsList - new playlistList to replace the old one
+     */
+    public void replacePlaylistList(ArrayList<String> newPlaylistsList){
+        playlistsListName = newPlaylistsList;
+    }
+
+    /**
+     * Add a new playlist to PlaylistsList
+     * @param playlistName playlist name to be added
+     */
+    public void insertPlaylistToPlaylistsList(String playlistName){
+        playlistsListName.add(playlistName);
+    }
+
+    /**
+     * Add a delete playlist to PlaylistsList
+     * @param index the  position playlist to be deleted
+     */
+    public void deletePlaylist(int index){
+        playlistsListName.remove(index);
+    }
+
+    /**
      * the MyViewHolder object allows user to delete a playlist
      */
     public class ItemsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private TextView playlistName;
+        private TextView playlistNameTextView;
         private ImageView deleteIcon;
-        private RecyclerViewClickListener mListener;
+        private RecyclerViewClickListener itemClickedListener;
 
         /**
          * constructor that allows the user to delete a playlist
@@ -59,52 +152,15 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Item
          */
         public ItemsViewHolder(View view, RecyclerViewClickListener listener) {
             super(view);
-            playlistName = (TextView) view.findViewById(R.id.playlist_list_name_text_view);
-            // Delete icon that handles the event that the user wants to delete a playlist
+            itemClickedListener = listener;
+
+            // Initialize the view from the search result item
+            playlistNameTextView = (TextView) view.findViewById(R.id.playlist_list_name_text_view);
             deleteIcon = (ImageView) view.findViewById(R.id.playlist_item_delete_icon);
-            deleteIcon.setOnClickListener(new View.OnClickListener() {
-                /**
-                 * invoked when user selects delete
-                 * @param view - View object representing file "playlist_list_layout"
-                 */
-                @Override
-                public void onClick(View view) {
-                    deleteIcon.setOnClickListener((deleteIconView) -> {
-                        // Create a Dotify object to begin sending requests
-                        final Dotify dotify = new Dotify("https://www.dotify.online/");
-                        // Add an interceptor to log what is moving back and forth
-                        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
-                        // Create the interface to get the route methods
-                        DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
-                        Call<ResponseBody> deletePlaylist = dotifyHttpInterface.deletePlaylist(
-                                context.getString(R.string.appKey),
-                                playlistName.getText().toString(),
-                                user.getUsername()
-                        );
 
-                        /**
-                         * send a reply to user after the playlist is deleted
-                         */
-                        deletePlaylist.enqueue(new Callback<ResponseBody>() {
-                            @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                Log.d("PlaylistsAdapter",
-                                        "MyViewHolder -> onClick -> onResponse: Reponse Code = " + response.code());
-                                if (response.code() == Dotify.OK){
-                                    onPlaylistDeletedListener.onPlaylistDeleted(getAdapterPosition());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                            }
-                        });
-                    });
-                }
-            });
-            mListener = listener;
-            view.setOnClickListener(this);
+            // Delete icon that handles the event that the user wants to delete a playlist
+            playlistNameTextView.setOnClickListener(this);
+            deleteIcon.setOnClickListener(this);
         }
 
         /**
@@ -113,7 +169,16 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Item
          */
         @Override
         public void onClick(View v) {
-            mListener.onItemClick(v, getAdapterPosition());
+            if(v.getId() == R.id.playlist_list_name_text_view) {
+                itemClickedListener.onItemClick(v, getAdapterPosition());
+            }
+            else if(v.getId() == R.id.playlist_item_delete_icon){
+                System.out.println("I'm here");
+            }
+        }
+
+        public void setViewPlaylistName(String playlistName){
+            playlistNameTextView.setText(playlistName);
         }
 
         /**
@@ -129,78 +194,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Item
         public void setDeleteIconGone() {
             deleteIcon.setVisibility(View.GONE);
         }
-    }
-
-    public PlaylistsAdapter(List<String> songList, RecyclerViewClickListener listener){
-        this.playlistList = songList;
-        mlistener = listener;
-    }
-
-    /**
-     * constructor w/ given values
-     * @param context
-     * @param user - Dotify user logged into app
-     * @param playlistList - list of all playlist names
-     * @param listener
-     * @param onPlaylistDeletedListener
-     */
-    public PlaylistsAdapter(Context context, DotifyUser user, List<String> playlistList,
-                    RecyclerViewClickListener listener, OnPlaylistDeletedListener onPlaylistDeletedListener){
-        this.playlistList = playlistList;
-        mlistener = listener;
-        this.context = context;
-        this.user = user;
-        this.onPlaylistDeletedListener = onPlaylistDeletedListener;
-    }
-
-    /**
-     * create the view object containing data for file "playlist_list_layout"
-     * @param parent
-     * @param viewType
-     * @return new MyViewHolder object
-     */
-    @NonNull
-    @Override
-    public ItemsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.playlist_list_layout, parent, false);
-
-        return new ItemsViewHolder(itemView, mlistener);
-    }
-
-    /**
-     * bind data to the PlaylistsAdapter object
-     * @param holder - MyViewHolder object NOT null
-     * @param position
-     */
-    @Override
-    public void onBindViewHolder(@NonNull ItemsViewHolder holder, int position) {
-        String playlist = playlistList.get(position);
-        holder.playlistName.setText(playlist);
-        // Check whether the boolean for whether the delete icon should be visible is
-        // set to true
-        if (deleteIconIsVisible) {
-            holder.setDeleteIconVisible();
-        } else {
-            holder.setDeleteIconGone();
-        }
-    }
-
-    /**
-     * get the size of the playlist list
-     * @return
-     */
-    @Override
-    public int getItemCount() {
-        return playlistList.size();
-    }
-
-    /**
-     * Sets whether the delete icons for each item in the views should be visible or not
-     * @param isVisible Whether the items in each recycler view should be visible
-     */
-    public void setDeleteIconVisibility(boolean isVisible) {
-        deleteIconIsVisible = isVisible;
     }
 
 }

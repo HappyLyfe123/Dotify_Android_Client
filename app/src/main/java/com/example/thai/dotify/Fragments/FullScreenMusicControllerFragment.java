@@ -163,13 +163,11 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
         AlertDialog currDialogBox = alertDialogBuilder.create();
 
         //Initialize view
-        List<String> playlistsList = MainActivityContainer.getPlaylistList();
         selectPlaylistList = alertDialogView.findViewById(R.id.select_playlist_playlist_list);
         Button cancelButton = alertDialogView.findViewById(R.id.select_playlist_cancel_button);
         // Initialize the recycler view listener
         RecyclerViewClickListener playlistItemClickListener = (listView, position) -> {
             // Create a music controller object
-            addSongToPlaylist(playlistsList.get(position));
             currDialogBox.dismiss();
         };
 
@@ -180,12 +178,10 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
                 currDialogBox.dismiss();
             }
         });
-        PlaylistsAdapter playlistsAdapter = new PlaylistsAdapter(playlistsList, playlistItemClickListener);
         //Display all of the items into the recycler view
         RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
         selectPlaylistList.setLayoutManager(songLayoutManager);
         selectPlaylistList.setItemAnimator(new DefaultItemAnimator());
-        selectPlaylistList.setAdapter(playlistsAdapter);
 
         //Create Alert DialogBox
         currDialogBox.show();

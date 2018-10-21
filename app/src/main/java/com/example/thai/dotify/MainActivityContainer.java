@@ -20,7 +20,8 @@ import com.example.thai.dotify.Fragments.PlaylistFragment;
 import com.example.thai.dotify.Fragments.ProfileInfoFragment;
 import com.example.thai.dotify.Fragments.SearchFragment;
 import com.example.thai.dotify.Fragments.SongsListFragment;
-import com.example.thai.dotify.Utilities.SentToServerRequest;
+import com.example.thai.dotify.Adapters.SentToServerRequest;
+import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
 
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ import java.util.Map;
 public class MainActivityContainer extends AppCompatActivity
         implements PlaylistFragment.OnChangeFragmentListener, SearchFragment.OnChangeFragmentListener{
 
-    private TextView mTextMessage;
     private SearchFragment searchFragment;
     private PlaylistFragment playlistFragment;
     private ProfileInfoFragment profileInfoFragment;
@@ -45,12 +45,9 @@ public class MainActivityContainer extends AppCompatActivity
     private BottomNavigationView bottomNavigationView;
     private FrameLayout miniMusicControllerLayout;
     private FrameLayout mainDisplayLayout;
-    private SearchView searchView;
     private static boolean isMusicPlaying;
     private PlayingMusicController musicController;
     private DotifyUser user;
-    private Map<String, ArrayList<SearchResultSongs>> songSearchQuery;
-    private Map<String, ArrayList<String>> artistSearchQuery;
     private Context activityContext;
     public static SentToServerRequest sentToServerRequest;
 
@@ -78,11 +75,8 @@ public class MainActivityContainer extends AppCompatActivity
 
         //Initialize Main Activity Variables
         user = UserUtilities.getCachedUserInfo(this);
-        songSearchQuery = new HashMap<>();
-        artistSearchQuery = new HashMap<>();
-
-        //Send to server request
-        sentToServerRequest = new SentToServerRequest(getString(R.string.base_URL), getString(R.string.appKey), user.getUsername());
+        new GetFromServerRequest(getString(R.string.base_URL), getString(R.string.appKey), user.getUsername());
+        new SentToServerRequest(getString(R.string.base_URL), getString(R.string.appKey), user.getUsername());
 
         //Initialize view layout
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
@@ -91,55 +85,22 @@ public class MainActivityContainer extends AppCompatActivity
 
         //Instantiate fragments
         searchFragment = new SearchFragment();
-        searchFragment.setOnChangeFragmentListener(this);
         playlistFragment = new PlaylistFragment();
-        playlistFragment.setOnChangeFragmentListener(this);
+        forYouFragment = new ForYouFragment();
+        songListScreenFragment = new SongsListFragment();
         profileInfoFragment = new ProfileInfoFragment();
         profileInfoFragment.setOnUserImageUploadedListener((dotifyUser) ->
             // Updates the current user object
             user = dotifyUser
         );
-        forYouFragment = new ForYouFragment();
-        songListScreenFragment = new SongsListFragment();
-        // Set the song clicked listener for songListScreenFragment
-        songListScreenFragment.setOnChangeFragmentListener((fragmentType, musicController) -> {
-            // Set the current music controller object
-            this.musicController = musicController;
-            startFragment(PlaylistFragmentType.FULL_SCREEN_MUSIC, true,
-                    true);
-        });
+
+        searchFragment.setOnChangeFragmentListener(this);
+        playlistFragment.setOnChangeFragmentListener(this);
+
         createPlaylistFragment = createPlaylistFragment.newInstance();
         miniMusicControllerFragment = miniMusicControllerFragment.newInstance();
 
-        isMusicPlaying = false;
-        //create bottom navigation bar
-        // createMiniMusicControllerView();
         createBottomNavigationView();
-    }
-
-
-    /***
-     * invoked when a playlist is selected
-     * @param fragmentType
-     */
-    @Override
-    public void buttonClicked(MainActivityContainer.PlaylistFragmentType fragmentType) {
-        switch (fragmentType){
-            case SONGS_LIST_PAGE:
-                startFragment(PlaylistFragmentType.SONGS_LIST_PAGE, true, true);
-                break;
-            case BACK_BUTTON:
-                startFragment(PlaylistFragmentType.BACK_BUTTON, false, false);
-        }
-    }
-
-    /***
-     * assigns playlist title to user-provided playlist title
-     * @param title - user-provided playlist title
-     */
-    @Override
-    public void setTitle(String title) {
-        SongsListFragment.setPlayListTitle(title);
     }
 
     /***
@@ -215,15 +176,6 @@ public class MainActivityContainer extends AppCompatActivity
         return true;
     }
 
-    /***
-     * invoked when back button is pressed
-     */
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        startFragment(PlaylistFragmentType.BACK_BUTTON, false,false);
-    }
-
     /**
      * Creates the bottom navigation for the activity container. Sets the home screen as default.
      */
@@ -270,9 +222,24 @@ public class MainActivityContainer extends AppCompatActivity
         return user;
     }
 
-    //Return the current playlist information
-    public static List<String> getPlaylistList(){
-        return PlaylistFragment.getPlaylistList();
+
+    /***
+     * invoked when a playlist is selected
+     * @param playlistName
+     */
+    @Override
+    public void playlistClicked(String playlistName) {
+        songListScreenFragment.setPlaylistTitle(playlistName);
+        startFragment(PlaylistFragmentType.SONGS_LIST_PAGE, true, true);
+    }
+
+    /***
+     * invoked when back button is pressed
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startFragment(PlaylistFragmentType.BACK_BUTTON, false,false);
     }
 
     @Override
