@@ -7,7 +7,6 @@ import android.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,23 +15,13 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.thai.dotify.Adapters.SentToServerRequest;
-import com.example.thai.dotify.DotifyUser;
-import com.example.thai.dotify.MainActivityContainer;
+import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Adapters.PlaylistsAdapter;
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
-import com.example.thai.dotify.Server.Dotify;
-import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 
-import java.util.ArrayList;
 import java.util.List;
-import okhttp3.ResponseBody;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
-import static android.support.constraint.Constraints.TAG;
 
 //the fragment object that represents the home page for the profile page
 public class PlaylistFragment extends Fragment implements View.OnClickListener,

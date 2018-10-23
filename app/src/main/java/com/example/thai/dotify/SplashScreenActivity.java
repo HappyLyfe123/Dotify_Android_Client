@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.thai.dotify.Adapters.SentToServerRequest;
+import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
 

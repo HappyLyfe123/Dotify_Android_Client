@@ -9,8 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.SearchView;
-import android.widget.TextView;
 
 import com.example.thai.dotify.Fragments.CreatePlaylistFragment;
 import com.example.thai.dotify.Fragments.ForYouFragment;
@@ -20,14 +18,9 @@ import com.example.thai.dotify.Fragments.PlaylistFragment;
 import com.example.thai.dotify.Fragments.ProfileInfoFragment;
 import com.example.thai.dotify.Fragments.SearchFragment;
 import com.example.thai.dotify.Fragments.SongsListFragment;
-import com.example.thai.dotify.Adapters.SentToServerRequest;
+import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * this object puts together all the parts of the application

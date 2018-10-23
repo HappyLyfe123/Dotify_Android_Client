@@ -1,10 +1,13 @@
-package com.example.thai.dotify.Adapters;
+package com.example.thai.dotify.Utilities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
 import com.example.thai.dotify.DotifyUser;
+import com.example.thai.dotify.Fragments.CreateAccountFragment;
+import com.example.thai.dotify.Fragments.LoginFragment;
 import com.example.thai.dotify.Fragments.PlaylistFragment;
 import com.example.thai.dotify.MainActivityContainer;
 import com.example.thai.dotify.R;
@@ -57,11 +60,8 @@ public class SentToServerRequest {
      * @param secAnswer1 The user's chosen security answer 1
      * @param secAnswer2 The user's chosen security answer 2
      */
-    public static int createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,
-                                  final String secAnswer1, final String secAnswer2) {
-        //To display an error message if one exists
-        final int[] errorCodeNum = new int[1];
-
+    public static void createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,
+                                  final String secAnswer1, final String secAnswer2, final Context activityContext) {
         //Create an dotifyUser object to send
         DotifyUser dotifyUser = new DotifyUser(
                 username,
@@ -99,10 +99,12 @@ public class SentToServerRequest {
             public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
                 if (response.code() == 201) {
                     Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
-                    errorCodeNum[0] = 0;
+                    UserUtilities.cacheUser(activityContext, dotifyUser);
+                    //Now, send the user to the login page
+//                    Intent intent = startActivity(new Intent(getActivity(), MainActivityContainer.class));
+//                    activityContext.finish();
                 } else {
                     Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
-                    errorCodeNum[0] = 1;
                 }
             }
 
@@ -111,18 +113,15 @@ public class SentToServerRequest {
                 //The request has unexpectedly failed
                 Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Unexpected request failure");
                 //Display error message that server is down
-                errorCodeNum[0] = 2;
             }
         });
-        return errorCodeNum[0];
     }
 
     /**
      * Put request to reset the password
      * @param newPassword The new password to reset to
      */
-    public static DotifyUser resetPassword(final String securityToken, final String username, final String newPassword) {
-        DotifyUser dotifyUser = null;
+    public static void resetPassword(final String securityToken, final String username, final String newPassword, final Context activityContext) {
         //Create the PUT Request
         Call<DotifyUser> request = dotifyHttpInterface.updatePassword(appKey, securityToken,
                 username, newPassword);
@@ -131,7 +130,10 @@ public class SentToServerRequest {
             @Override
             public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
                 if (response.code() == 200) {
-
+                    Log.d(TAG, "resetPassword-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
+                    DotifyUser dotifyUser = response.body();
+                    UserUtilities.cacheUser(activityContext, dotifyUser);
+                    Log.d(TAG, "The user should be cached here.");
                 } else {
                     Log.d(TAG, "resetPassword-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
                 }
@@ -144,7 +146,6 @@ public class SentToServerRequest {
                 t.printStackTrace();
             }
         });
-        return dotifyUser;
     }
 
     /**

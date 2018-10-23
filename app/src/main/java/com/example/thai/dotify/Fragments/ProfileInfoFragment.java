@@ -146,13 +146,13 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
 
         // Check whether the user contains a user image
         String encodedUserImage = user.getProfileImage();
-        if(!encodedUserImage.isEmpty()) {
-            byte[] decodedImage = Base64.decode(encodedUserImage, Base64.DEFAULT);
-            Bitmap userImage = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
-            profileImage.setImageBitmap(userImage);
+        if (encodedUserImage != null){
+            if(!encodedUserImage.isEmpty()) {
+                byte[] decodedImage = Base64.decode(encodedUserImage, Base64.DEFAULT);
+                Bitmap userImage = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+                profileImage.setImageBitmap(userImage);
+            }
         }
-
-
         return view;
     }
 

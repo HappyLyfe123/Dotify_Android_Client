@@ -114,9 +114,7 @@ public class GetFromServerRequest {
      * @param username The username of the person you want to do the retreival from
      * @return listOfSecQuestions Returns a list of security questions that belong to the user or null if none found
      */
-    public static List<String> getSecurityQuestions(final String username){
-        List<String> listOfSecQuestions = new ArrayList<>();
-
+    public static void getSecurityQuestions(final String username){
         //Create the GET request
         Call<ResponseBody> request = dotifyHttpInterface.getResetQuestions(
                 appKey,
@@ -136,9 +134,7 @@ public class GetFromServerRequest {
                             JsonObject securityQuestions = JSONUtilities.ConvertStringToJSON(ob);
                             String sq1 = securityQuestions.get("securityQuestion1").getAsString();
                             String sq2 = securityQuestions.get("securityQuestion2").getAsString();
-                            listOfSecQuestions.add(sq1);
-                            listOfSecQuestions.add(sq2);
-                            Log.d(TAG, "The security questions are "+listOfSecQuestions.get(0)+listOfSecQuestions.get(1));
+                            ForgetPasswordFragment.updateListOfSecQuestions(sq1, sq2);
                             //Switch stubs here
                         }
                         catch(Exception ex){
@@ -158,7 +154,6 @@ public class GetFromServerRequest {
                 throwable.printStackTrace();
             }
         });
-        return listOfSecQuestions;
     }
 
     /**
@@ -168,9 +163,7 @@ public class GetFromServerRequest {
      * @param securityAnswer2 THe asnwer to the second Security Question
      * @return securityToken The securitytoken inside of a list
      */
-    public static List<String> validateSecurityAnswers(final String username, final String securityAnswer1, final String securityAnswer2){
-        final List<String> securityToken = new ArrayList<>();
-
+    public static void validateSecurityAnswers(final String username, final String securityAnswer1, final String securityAnswer2){
         //Create the GET request
         Call<ResponseBody> request = dotifyHttpInterface.validateSecAnswers(
                 appKey,
@@ -191,7 +184,7 @@ public class GetFromServerRequest {
                         try{
                             String ob = obtained.string();
                             JsonObject token = JSONUtilities.ConvertStringToJSON(ob);
-                            securityToken.add(token.get("token").getAsString());
+                            ForgetPasswordFragment.setSecurityToken(token.get("token").getAsString());
                         }
                         catch(Exception exception){
                             Log.d(TAG, "This didn't work.");
@@ -209,7 +202,6 @@ public class GetFromServerRequest {
                 Log.w(TAG, "validateSecurityAnswers-> onFailure");
             }
         });
-        return securityToken;
     }
 
     /**
@@ -229,7 +221,6 @@ public class GetFromServerRequest {
                     Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
                     //gets a list of strings of playlist names
                     List<String> userPlaylist = response.body();
-
                     PlaylistFragment.displayPlaylistsList(userPlaylist);
                 } else {
                     //If unsuccessful, show the response code

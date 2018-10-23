@@ -22,7 +22,9 @@ import com.example.thai.dotify.R;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.example.thai.dotify.StartUpContainer;
+import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.JSONUtilities;
+import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
 import com.google.gson.JsonObject;
 
@@ -58,8 +60,8 @@ public class ForgetPasswordFragment extends Fragment{
     private TextView securityQuestion1TextView, securityQuestion2TextView;
     private ViewStub usernameStub, securityQuestionStub, resetPasswordStub;
     private Context activityContext;
-    private static List<String> listOfSecQuestions;
-    private String securityToken;
+    public static List<String> listOfSecQuestions;
+    public static String securityToken;
 
     //enum of possible fragments to display
     private enum ViewStubType{
@@ -174,8 +176,6 @@ public class ForgetPasswordFragment extends Fragment{
                 }
                 break;
         }
-
-
     }
 
 
@@ -190,7 +190,11 @@ public class ForgetPasswordFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 //Remove the current layout
-                getSecurityQuestions(usernameEditText.getText().toString());
+                GetFromServerRequest.getSecurityQuestions(usernameEditText.getText().toString());
+                if (listOfSecQuestions.size() == 0){
+                    usernameStub.setVisibility(View.GONE);
+                    switchStubView(ViewStubType.SECURITY_QUESTION);
+                }
             }
         });
     }
@@ -213,12 +217,16 @@ public class ForgetPasswordFragment extends Fragment{
         securityQuestionSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateSecurityAnswers(usernameEditText.getText().toString(), securityQuestion1EditText.getText().toString(),
+                GetFromServerRequest.validateSecurityAnswers(usernameEditText.getText().toString(), securityQuestion1EditText.getText().toString(),
                         securityQuestion2EditText.getText().toString());
-//                //Remove the current layout
-//                securityQuestionStub.setVisibility(View.GONE);
-//                //Sent this layout to the view stub
-//                switchStubView(ViewStubType.RESET_PASSWORD);
+                if (securityToken.length() > 5){
+                    //Remove the current layout
+                    securityQuestionStub.setVisibility(View.GONE);
+                    switchStubView(ViewStubType.RESET_PASSWORD);
+                }
+                else{
+                    //Display error message that the answers are not valid
+                }
             }
         });
     }
@@ -233,8 +241,8 @@ public class ForgetPasswordFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 //if(passwordEditText.getText().equals(confirmPasswordEditText.getText())){
-                    resetPassword(securityToken,
-                            usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                    SentToServerRequest.resetPassword(securityToken,
+                            usernameEditText.getText().toString(), passwordEditText.getText().toString(), activityContext);
 
                 //}
 
@@ -287,7 +295,6 @@ public class ForgetPasswordFragment extends Fragment{
                     } else {
                         Log.d(TAG, "getSecurityQuestions-> onResponse: Invalid Credentials : " + response.code());
                         //If failed, the user needs to reenter their username
-
                     }
                 }
             }
@@ -407,6 +414,24 @@ public class ForgetPasswordFragment extends Fragment{
      */
     public static List<String> getListOfSecQuestions (){
         return listOfSecQuestions;
+    }
+
+    /**
+     * adds the list of security questions to the list
+     * @param securityQuestion1 first security quesiton
+     * @param securityQuestion2 second security quesiton
+     */
+    public static void updateListOfSecQuestions (String securityQuestion1, String securityQuestion2){
+        listOfSecQuestions.add(securityQuestion1);
+        listOfSecQuestions.add(securityQuestion2);
+    }
+
+    /**
+     * Sets the value of the security token
+     * @param token
+     */
+    public static void setSecurityToken(String token){
+        securityToken = token;
     }
 
 }

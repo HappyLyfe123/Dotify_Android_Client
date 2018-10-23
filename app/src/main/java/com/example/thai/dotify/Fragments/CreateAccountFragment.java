@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.CountDownTimer;
+import android.provider.Telephony;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,6 +22,9 @@ import com.example.thai.dotify.R;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 
+import com.example.thai.dotify.StartUpContainer;
+import com.example.thai.dotify.Utilities.GetFromServerRequest;
+import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
 
 import java.io.IOException;
@@ -38,7 +43,7 @@ import static android.support.constraint.Constraints.TAG;
 /**
  * this object gets the user input for each attribute for the account
  */
-public class CreateAccountFragment extends Fragment{
+public class CreateAccountFragment extends Fragment {
 
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -54,7 +59,7 @@ public class CreateAccountFragment extends Fragment{
     private boolean isWeakPasswordEnable;
     private boolean isPasswordMatch;
     private boolean usernameFilled, passwordFilled, confirmedPasswordFilled, securityQuestion1Filled,
-        securityQuestion2Filled;
+            securityQuestion2Filled;
     private CreateAccountListener fragmentController;
 
     /**
@@ -66,6 +71,7 @@ public class CreateAccountFragment extends Fragment{
 
     /**
      * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
+     *
      * @param onChangeFragmentListener The listener for communication
      */
     public void setOnChangeFragmentListener(CreateAccountListener onChangeFragmentListener) {
@@ -121,15 +127,16 @@ public class CreateAccountFragment extends Fragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try{
+        try {
             fragmentController = (CreateAccountListener) context;
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }
     }
 
     /**
      * Initializes the main components of the fragment
+     *
      * @param savedInstanceState The saved instance of the fragment
      */
     @Override
@@ -141,7 +148,7 @@ public class CreateAccountFragment extends Fragment{
     /**
      * Create focus listener for edit text for username and password
      */
-    private void setTextEditFocusListener(){
+    private void setTextEditFocusListener() {
 
         usernameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             /**
@@ -151,8 +158,8 @@ public class CreateAccountFragment extends Fragment{
              */
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                    if(!usernameEditText.getText().toString().isEmpty()){
+                if (!hasFocus) {
+                    if (!usernameEditText.getText().toString().isEmpty()) {
                         usernameFilled = true;
                     }
                 }
@@ -167,17 +174,15 @@ public class CreateAccountFragment extends Fragment{
              */
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                    if(passwordEditText.getText().toString().isEmpty()){
+                if (!hasFocus) {
+                    if (passwordEditText.getText().toString().isEmpty()) {
                         weakPasswordTextView.setVisibility(View.INVISIBLE);
                         passwordFilled = false;
-                    }
-                    else if(passwordGuidelineCheck(passwordEditText.getText().toString()) ){
+                    } else if (passwordGuidelineCheck(passwordEditText.getText().toString())) {
                         weakPasswordTextView.setVisibility(View.INVISIBLE);
                         passwordFilled = true;
                         isWeakPasswordEnable = false;
-                    }
-                    else{
+                    } else {
                         weakPasswordTextView.setVisibility(View.VISIBLE);
                         isWeakPasswordEnable = true;
                     }
@@ -193,13 +198,12 @@ public class CreateAccountFragment extends Fragment{
              */
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                    if(passwordEditText.getText().toString().equals(confirmPasswordEditText.getText().toString())){
+                if (!hasFocus) {
+                    if (passwordEditText.getText().toString().equals(confirmPasswordEditText.getText().toString())) {
                         confirmPasswordErrorTextView.setVisibility(View.INVISIBLE);
                         isPasswordMatch = true;
                         confirmedPasswordFilled = true;
-                    }
-                    else{
+                    } else {
                         confirmPasswordErrorTextView.setVisibility(View.VISIBLE);
                     }
                 }
@@ -209,11 +213,10 @@ public class CreateAccountFragment extends Fragment{
         securityQuestion1AnswerEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                    if(securityQuestion1AnswerEditText.getText().toString().isEmpty()){
+                if (!hasFocus) {
+                    if (securityQuestion1AnswerEditText.getText().toString().isEmpty()) {
                         securityQuestion1Filled = false;
-                    }
-                    else{
+                    } else {
                         securityQuestion1Filled = true;
                     }
 
@@ -224,10 +227,9 @@ public class CreateAccountFragment extends Fragment{
         securityQuestion2AnswerEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(securityQuestion2AnswerEditText.getText().toString().isEmpty()){
+                if (securityQuestion2AnswerEditText.getText().toString().isEmpty()) {
                     securityQuestion2Filled = false;
-                }
-                else{
+                } else {
                     securityQuestion2Filled = true;
                 }
 
@@ -239,10 +241,11 @@ public class CreateAccountFragment extends Fragment{
     /**
      * Create text change listener for edit text
      */
-    private void setTextChange(){
+    private void setTextChange() {
         usernameEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             /**
              * when user changes their input
@@ -254,10 +257,9 @@ public class CreateAccountFragment extends Fragment{
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if(!s.toString().toString().trim().isEmpty()){
+                if (!s.toString().toString().trim().isEmpty()) {
                     usernameFilled = true;
-                }
-                else{
+                } else {
                     usernameFilled = false;
                 }
                 enableCreateAccountButton();
@@ -271,7 +273,8 @@ public class CreateAccountFragment extends Fragment{
 
         passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -279,18 +282,17 @@ public class CreateAccountFragment extends Fragment{
                 isPasswordMatch = false;
 
                 //Check if the password and confirm password match
-                if(confirmedPasswordFilled){
-                    if(passwordEditText.getText().toString().equals(s.toString())){
+                if (confirmedPasswordFilled) {
+                    if (passwordEditText.getText().toString().equals(s.toString())) {
                         isPasswordMatch = true;
                     }
                 }
 
                 //Check if the user entered a password that follow the guide line
-                if(passwordGuidelineCheck(s.toString())){
+                if (passwordGuidelineCheck(s.toString())) {
                     passwordFilled = true;
                     isWeakPasswordEnable = false;
-                }
-                else{
+                } else {
                     passwordFilled = false;
                     isWeakPasswordEnable = true;
                 }
@@ -306,7 +308,8 @@ public class CreateAccountFragment extends Fragment{
 
         confirmPasswordEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -314,13 +317,12 @@ public class CreateAccountFragment extends Fragment{
                 isPasswordMatch = false;
 
                 //Check if password and confirm password match
-                if(passwordEditText.getText().toString().equals(s.toString())){
+                if (passwordEditText.getText().toString().equals(s.toString())) {
                     confirmedPasswordFilled = true;
                     isPasswordMatch = true;
                     confirmPasswordErrorTextView.setVisibility(View.INVISIBLE);
 
-                }
-                else if(s.toString().trim().isEmpty()){
+                } else if (s.toString().trim().isEmpty()) {
                     confirmedPasswordFilled = false;
                 }
                 enableCreateAccountButton();
@@ -328,21 +330,22 @@ public class CreateAccountFragment extends Fragment{
             }
 
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         securityQuestion1AnswerEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 //CHeck to determine if the security question is entered
-                if(!s.toString().trim().isEmpty()){
+                if (!s.toString().trim().isEmpty()) {
                     securityQuestion1Filled = true;
-                }
-                else{
+                } else {
                     securityQuestion1Filled = false;
 
                 }
@@ -350,37 +353,38 @@ public class CreateAccountFragment extends Fragment{
             }
 
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         securityQuestion2AnswerEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 //CHeck to determine if the security question is entered
-                if(!s.toString().trim().isEmpty()){
+                if (!s.toString().trim().isEmpty()) {
                     securityQuestion2Filled = true;
-                }
-                else{
+                } else {
                     securityQuestion2Filled = false;
                 }
                 enableCreateAccountButton();
             }
 
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
-
 
 
     /**
      * Add the item to the spinner
      */
-    private void populateSpinner(){
+    private void populateSpinner() {
 
     }
 
@@ -388,13 +392,11 @@ public class CreateAccountFragment extends Fragment{
     /**
      * Enable create account button to change button color to black
      */
-    private void enableCreateAccountButton()
-    {
-        if(usernameFilled && passwordFilled && confirmedPasswordFilled && securityQuestion1Filled
-                && securityQuestion2Filled && !isWeakPasswordEnable && isPasswordMatch){
+    private void enableCreateAccountButton() {
+        if (usernameFilled && passwordFilled && confirmedPasswordFilled && securityQuestion1Filled
+                && securityQuestion2Filled && !isWeakPasswordEnable && isPasswordMatch) {
             fragmentController.enableCreateButton(true);
-        }
-        else {
+        } else {
             fragmentController.enableCreateButton(false);
         }
     }
@@ -402,7 +404,7 @@ public class CreateAccountFragment extends Fragment{
     /**
      * Sends the user information to the server
      */
-    public boolean createAccount(){
+    public boolean createAccount() {
         boolean isAccountCreated = true;
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
@@ -410,8 +412,11 @@ public class CreateAccountFragment extends Fragment{
         String securityQuestion2 = securityQuestion2Spinner.getSelectedItem().toString();
         String securityAnswer1 = securityQuestion1AnswerEditText.getText().toString();
         String securityAnswer2 = securityQuestion2AnswerEditText.getText().toString();
-        createDotifyUser(username,password,securityQuestion1,securityQuestion2, securityAnswer1, securityAnswer2);
-        if (username == null){
+//        createDotifyUser(username, password, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2);
+        SentToServerRequest.createDotifyUser(username,password,securityQuestion1,
+                securityQuestion2, securityAnswer1, securityAnswer2, getContext());
+
+        if (username == null) {
             isAccountCreated = false;
         }
         return isAccountCreated;
@@ -419,6 +424,7 @@ public class CreateAccountFragment extends Fragment{
 
     /**
      * Checks the user's password to make sure it is strong enough to prevent dictionary attacks
+     *
      * @param password The user's desired password
      * @return True if the password is strong enough and false otherwise
      */
@@ -434,6 +440,7 @@ public class CreateAccountFragment extends Fragment{
 
     /**
      * Creates an Dotify User from the federated identities
+     *
      * @param username The user's chosen username
      */
     private void createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,
@@ -470,31 +477,29 @@ public class CreateAccountFragment extends Fragment{
         Call<DotifyUser> request = dotifyHttpInterface.createUser(dotifyUser.getUsername(), dotifyUser.getPassword(),
                 dotifyUser.getQuestion1(), dotifyUser.getQuestion2(), dotifyUser.getAnswer1(), dotifyUser.getAnswer2());
         //Call the request asynchronously
-            request.enqueue(new Callback<DotifyUser>() {
-                @Override
-                public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
-                    if (response.code() == 201) {
-                        Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
+        request.enqueue(new Callback<DotifyUser>() {
+            @Override
+            public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
+                if (response.code() == 201) {
+                    Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
+                    // Cache the user information that we jsut created
+                    UserUtilities.cacheUser(getActivity(), dotifyUser);
 
-                        // Cache the user information that we jsut created
-                        UserUtilities.cacheUser(getActivity(), dotifyUser);
-
-                        //Now send the user to the login screen
-                        startActivity(new Intent(getActivity(), MainActivityContainer.class));
-                        getActivity().finish();
-                    } else {
-                        Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
-                    }
+                    //Now send the user to the login screen
+                    startActivity(new Intent(getActivity(), MainActivityContainer.class));
+                    getActivity().finish();
+                } else {
+                    Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
                 }
+            }
 
-                @Override
-                public void onFailure(Call<DotifyUser> call, Throwable t) {
-                    //The request has unexpectedly failed
-                    Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Unexpected request failure");
-                    //Display error message that server is down
-                    errorMessageTextView.setText(R.string.server_down);
-                }
-            });
+            @Override
+            public void onFailure(Call<DotifyUser> call, Throwable t) {
+                //The request has unexpectedly failed
+                Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Unexpected request failure");
+                //Display error message that server is down
+                errorMessageTextView.setText(R.string.server_down);
+            }
+        });
     }
-
 }
