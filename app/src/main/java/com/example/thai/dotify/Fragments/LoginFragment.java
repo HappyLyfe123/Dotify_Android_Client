@@ -122,7 +122,46 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 }
                 else{
                     //Tries the login for the username and password
-                    GetFromServerRequest.loginDotifyUser(username, password, activityContext);
+
+
+                    //Start a GET request to get the list of playlists that belongs to the user
+                    Dotify dotify = new Dotify(getString(R.string.base_URL));
+                    dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+                    DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
+
+                    //Create the GET request
+                    Call<DotifyUser> request = dotifyHttpInterface.getUser(
+                            getString(R.string.appKey),
+                            username,
+                            password
+                    );
+
+                    request.enqueue(new Callback<DotifyUser>() {
+                        @Override
+                        public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
+                            if (response.isSuccessful()){
+                                int respCode = response.code();
+                                if (respCode == Dotify.ACCEPTED) {
+                                    DotifyUser dotifyUser = response.body();
+                                    UserUtilities.cacheUser(activityContext, dotifyUser);
+                                    LoginFragment.loginResponse(LoginFragment.ResponseCode.SUCCESS);
+                                }
+                            }
+                            else{
+                                Log.d(TAG, "loginUser-> onResponse: Invalid Credentials : " + response.code());
+                                //User needs to retry to log in
+                                LoginFragment.loginResponse(LoginFragment.ResponseCode.FAIL);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<DotifyUser> call, Throwable throwable) {
+                            Log.w(TAG, "loginUser-> onFailure");
+                            //Error message that the server is down
+                            LoginFragment.loginResponse(LoginFragment.ResponseCode.SERVER_ERROR);
+
+                        }
+                    });
                 }
                 break;
             case R.id.sign_up_button: //user selects sign up

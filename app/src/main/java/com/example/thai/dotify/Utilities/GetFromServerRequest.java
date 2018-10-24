@@ -65,50 +65,6 @@ public class GetFromServerRequest {
     }
 
     /**
-     * Checks to see if the user's credentials match. If they do, allow them access.
-     * @param username The username to authenticate
-     * @param password The password to authenticatre
-     * @return a number that correlates with success
-     */
-    public void loginDotifyUser(final String username, final String password, final Context activityContext){
-
-        //Create the GET request
-        Call<DotifyUser> request = dotifyHttpInterface.getUser(
-                appKey,
-                username,
-                password
-        );
-
-        request.enqueue(new Callback<DotifyUser>() {
-            @Override
-            public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
-                if (response.isSuccessful()){
-                    int respCode = response.code();
-                    if (respCode == Dotify.ACCEPTED) {
-                        DotifyUser dotifyUser = response.body();
-                        UserUtilities.cacheUser(activityContext, dotifyUser);
-                        LoginFragment.loginResponse(LoginFragment.ResponseCode.SUCCESS);
-                    }
-                }
-                else{
-                    Log.d(TAG, "loginUser-> onResponse: Invalid Credentials : " + response.code());
-                    //User needs to retry to log in
-                    LoginFragment.loginResponse(LoginFragment.ResponseCode.FAIL);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DotifyUser> call, Throwable throwable) {
-                Log.w(TAG, "loginUser-> onFailure");
-                //Error message that the server is down
-                LoginFragment.loginResponse(LoginFragment.ResponseCode.SERVER_ERROR);
-
-            }
-        });
-
-    }
-
-    /**
      * Get's the 2 security questions from the given username. It will add to the List<String>
      * listOfSecQuestions the security Questions.
      * @param username The username of the person you want to do the retreival from

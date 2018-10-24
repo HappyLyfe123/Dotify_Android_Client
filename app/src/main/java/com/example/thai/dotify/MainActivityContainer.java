@@ -42,7 +42,6 @@ public class MainActivityContainer extends AppCompatActivity
     private PlayingMusicController musicController;
     private DotifyUser user;
     private Context activityContext;
-    public static SentToServerRequest sentToServerRequest;
 
     //list of pages
     public enum PlaylistFragmentType{
@@ -244,5 +243,4 @@ public class MainActivityContainer extends AppCompatActivity
     public void onArtistResultClicked(String artistName) {
 
     }
-
 }

@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.thai.dotify.DotifyUser;
+import com.example.thai.dotify.MainActivityContainer;
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
