@@ -59,8 +59,9 @@ public class SentToServerRequest {
      * @param secQuestion2 The user's chosen security quesiton 2
      * @param secAnswer1 The user's chosen security answer 1
      * @param secAnswer2 The user's chosen security answer 2
+     * @return Call<DotifyUser> Returns the request to allow the user to continue to create their account
      */
-    public static void createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,
+    public static Call<DotifyUser> createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,
                                   final String secAnswer1, final String secAnswer2, final Context activityContext) {
         //Create an dotifyUser object to send
         DotifyUser dotifyUser = new DotifyUser(
@@ -75,7 +76,6 @@ public class SentToServerRequest {
         );
 
         //Start at POST request to create the user
-        //Dotify
         //Intercept the request to add a header item
         dotify.addRequestInterceptor(new Interceptor() {
             @Override
@@ -93,59 +93,20 @@ public class SentToServerRequest {
         //Create the POST request
         Call<DotifyUser> request = dotifyHttpInterface.createUser(dotifyUser.getUsername(), dotifyUser.getPassword(),
                 dotifyUser.getQuestion1(), dotifyUser.getQuestion2(), dotifyUser.getAnswer1(), dotifyUser.getAnswer2());
-        //Call the request asynchronously
-        request.enqueue(new Callback<DotifyUser>() {
-            @Override
-            public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
-                if (response.code() == 201) {
-                    Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
-                    UserUtilities.cacheUser(activityContext, dotifyUser);
-                    //Now, send the user to the login page
-//                    Intent intent = startActivity(new Intent(getActivity(), MainActivityContainer.class));
-//                    activityContext.finish();
-                } else {
-                    Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DotifyUser> call, Throwable t) {
-                //The request has unexpectedly failed
-                Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Unexpected request failure");
-                //Display error message that server is down
-            }
-        });
+        return request;
     }
 
     /**
      * Put request to reset the password
      * @param newPassword The new password to reset to
      */
-    public static void resetPassword(final String securityToken, final String username, final String newPassword, final Context activityContext) {
+    public static Call<DotifyUser> resetPassword(final String securityToken, final String username,
+                                                 final String newPassword) {
         //Create the PUT Request
         Call<DotifyUser> request = dotifyHttpInterface.updatePassword(appKey, securityToken,
                 username, newPassword);
-        //Call the request asynchronously
-        request.enqueue(new Callback<DotifyUser>() {
-            @Override
-            public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
-                if (response.code() == 200) {
-                    Log.d(TAG, "resetPassword-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
-                    DotifyUser dotifyUser = response.body();
-                    UserUtilities.cacheUser(activityContext, dotifyUser);
-                    Log.d(TAG, "The user should be cached here.");
-                } else {
-                    Log.d(TAG, "resetPassword-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
-                }
-            }
 
-            @Override
-            public void onFailure(Call<DotifyUser> call, Throwable t) {
-                //The request has unexpectedly failed
-                Log.d(TAG, "resetPassword -> onClick-> onFailure-> onResponse: Unexpected request failure");
-                t.printStackTrace();
-            }
-        });
+        return request;
     }
 
     /**

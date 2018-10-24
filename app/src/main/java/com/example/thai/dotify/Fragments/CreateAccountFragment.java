@@ -412,9 +412,7 @@ public class CreateAccountFragment extends Fragment {
         String securityQuestion2 = securityQuestion2Spinner.getSelectedItem().toString();
         String securityAnswer1 = securityQuestion1AnswerEditText.getText().toString();
         String securityAnswer2 = securityQuestion2AnswerEditText.getText().toString();
-//        createDotifyUser(username, password, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2);
-        SentToServerRequest.createDotifyUser(username,password,securityQuestion1,
-                securityQuestion2, securityAnswer1, securityAnswer2, getContext());
+        createDotifyUser(username, password, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2);
 
         if (username == null) {
             isAccountCreated = false;
@@ -445,44 +443,18 @@ public class CreateAccountFragment extends Fragment {
      */
     private void createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,
                                   final String secAnswer1, final String secAnswer2) {
-        //Create an dotifyUser object to send
-        DotifyUser dotifyUser = new DotifyUser(
-                username,
-                password,
-                secQuestion1,
-                secQuestion2,
-                secAnswer1,
-                secAnswer2,
-                "",
-                ""
-        );
+        //Create dotify user from SentToServer class
+        Call<DotifyUser> request = SentToServerRequest.createDotifyUser(username, password,
+                secQuestion1, secQuestion2, secAnswer1, secAnswer2, getActivity());
 
-        //Start at POST request to create the user
-        final Dotify dotify = new Dotify(getString(R.string.base_URL));
-        //Intercept the request to add a header item
-        dotify.addRequestInterceptor(new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request request = chain.request();
-                //Add the app key to the request header
-                Request.Builder newRequest = request.newBuilder().header(
-                        Dotify.APP_KEY_HEADER, getString(R.string.appKey));
-                //Continue the request
-                return chain.proceed(newRequest.build());
-            }
-        });
-        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
-        DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
-        //Create the POST request
-        Call<DotifyUser> request = dotifyHttpInterface.createUser(dotifyUser.getUsername(), dotifyUser.getPassword(),
-                dotifyUser.getQuestion1(), dotifyUser.getQuestion2(), dotifyUser.getAnswer1(), dotifyUser.getAnswer2());
-        //Call the request asynchronously
         request.enqueue(new Callback<DotifyUser>() {
             @Override
             public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
                 if (response.code() == 201) {
                     Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
                     // Cache the user information that we jsut created
+                    DotifyUser dotifyUser = new DotifyUser(username, null, null,
+                            null, null, null, "", "");
                     UserUtilities.cacheUser(getActivity(), dotifyUser);
 
                     //Now send the user to the login screen
