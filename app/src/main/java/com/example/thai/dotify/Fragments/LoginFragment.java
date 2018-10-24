@@ -17,6 +17,7 @@ import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.example.thai.dotify.StartUpContainer;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
+import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
 
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -32,14 +33,24 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private EditText usernameEditText;
     private EditText passwordEditText;
-    private static TextView errorMessageTextView;
-    private static OnChangeFragmentListener onChangeFragmentListener;
+    private TextView errorMessageTextView;
+    private OnChangeFragmentListener onChangeFragmentListener;
     private Context activityContext;
+    private static GetFromServerRequest getFromServerRequest;
 
     public enum ResponseCode{
         SUCCESS,
         FAIL,
         SERVER_ERROR
+    }
+
+    public static LoginFragment newInstance(GetFromServerRequest getRequest) {
+
+        Bundle args = new Bundle();
+        getFromServerRequest = getRequest;
+        LoginFragment fragment = new LoginFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     /**
@@ -144,13 +155,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 if (respCode == Dotify.ACCEPTED) {
                                     DotifyUser dotifyUser = response.body();
                                     UserUtilities.cacheUser(activityContext, dotifyUser);
-                                    LoginFragment.loginResponse(LoginFragment.ResponseCode.SUCCESS);
                                 }
                             }
                             else{
                                 Log.d(TAG, "loginUser-> onResponse: Invalid Credentials : " + response.code());
                                 //User needs to retry to log in
-                                LoginFragment.loginResponse(LoginFragment.ResponseCode.FAIL);
                             }
                         }
 
@@ -158,7 +167,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         public void onFailure(Call<DotifyUser> call, Throwable throwable) {
                             Log.w(TAG, "loginUser-> onFailure");
                             //Error message that the server is down
-                            LoginFragment.loginResponse(LoginFragment.ResponseCode.SERVER_ERROR);
 
                         }
                     });
@@ -177,7 +185,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      * Checks to see if the credentials match for the user. If it matches, allows the user to be authenticated.
      * Otherwise, give a message that the credentials are incorrect or if the server is currently down.
      */
-    public static void loginResponse(ResponseCode codeType){
+    public void loginResponse(ResponseCode codeType){
         if(codeType == ResponseCode.SUCCESS){
             onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
         }

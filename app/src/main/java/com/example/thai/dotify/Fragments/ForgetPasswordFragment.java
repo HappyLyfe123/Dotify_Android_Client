@@ -275,6 +275,7 @@ public class ForgetPasswordFragment extends Fragment{
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable throwable) {
                 Log.w(TAG, "resetQuestions-> onFailure");
@@ -284,6 +285,47 @@ public class ForgetPasswordFragment extends Fragment{
     }
 
     /**
+     * Put request to reset the password
+     * @param newPassword The new password to reset to
+     */
+    private void resetPassword(final String securityToken, final String username, final String newPassword) {
+        //Start a PUT request to reset the user's password
+        final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));
+
+        //Add logging interceptor
+        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+        DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
+
+        //Create the PUT Request
+        Call<DotifyUser> request = dotifyHttpInterface.updatePassword(getString(R.string.appKey), securityToken,
+                username, newPassword);
+        //Call the request asynchronously
+        request.enqueue(new Callback<DotifyUser>() {
+            @Override
+            public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
+                if (response.code() == 200) {
+                    Log.d(TAG, "resetPassword-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
+                    DotifyUser dotifyUser = response.body();
+                    UserUtilities.cacheUser(activityContext, dotifyUser);
+                    Log.d(TAG, "The user should be cached here.");
+                    onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
+                    //Send the user to the login screen
+                } else {
+                    Log.d(TAG, "resetPassword-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DotifyUser> call, Throwable t) {
+                //The request has unexpectedly failed
+                Log.d(TAG, "resetPassword -> onClick-> onFailure-> onResponse: Unexpected request failure");
+                t.printStackTrace();
+            }
+        });
+
+    }
+
+   /**
      * Sends a request to the server to see if the security questions are correct
      * @param username The username of the user that you want to verify
      * @param securityAnswer1 The answer to the first Security Question
@@ -321,43 +363,12 @@ public class ForgetPasswordFragment extends Fragment{
                     //Security Answers are incorrect. Ask user to try again
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable throwable) {
                 Log.w(TAG, "validateSecurityAnswers-> onFailure");
             }
         });
-    }
-
-    /**
-     * Put request to reset the password
-     * @param newPassword The new password to reset to
-     */
-    private void resetPassword(final String securityToken, final String username, final String newPassword) {
-        Call<DotifyUser> request = SentToServerRequest.resetPassword(securityToken, username, newPassword);
-        //Call the request asynchronously
-        request.enqueue(new Callback<DotifyUser>() {
-            @Override
-            public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
-                if (response.code() == 200) {
-                    Log.d(TAG, "resetPassword-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
-                    DotifyUser dotifyUser = response.body();
-                    UserUtilities.cacheUser(activityContext, dotifyUser);
-                    Log.d(TAG, "The user should be cached here.");
-                    onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
-                    //Send the user to the login screen
-                } else {
-                    Log.d(TAG, "resetPassword-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DotifyUser> call, Throwable t) {
-                //The request has unexpectedly failed
-                Log.d(TAG, "resetPassword -> onClick-> onFailure-> onResponse: Unexpected request failure");
-                t.printStackTrace();
-            }
-        });
-
     }
 
     /**

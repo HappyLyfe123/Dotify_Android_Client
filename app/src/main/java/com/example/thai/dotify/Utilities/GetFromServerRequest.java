@@ -101,93 +101,38 @@ public class GetFromServerRequest {
      * Method that gets the playlists
      * @return The string of playlists
      */
-    public static void getUserplaylistsList(){
+    public Call<List<String>> getUserplaylistsList(){
         Call<List<String>> getPlaylistsList = dotifyHttpInterface.getPlaylistsList(
                 appKey,
                 username
         );
-        getPlaylistsList.enqueue(new Callback<List<String>>() {
-            @Override
-            public void onResponse(Call<List<String>> call, retrofit2.Response<List<String>> response) {
-                int respCode = response.code();
-                if (respCode == Dotify.OK) {
-                    Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
-                    //gets a list of strings of playlist names
-                    List<String> userPlaylist = response.body();
-                    PlaylistFragment.displayPlaylistsList(userPlaylist);
-                } else {
-                    //If unsuccessful, show the response code
-                    Log.d(TAG, "getPlaylist-> Unable to retrieve playlist " + response.code());
-                }
-            }
 
-            //If something is wrong with our request to the server, goes to this method
-            @Override
-            public void onFailure(Call<List<String>> call, Throwable t) {
-                Log.d(TAG, "Invalid failure: onFailure");
-            }
-        });
-
+        return getPlaylistsList;
     }
+
 
     /**
      * display the song lists given the playlist
      * @param playListTitle the playlist to get the song from
      * @return songsList the list of dotifysongs
      */
-    public static void getSongsFromPlaylist(String playListTitle){
+    public Call<ResponseBody> getSongsFromPlaylist(String playListTitle){
 
         //Start Get Request
-        Call<ResponseBody> getSongsFromPlaylist = dotifyHttpInterface.getSongsFromPlaylist(
+        Call<ResponseBody> songsFromPlaylist = dotifyHttpInterface.getSongsFromPlaylist(
                 appKey,
                 username,
                 playListTitle
         );
 
-        getSongsFromPlaylist.enqueue(new Callback<ResponseBody>() {
-            /**
-             * display a success message
-             * @param call - request to server
-             * @param response - server's response
-             */
-            @Override
-            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                int respCode = response.code();
-                if (respCode == Dotify.OK) {
-                    Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
-                    //gets a list of strings of playlist names
-                    ResponseBody mySong = response.body();
-                    try {
-                        JsonObject currSongList= JSONUtilities.ConvertStringToJSON(mySong.string());
-                        SongsListFragment.displaySongsList(currSongList.getAsJsonArray("songs"));
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } else {
-                    //If unsucessful, show the response code
-                    Log.d(TAG, "getPlaylist-> Unable to retreive playlists " + response.code());
-                }
-            }
-
-            /**
-             * If something is wrong with our request to the server, goes to this method
-             * @param call - request to server
-             * @param t - unnecessary parameter
-             */
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(TAG, "Invalid failure: onFailure");
-            }
-        });
+        return songsFromPlaylist;
     }
 
     /**
      * Method to get the search results
      * @param currSearchQuery
      */
-    public static void getSearchResult(String currSearchQuery) {
+    public void getSearchResult(String currSearchQuery) {
         Call<ResponseBody> querySearch = dotifyHttpInterface.querySong(
                 appKey,
                 currSearchQuery
@@ -225,7 +170,7 @@ public class GetFromServerRequest {
      * Method that is used in search.
      * @param artistName The artist name to query
      */
-    public static void getSongByArtist(String artistName){
+    public void getSongByArtist(String artistName){
         Call<ResponseBody> getSongsByArtist = dotifyHttpInterface.getSongsByArtist(
                 appKey,
                 artistName

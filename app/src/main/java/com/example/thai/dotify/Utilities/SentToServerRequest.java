@@ -114,44 +114,13 @@ public class SentToServerRequest {
      * @param playlistName The name of the playlist that is being created
      * @return An integer detailing what error code to use
      */
-    public static int createPlaylist(String playlistName){
-        final int[] errorCodeNum = new int[1];
-
-        Call<ResponseBody> addPlaylist = dotifyHttpInterface.createPlaylist(
+    public Call<ResponseBody> createPlaylist(String playlistName){
+        Call<ResponseBody> createPlaylist = dotifyHttpInterface.createPlaylist(
                 appKey,
                 username,
                 playlistName
         );
-        addPlaylist.enqueue(new Callback<ResponseBody>() {
-            /***
-             * server sends a reply to the client indicating successful action
-             * @param call
-             * @param response
-             */
-            @Override
-            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                int respCode = response.code();
-                if (respCode == Dotify.OK) {
-                    Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
-                    errorCodeNum[0] = 0;
-                } else {
-                    //A playlist with the same name already exist
-                    errorCodeNum[0] = 1;
-                }
-            }
-            /**
-             * server sends reply indicating a failure on server's side
-             * @param call
-             * @param t
-             */
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(TAG,"Invalid failure: onFailure");
-                errorCodeNum[0] = 2;
-
-            }
-        });
-        return errorCodeNum[0];
+        return createPlaylist;
     }
 
     /**
@@ -159,8 +128,7 @@ public class SentToServerRequest {
      * @param playlistName The name of the playlist that is being created
      * @return An integer detailing what error code to use
      */
-    public static void deletePlaylist(String playlistName){
-        final int[] errorCodeNum = new int[1];
+    public Call<ResponseBody> deletePlaylist(String playlistName) {
 
         Call<ResponseBody> deletePlaylist = dotifyHttpInterface.deletePlaylist(
                 appKey,
@@ -168,22 +136,27 @@ public class SentToServerRequest {
                 username
         );
 
-        /**
-         * send a reply to user after the playlist is deleted
-         */
-        deletePlaylist.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                Log.d("PlaylistsAdapter",
-                        "MyViewHolder -> onClick -> onResponse: Reponse Code = " + response.code());
-                if (response.code() == Dotify.OK){
-                }
-            }
+        return deletePlaylist;
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+    }
 
-            }
-        });
+    public Call<ResponseBody> addSongToPlaylist(String playlistName, String songID){
+        Call<ResponseBody> addSongToPlaylist = dotifyHttpInterface.addSongToPlaylist(
+                appKey,
+                username,
+                playlistName,
+                songID
+        );
+        return addSongToPlaylist;
+    }
+
+    public Call<ResponseBody> deleteSongFromPlaylist(String playlistName, String songID){
+        Call<ResponseBody> deleteSong = dotifyHttpInterface.deleteSongFromPlaylist(
+                appKey,
+                username,
+                playlistName,
+                songID
+        );
+        return deleteSong;
     }
 }

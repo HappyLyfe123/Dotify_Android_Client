@@ -38,10 +38,13 @@ public class MainActivityContainer extends AppCompatActivity
     private BottomNavigationView bottomNavigationView;
     private FrameLayout miniMusicControllerLayout;
     private FrameLayout mainDisplayLayout;
-    private static boolean isMusicPlaying;
+    private boolean isMusicPlaying;
     private PlayingMusicController musicController;
     private DotifyUser user;
     private Context activityContext;
+    private SentToServerRequest sentToServerRequest;
+    private GetFromServerRequest getFromServerRequest;
+
 
     //list of pages
     public enum PlaylistFragmentType{
@@ -67,8 +70,8 @@ public class MainActivityContainer extends AppCompatActivity
 
         //Initialize Main Activity Variables
         user = UserUtilities.getCachedUserInfo(this);
-        new GetFromServerRequest(getString(R.string.base_URL), getString(R.string.appKey), user.getUsername());
-        new SentToServerRequest(getString(R.string.base_URL), getString(R.string.appKey), user.getUsername());
+        getFromServerRequest = new GetFromServerRequest(getString(R.string.base_URL), getString(R.string.appKey), user.getUsername());
+        sentToServerRequest = new SentToServerRequest(getString(R.string.base_URL), getString(R.string.appKey), user.getUsername());
 
         //Initialize view layout
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
@@ -77,7 +80,7 @@ public class MainActivityContainer extends AppCompatActivity
 
         //Instantiate fragments
         searchFragment = new SearchFragment();
-        playlistFragment = new PlaylistFragment();
+        playlistFragment = PlaylistFragment.newInstance(sentToServerRequest, getFromServerRequest);
         forYouFragment = new ForYouFragment();
         songListScreenFragment = new SongsListFragment();
         profileInfoFragment = new ProfileInfoFragment();
@@ -243,4 +246,5 @@ public class MainActivityContainer extends AppCompatActivity
     public void onArtistResultClicked(String artistName) {
 
     }
+
 }

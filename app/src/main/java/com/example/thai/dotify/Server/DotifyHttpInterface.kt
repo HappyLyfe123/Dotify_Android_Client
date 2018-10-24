@@ -114,4 +114,12 @@ interface DotifyHttpInterface {
             @Query("artist") artistName: String
     ) : Call<ResponseBody>
 
+    @DELETE("playlistpage?")
+    fun deleteSongFromPlaylist(
+            @Header("appKey") appKey: String,
+            @Query("username") username: String,
+            @Query("playlist") playlistName: String,
+            @Query("songid") songID: String
+    ) : Call<ResponseBody>
+
 }

@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +16,23 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Adapters.PlaylistsAdapter;
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
+import com.example.thai.dotify.Server.Dotify;
+import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+
+import static android.support.constraint.Constraints.TAG;
 
 //the fragment object that represents the home page for the profile page
 public class PlaylistFragment extends Fragment implements View.OnClickListener,
@@ -33,21 +44,31 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
     private Button cancelPlaylistButton;
     private RecyclerView playlistListRecycleView;
     private EditText playlistNameEditText;
-    private static PlaylistsAdapter playlistsAdapter;
+    private PlaylistsAdapter playlistsAdapter;
     private OnChangeFragmentListener onChangeFragmentListener;
-    private String playlistName;
     private TextView createPlaylistErrorMessageTextView;
     private ProgressBar savingProgressBar;
+    private AlertDialog currDialogBox;
+    private static SentToServerRequest sentToServerRequest;
+    private static GetFromServerRequest getFromServerRequest;
+
 
     //default constructor
-    public PlaylistFragment(){}
+    public static PlaylistFragment newInstance(SentToServerRequest sentRequest, GetFromServerRequest getRequest) {
+        Bundle args = new Bundle();
+        sentToServerRequest = sentRequest;
+        getFromServerRequest = getRequest;
+        PlaylistFragment fragment = new PlaylistFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     private enum ErrorType{
         CREATE_PLAYLIST_EMPTY_EDIT_TEXT,
         CREATE_PLAYLIST_DUPLICATE_NAME,
         CONNECTION_FAILED,
         SUCCESS,
-        DUPLICATE,
+        DUPLICATE_PLAYLIST_NAME,
     }
 
     //interface that changes fragment view
@@ -100,7 +121,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
         playlistListRecycleView.setAdapter(playlistsAdapter);
 
         //Get the user playlists list from the server
-        GetFromServerRequest.getUserplaylistsList();
+        displayPlaylistsList();
 
         return view;
     }
@@ -128,7 +149,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
         alertDialogBuilder.setView(alertDialogView);
 
         //Create Alert DialogBox
-        AlertDialog currDialogBox = alertDialogBuilder.create();
+        currDialogBox = alertDialogBuilder.create();
         currDialogBox.show();
 
         //Initialize Views for this Fragment
@@ -148,9 +169,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
                     displayErrorMessage(ErrorType.CREATE_PLAYLIST_EMPTY_EDIT_TEXT, createPlaylistErrorMessageTextView);
                 }
                 else {
-                    SentToServerRequest.createPlaylist(playlistNameEditText.getText().toString());
-
-                    currDialogBox.dismiss();
+                    createPlaylist(playlistNameEditText.getText().toString());
                 }
             }
         });
@@ -163,7 +182,125 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
         });
     }
 
-    //Display error message for create playlist AlertDialog view
+    /***
+     * Get the playlist from the server and display it
+     * @param
+     */
+    private void displayPlaylistsList(){
+        Call<List<String>> getPlaylistsList = getFromServerRequest.getUserplaylistsList();
+        getPlaylistsList.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, retrofit2.Response<List<String>> response) {
+                int respCode = response.code();
+                if (respCode == Dotify.OK) {
+                    Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
+                    //gets a list of strings of playlist names
+                    List<String> userPlaylist = response.body();
+                    for(String playListName : userPlaylist){
+                        playlistsAdapter.insertPlaylistToPlaylistsList(playListName);
+                    }
+                    updateInsertPlaylistsList();
+
+                } else {
+                    //If unsuccessful, show the response code
+                    Log.d(TAG, "getPlaylist-> Unable to retrieve playlist " + response.code());
+                }
+            }
+
+            //If something is wrong with our request to the server, goes to this method
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                Log.d(TAG, "Invalid failure: onFailure");
+            }
+        });
+
+        updateInsertPlaylistsList();
+    }
+
+    /***
+     * Create a playlist
+     * @param
+     */
+    private void createPlaylist(String playlistName){
+
+        Call<ResponseBody> createPlaylist = sentToServerRequest.createPlaylist(playlistName);
+
+        createPlaylist.enqueue(new Callback<ResponseBody>() {
+            /***
+             * server sends a reply to the client indicating successful action
+             * @param call
+             * @param response
+             */
+            @Override
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                int respCode = response.code();
+                if (respCode == Dotify.OK) {
+                    Log.d(TAG, "loginUser-> onResponse: Success Code : " + response.code());
+                    currDialogBox.dismiss();
+                    playlistsAdapter.insertPlaylistToPlaylistsList(playlistName);
+                    updateInsertPlaylistsList();
+                } else {
+                    //A playlist with the same name already exist
+                    displayErrorMessage(ErrorType.DUPLICATE_PLAYLIST_NAME, createPlaylistErrorMessageTextView);
+                }
+            }
+            /**
+             * server sends reply indicating a failure on server's side
+             * @param call
+             * @param t
+             */
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG,"Invalid failure: onFailure");
+                displayErrorMessage(ErrorType.CONNECTION_FAILED, createPlaylistErrorMessageTextView);
+            }
+        });
+    }
+
+    /***
+     * Delete the playlist from the server
+     * @param playlistName the name of the playlist to be deleted
+     */
+    private void deletePlaylist(String playlistName){
+
+        Call<ResponseBody> deletePlaylist = sentToServerRequest.deletePlaylist(playlistName);
+
+        /**
+         * send a reply to user after the playlist is deleted
+         */
+        deletePlaylist.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                Log.d("PlaylistsAdapter",
+                        "MyViewHolder -> onClick -> onResponse: Reponse Code = " + response.code());
+                if (response.code() == Dotify.OK){
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    /***
+     * Update current playlist list display
+     * @param
+     */
+    private void updateInsertPlaylistsList(){
+        playlistsAdapter.notifyItemRangeChanged(0, playlistsAdapter.getItemCount());
+        playlistsAdapter.notifyItemRangeInserted(0, playlistsAdapter.getItemCount());
+        playlistsAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Display error message for create playlist AlertDialog view
+     * @param type the type of error to display
+     * @param displayTextView the text view to display the error in
+     */
     private void displayErrorMessage(ErrorType type, TextView displayTextView){
         //Disable progress bar
         savingProgressBar.setVisibility(View.GONE);
@@ -179,19 +316,6 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
                 displayTextView.setText(R.string.connection_failed);
                 break;
         }
-    }
-
-    public static void displayPlaylistsList(List<String> playlistsList){
-        for(String playListName : playlistsList){
-            playlistsAdapter.insertPlaylistToPlaylistsList(playListName);
-        }
-        updateInsertPlaylistsList();
-    }
-
-    private static void updateInsertPlaylistsList(){
-        playlistsAdapter.notifyItemRangeChanged(0, playlistsAdapter.getItemCount());
-        playlistsAdapter.notifyItemRangeInserted(0, playlistsAdapter.getItemCount());
-        playlistsAdapter.notifyDataSetChanged();
     }
 
     /***
@@ -230,6 +354,16 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onItemClick(View v, int position) {
-        onChangeFragmentListener.playlistClicked(playlistsAdapter.getPlaylistName(position));
+        if(v.getId() == R.id.playlist_list_name_text_view) {
+            //Change fragment to display all of the songs in the playlist
+            onChangeFragmentListener.playlistClicked(playlistsAdapter.getPlaylistName(position));
+        }
+        else if(v.getId() == R.id.playlist_item_delete_icon){
+            //Call the delete playlist method
+            deletePlaylist(playlistsAdapter.getPlaylistName(position));
+            //Tell the adapter to delete the playlist of the display screen
+            playlistsAdapter.deletePlaylist(position);
+            playlistsAdapter.notifyDataSetChanged();
+        }
     }
 }

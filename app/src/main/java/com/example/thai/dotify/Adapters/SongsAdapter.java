@@ -87,8 +87,14 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
         songsList.put(songID, newSong);
     }
 
-    public void deleteSongFromSongsList(){
 
+    /**
+     * Get the song id at the selected position
+     * @param position the position of the song in the map
+     * @return the song id
+     */
+    public String getSongID(int position){
+        return songsList.get(position).getSongid();
     }
 
     /**
@@ -172,7 +178,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
         @Override
         public void onClick(View v) {
             if(v.getId() == R.id.song_info_song_delete_icon){
-                System.out.println("I'm here");
+                itemsClickListener.onItemClick(v, getAdapterPosition());
             }
             else {
                 itemsClickListener.onItemClick(v, getAdapterPosition());

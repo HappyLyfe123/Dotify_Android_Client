@@ -159,7 +159,6 @@ public class SearchFragment extends Fragment implements TextWatcher{
         artistSearchResultAdapter = new SearchArtistAdapter(new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                GetFromServerRequest.getSongByArtist(artistSearchResultAdapter.getArtistName(position));
             }
         });
 
@@ -245,7 +244,6 @@ public class SearchFragment extends Fragment implements TextWatcher{
                     songSearchResultAdapter.newResult();
                     artistSearchResultAdapter.newResult();
                     if (currTime.after(textChangedTimer)) {
-                        GetFromServerRequest.getSearchResult(currSearchQuery);
                     }
                 }
             }, 500);

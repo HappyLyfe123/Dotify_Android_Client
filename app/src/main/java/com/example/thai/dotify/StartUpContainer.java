@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.thai.dotify.Fragments.CreateAccountFragment;
 import com.example.thai.dotify.Fragments.ForgetPasswordFragment;
 import com.example.thai.dotify.Fragments.LoginFragment;
+import com.example.thai.dotify.Utilities.SentToServerRequest;
 
 /**
  * the StartUpContainer object represents the app's home apge

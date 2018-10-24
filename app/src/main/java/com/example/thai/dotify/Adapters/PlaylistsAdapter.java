@@ -173,7 +173,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Item
                 itemClickedListener.onItemClick(v, getAdapterPosition());
             }
             else if(v.getId() == R.id.playlist_item_delete_icon){
-                System.out.println("I'm here");
+                itemClickedListener.onItemClick(v, getAdapterPosition());
             }
         }
 
