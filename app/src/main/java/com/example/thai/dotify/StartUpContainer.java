@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.thai.dotify.Fragments.CreateAccountFragment;
 import com.example.thai.dotify.Fragments.ForgetPasswordFragment;
 import com.example.thai.dotify.Fragments.LoginFragment;
+import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
 
 /**
@@ -32,6 +33,7 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
     private boolean goHomeEnable;
     private boolean isLoginPage;
     private boolean isOnCreateAccount, isOnForgetPassword;
+
 
     //Enumerator
     public enum AuthFragmentType {

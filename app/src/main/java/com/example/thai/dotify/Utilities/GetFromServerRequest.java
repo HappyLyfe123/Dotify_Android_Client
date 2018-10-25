@@ -67,16 +67,18 @@ public class GetFromServerRequest {
     /**
      * Get's the 2 security questions from the given username. It will add to the List<String>
      * listOfSecQuestions the security Questions.
-     * @param username The username of the person you want to do the retreival from
+     * @param username1 The username of the person you want to do the retreival from
      * @return listOfSecQuestions Returns a list of security questions that belong to the user or null if none found
      */
-    public Call<ResponseBody> getSecurityQuestions(final String username){
+    public Call<ResponseBody> getSecurityQuestions(final String username1){
+        username = username1;
+
         //Create the GET request
-        Call<ResponseBody> request = dotifyHttpInterface.getResetQuestions(
+        Call<ResponseBody> secQuestions = dotifyHttpInterface.getResetQuestions(
                 appKey,
                 username
         );
-        return request;
+        return secQuestions;
     }
 
     /**

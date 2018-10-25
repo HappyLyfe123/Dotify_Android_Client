@@ -2,6 +2,7 @@ package com.example.thai.dotify.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -141,6 +142,9 @@ public class ForgetPasswordFragment extends Fragment{
         securityToken = null;
         listOfSecQuestions = new ArrayList<>();
 
+        getFromServerRequest = new GetFromServerRequest(getString(R.string.base_URL), getString(R.string.appKey));
+        sentToServerRequest = new SentToServerRequest(getString(R.string.base_URL), getString(R.string.appKey));
+
         return view;
     }
 
@@ -241,9 +245,9 @@ public class ForgetPasswordFragment extends Fragment{
         resetPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(passwordEditText.getText().equals(confirmPasswordEditText.getText())){
+//                if(passwordEditText.getText().equals(confirmPasswordEditText.getText())){
                     resetPassword(securityToken, usernameEditText.getText().toString(), passwordEditText.getText().toString());
-                }
+//                }
             }
         });
     }
@@ -351,12 +355,11 @@ public class ForgetPasswordFragment extends Fragment{
         request.enqueue(new Callback<DotifyUser>() {
             @Override
             public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
-                if (response.code() == 200) {
+                if (response.code() == Dotify.ACCEPTED) {
                     Log.d(TAG, "resetPassword-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
-                    DotifyUser dotifyUser = response.body();
-                    UserUtilities.cacheUser(activityContext, dotifyUser);
-                    Log.d(TAG, "The user should be cached here.");
-                    onChangeFragmentListener.buttonClicked(StartUpContainer.AuthFragmentType.LOGIN);
+                    Intent returnToLogin = new Intent(getActivity(), StartUpContainer.class);
+                    startActivity(returnToLogin);
+                    getActivity().finish();
                     //Send the user to the login screen
                 } else {
                     Log.d(TAG, "resetPassword-> onClick-> onSuccess-> onResponse: Failed response Code " + response.code());
