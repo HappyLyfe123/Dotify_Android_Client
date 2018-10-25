@@ -36,13 +36,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Item
     private boolean deleteIconIsVisible = false;
 
     /**
-     * interface for deleting a playlist
-     */
-    public interface OnPlaylistDeletedListener{
-        void onPlaylistDeleted(int position);
-    }
-
-    /**
      * constructor w/ given values
      * @param listener
      */
@@ -84,8 +77,21 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Item
         }
     }
 
+
+    /**
+     * Get the name of the playlist
+     * @param position the position of the playlist
+     * @return the name of the playlist
+     */
     public String getPlaylistName(int position){
-        return playlistsListName.get(position);
+        //Check if the position given is valid
+        if(position >= 0 && position < getItemCount()) {
+            return playlistsListName.get(position);
+        }
+        //If position is not valid return nothing
+        else{
+            return  "";
+        }
     }
 
     /**
@@ -109,7 +115,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Item
      * Get all of the names of playlist playlistList
      * @return Name of playlist
      */
-    public ArrayList<String> playlistListName(){
+    public ArrayList<String> getPlaylistListName(){
         return playlistsListName;
     }
 

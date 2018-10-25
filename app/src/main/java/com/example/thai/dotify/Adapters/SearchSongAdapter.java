@@ -101,7 +101,11 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
     //Get the number of items in the searchResult list
     @Override
     public int getItemCount() {
-        return searchResultsSongs.size();
+        if (searchResultsSongs == null) {
+            return 0;
+        } else{
+            return searchResultsSongs.size();
+        }
     }
 
 

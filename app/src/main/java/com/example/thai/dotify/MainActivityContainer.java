@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.example.thai.dotify.Adapters.PlaylistsAdapter;
 import com.example.thai.dotify.Fragments.CreatePlaylistFragment;
 import com.example.thai.dotify.Fragments.ForYouFragment;
 import com.example.thai.dotify.Fragments.FullScreenMusicControllerFragment;
@@ -77,12 +78,11 @@ public class MainActivityContainer extends AppCompatActivity
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         miniMusicControllerLayout = (FrameLayout) findViewById(R.id.mini_music_player_controller_frame);
         mainDisplayLayout = (FrameLayout) findViewById(R.id.main_display_frame);
-
         //Instantiate fragments
-        searchFragment = new SearchFragment();
         playlistFragment = PlaylistFragment.newInstance(sentToServerRequest, getFromServerRequest);
+        searchFragment = SearchFragment.newInstance(sentToServerRequest, getFromServerRequest);
+        songListScreenFragment = SongsListFragment.newInstance(sentToServerRequest, getFromServerRequest);
         forYouFragment = new ForYouFragment();
-        songListScreenFragment = new SongsListFragment();
         profileInfoFragment = new ProfileInfoFragment();
         profileInfoFragment.setOnUserImageUploadedListener((dotifyUser) ->
             // Updates the current user object
@@ -92,7 +92,6 @@ public class MainActivityContainer extends AppCompatActivity
         searchFragment.setOnChangeFragmentListener(this);
         playlistFragment.setOnChangeFragmentListener(this);
 
-        createPlaylistFragment = createPlaylistFragment.newInstance();
         miniMusicControllerFragment = miniMusicControllerFragment.newInstance();
 
         createBottomNavigationView();
@@ -217,6 +216,10 @@ public class MainActivityContainer extends AppCompatActivity
         return user;
     }
 
+    @Override
+    public PlaylistsAdapter getPlaylistAdapter(){
+        return playlistFragment.getPlaylistsAdapter();
+    }
 
     /***
      * invoked when a playlist is selected
@@ -239,7 +242,6 @@ public class MainActivityContainer extends AppCompatActivity
 
     @Override
     public void onSongResultClicked(String songID) {
-        System.out.println(songID);
     }
 
     @Override

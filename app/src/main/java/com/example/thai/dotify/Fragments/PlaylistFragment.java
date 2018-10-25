@@ -296,6 +296,14 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
         playlistsAdapter.notifyDataSetChanged();
     }
 
+
+    /***
+     * Get the current playlist adapter
+     */
+    public PlaylistsAdapter getPlaylistsAdapter(){
+        return playlistsAdapter;
+    }
+
     /**
      * Display error message for create playlist AlertDialog view
      * @param type the type of error to display

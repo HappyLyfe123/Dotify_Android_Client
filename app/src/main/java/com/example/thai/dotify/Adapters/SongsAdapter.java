@@ -83,8 +83,12 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
      * constructor with given list of songs
      * @param newSong new song to insert into the playlist
      */
-    public void insertSongToSongsList(int songID,DotifySong newSong){
+    public void insertSongToSongsList(int songID, DotifySong newSong){
         songsList.put(songID, newSong);
+    }
+
+    public void deleteSongFromList(int position){
+        songsList.remove(position);
     }
 
 

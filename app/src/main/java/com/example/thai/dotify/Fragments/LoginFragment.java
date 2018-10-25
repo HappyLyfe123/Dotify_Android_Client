@@ -155,11 +155,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 if (respCode == Dotify.ACCEPTED) {
                                     DotifyUser dotifyUser = response.body();
                                     UserUtilities.cacheUser(activityContext, dotifyUser);
+                                    loginResponse(ResponseCode.SUCCESS);
                                 }
                             }
                             else{
                                 Log.d(TAG, "loginUser-> onResponse: Invalid Credentials : " + response.code());
                                 //User needs to retry to log in
+                                loginResponse(ResponseCode.FAIL);
                             }
                         }
 
@@ -167,7 +169,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         public void onFailure(Call<DotifyUser> call, Throwable throwable) {
                             Log.w(TAG, "loginUser-> onFailure");
                             //Error message that the server is down
-
+                            loginResponse(ResponseCode.SERVER_ERROR);
                         }
                     });
                 }

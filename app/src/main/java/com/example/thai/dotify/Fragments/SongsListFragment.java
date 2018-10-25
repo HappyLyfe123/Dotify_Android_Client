@@ -171,8 +171,9 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
      * Display all of the song in the selected playlist
      */
     private void displaySongsList(){
-        System.out.println(playlistName);
+
         Call<ResponseBody> getSongsFromPlaylist = getFromServerRequest.getSongsFromPlaylist(playlistName);
+
         getSongsFromPlaylist.enqueue(new Callback<ResponseBody>() {
             /**
              * display a success message
@@ -224,14 +225,15 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
      * Delete selected song from playlist
      * @param songID the song ID that is to be deleted
      */
-    private void deleteSongFromPlaylist(String songID){
+    private void deleteSongFromPlaylist(String songID, int position){
         Call<ResponseBody> deleteSong = sentToServerRequest.deleteSongFromPlaylist(playlistName, songID);
         deleteSong.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 int respCode = response.code();
                 if(respCode == Dotify.OK){
-
+                    songsListAdapter.deleteSongFromList(position);
+                    songsListAdapter.notifyItemRemoved(position);
                 }
                 else{
 
@@ -253,6 +255,7 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
         songsListAdapter.notifyItemRangeInserted(startPosition, endPosition);
         songsListAdapter.notifyDataSetChanged();
     }
+
 
     //OnClickListener
     @Override
@@ -284,8 +287,13 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
     //RecyclerViewClickListener
     @Override
     public void onItemClick(View v, int position) {
+        //The delete icon is selected
         if(v.getId() == R.id.song_info_song_delete_icon){
-            deleteSongFromPlaylist(songsListAdapter.getSongID(position));
+            deleteSongFromPlaylist(songsListAdapter.getSongID(position), position);
+        }
+        //The user picked a song
+        else{
+
         }
 
     }

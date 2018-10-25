@@ -132,38 +132,14 @@ public class GetFromServerRequest {
      * Method to get the search results
      * @param currSearchQuery
      */
-    public void getSearchResult(String currSearchQuery) {
+    public Call<ResponseBody> getSearchResult(String currSearchQuery) {
         Call<ResponseBody> querySearch = dotifyHttpInterface.querySong(
                 appKey,
                 currSearchQuery
         );
 
-        querySearch.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    if(response.code() == Dotify.OK) {
-                        String serverResponse = response.body().string();
-                        JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
+        return querySearch;
 
-                        JsonArray songQuery = jsonResponse.getAsJsonArray("songs");
-                        JsonArray artistQuery = jsonResponse.getAsJsonArray("artist");
-                        //Call the method to display the result
-                        SearchFragment.displaySearchResultSong(songQuery);
-                        SearchFragment.displaySearchResultArtists(artistQuery);
-
-                    }
-
-                } catch (IOException ex) {
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
     }
 
     /**
