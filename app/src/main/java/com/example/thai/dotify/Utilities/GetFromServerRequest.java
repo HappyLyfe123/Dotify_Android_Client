@@ -70,7 +70,7 @@ public class GetFromServerRequest {
      * @param username The username of the person you want to do the retreival from
      * @return listOfSecQuestions Returns a list of security questions that belong to the user or null if none found
      */
-    public static Call<ResponseBody> getSecurityQuestions(final String username){
+    public Call<ResponseBody> getSecurityQuestions(final String username){
         //Create the GET request
         Call<ResponseBody> request = dotifyHttpInterface.getResetQuestions(
                 appKey,
@@ -86,7 +86,7 @@ public class GetFromServerRequest {
      * @param securityAnswer2 THe asnwer to the second Security Question
      * @return securityToken The securitytoken inside of a list
      */
-    public static Call<ResponseBody> validateSecurityAnswers(final String username, final String securityAnswer1, final String securityAnswer2){
+    public Call<ResponseBody> validateSecurityAnswers(final String username, final String securityAnswer1, final String securityAnswer2){
         //Create the GET request
         Call<ResponseBody> request = dotifyHttpInterface.validateSecAnswers(
                 appKey,
