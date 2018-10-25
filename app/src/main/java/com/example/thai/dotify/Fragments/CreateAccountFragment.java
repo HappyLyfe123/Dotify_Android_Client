@@ -61,6 +61,7 @@ public class CreateAccountFragment extends Fragment {
     private boolean usernameFilled, passwordFilled, confirmedPasswordFilled, securityQuestion1Filled,
             securityQuestion2Filled;
     private CreateAccountListener fragmentController;
+    private static SentToServerRequest sentToServerRequest;
 
     /**
      * interface that enables the "Create" button when all fields have some text
@@ -76,6 +77,14 @@ public class CreateAccountFragment extends Fragment {
      */
     public void setOnChangeFragmentListener(CreateAccountListener onChangeFragmentListener) {
         this.fragmentController = onChangeFragmentListener;
+    }
+
+    public static CreateAccountFragment newInstance(SentToServerRequest sentRequest) {
+        Bundle args = new Bundle();
+        sentToServerRequest = sentRequest;
+        CreateAccountFragment fragment = new CreateAccountFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     /***
@@ -444,7 +453,7 @@ public class CreateAccountFragment extends Fragment {
     private void createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,
                                   final String secAnswer1, final String secAnswer2) {
         //Create dotify user from SentToServer class
-        Call<DotifyUser> request = SentToServerRequest.createDotifyUser(username, password,
+        Call<DotifyUser> request = sentToServerRequest.createDotifyUser(username, password,
                 secQuestion1, secQuestion2, secAnswer1, secAnswer2, getActivity());
 
         request.enqueue(new Callback<DotifyUser>() {

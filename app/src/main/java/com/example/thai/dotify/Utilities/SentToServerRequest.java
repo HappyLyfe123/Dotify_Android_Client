@@ -61,7 +61,7 @@ public class SentToServerRequest {
      * @param secAnswer2 The user's chosen security answer 2
      * @return Call<DotifyUser> Returns the request to allow the user to continue to create their account
      */
-    public static Call<DotifyUser> createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,
+    public Call<DotifyUser> createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,
                                   final String secAnswer1, final String secAnswer2, final Context activityContext) {
         //Create an dotifyUser object to send
         DotifyUser dotifyUser = new DotifyUser(
@@ -100,7 +100,7 @@ public class SentToServerRequest {
      * Put request to reset the password
      * @param newPassword The new password to reset to
      */
-    public static Call<DotifyUser> resetPassword(final String securityToken, final String username,
+    public Call<DotifyUser> resetPassword(final String securityToken, final String username,
                                                  final String newPassword) {
         //Create the PUT Request
         Call<DotifyUser> request = dotifyHttpInterface.updatePassword(appKey, securityToken,
