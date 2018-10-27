@@ -1,37 +1,13 @@
 package com.example.thai.dotify.Utilities;
 
-import android.content.Context;
-import android.util.Log;
-import android.view.View;
-
-import com.example.thai.dotify.Fragments.LoginFragment;
-import com.example.thai.dotify.Fragments.PlaylistFragment;
-import com.example.thai.dotify.Fragments.SearchFragment;
-import com.example.thai.dotify.Fragments.SongsListFragment;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
-import com.google.gson.JsonArray;
-import com.example.thai.dotify.DotifyUser;
-import com.example.thai.dotify.Fragments.ForgetPasswordFragment;
-import com.example.thai.dotify.R;
-import com.example.thai.dotify.Server.Dotify;
-import com.example.thai.dotify.Server.DotifyHttpInterface;
-import com.example.thai.dotify.Server.DotifySong;
-import com.example.thai.dotify.StartUpContainer;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class GetFromServerRequest {
 
@@ -148,31 +124,13 @@ public class GetFromServerRequest {
      * Method that is used in search.
      * @param artistName The artist name to query
      */
-    public void getSongByArtist(String artistName){
+    public Call<ResponseBody> getSongByArtist(String artistName){
         Call<ResponseBody> getSongsByArtist = dotifyHttpInterface.getSongsByArtist(
                 appKey,
                 artistName
         );
-        //Ask anthony to get rid of quotation mark
-        getSongsByArtist.enqueue(new Callback<ResponseBody>() {
 
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String serverResponse = response.body().string();
-                    JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
-                    System.out.println(jsonResponse);
-
-
-                } catch (IOException e) {
-
-                }
-            }
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
+        return getSongsByArtist;
     }
 
 }

@@ -45,7 +45,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
     private RecyclerView playlistListRecycleView;
     private EditText playlistNameEditText;
     private PlaylistsAdapter playlistsAdapter;
-    private OnChangeFragmentListener onChangeFragmentListener;
+    private OnFragmentInteractionListener onFragmentInteractionListener;
     private TextView createPlaylistErrorMessageTextView;
     private ProgressBar savingProgressBar;
     private AlertDialog currDialogBox;
@@ -72,7 +72,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
     }
 
     //interface that changes fragment view
-    public interface OnChangeFragmentListener{
+    public interface OnFragmentInteractionListener{
         void playlistClicked(String playlistName);
     }
 
@@ -84,10 +84,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
 
     /**
      * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
-     * @param onChangeFragmentListener The listener for communication
+     * @param onFragmentInteractionListener The listener for communication
      */
-    public void setOnChangeFragmentListener(PlaylistFragment.OnChangeFragmentListener onChangeFragmentListener) {
-        this.onChangeFragmentListener = onChangeFragmentListener;
+    public void setOnFragmentInteractionListener(OnFragmentInteractionListener onFragmentInteractionListener) {
+        this.onFragmentInteractionListener = onFragmentInteractionListener;
     }
 
     /***
@@ -364,7 +364,7 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
     public void onItemClick(View v, int position) {
         if(v.getId() == R.id.playlist_list_name_text_view) {
             //Change fragment to display all of the songs in the playlist
-            onChangeFragmentListener.playlistClicked(playlistsAdapter.getPlaylistName(position));
+            onFragmentInteractionListener.playlistClicked(playlistsAdapter.getPlaylistName(position));
         }
         else if(v.getId() == R.id.playlist_item_delete_icon){
             //Call the delete playlist method

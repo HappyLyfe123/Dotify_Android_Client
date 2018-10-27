@@ -27,7 +27,8 @@ import com.example.thai.dotify.Utilities.UserUtilities;
  * this object puts together all the parts of the application
  */
 public class MainActivityContainer extends AppCompatActivity
-        implements PlaylistFragment.OnChangeFragmentListener, SearchFragment.OnChangeFragmentListener{
+        implements PlaylistFragment.OnFragmentInteractionListener, SearchFragment.OnFragmentInteractionListener,
+    SongsListFragment.OnFragmentInteractionListener, SongByArtistFragment.OnFragmentInteractionListener{
 
     private SearchFragment searchFragment;
     private PlaylistFragment playlistFragment;
@@ -36,6 +37,7 @@ public class MainActivityContainer extends AppCompatActivity
     private CreatePlaylistFragment createPlaylistFragment;
     private MiniMusicControllerFragment miniMusicControllerFragment;
     private SongsListFragment songListScreenFragment;
+    private SongByArtistFragment songByArtistFragment;
     private BottomNavigationView bottomNavigationView;
     private FrameLayout miniMusicControllerLayout;
     private FrameLayout mainDisplayLayout;
@@ -56,7 +58,8 @@ public class MainActivityContainer extends AppCompatActivity
         CREATE_PLAYLIST,
         SONGS_LIST_PAGE,
         FULL_SCREEN_MUSIC,
-        BACK_BUTTON
+        BACK_BUTTON,
+        SONGS_BY_ARTIST
 
     }
 
@@ -82,6 +85,7 @@ public class MainActivityContainer extends AppCompatActivity
         playlistFragment = PlaylistFragment.newInstance(sentToServerRequest, getFromServerRequest);
         searchFragment = SearchFragment.newInstance(sentToServerRequest, getFromServerRequest);
         songListScreenFragment = SongsListFragment.newInstance(sentToServerRequest, getFromServerRequest);
+
         forYouFragment = new ForYouFragment();
         profileInfoFragment = new ProfileInfoFragment();
         profileInfoFragment.setOnUserImageUploadedListener((dotifyUser) ->
@@ -89,8 +93,9 @@ public class MainActivityContainer extends AppCompatActivity
             user = dotifyUser
         );
 
-        searchFragment.setOnChangeFragmentListener(this);
-        playlistFragment.setOnChangeFragmentListener(this);
+        songListScreenFragment.setOnFragmentInteractionListener(this);
+        searchFragment.setOnFragmentInteractionListener(this);
+        playlistFragment.setOnFragmentInteractionListener(this);
 
         miniMusicControllerFragment = miniMusicControllerFragment.newInstance();
 
@@ -129,7 +134,9 @@ public class MainActivityContainer extends AppCompatActivity
      * @return True if the fragment has started correctly
      */
     private boolean startFragment(PlaylistFragmentType fragmentType, boolean setTransition, boolean addToBackStack){
+
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
         switch (fragmentType) {
             case SEARCH:
                 fragmentTransaction.replace(mainDisplayLayout.getId(), searchFragment);
@@ -157,12 +164,18 @@ public class MainActivityContainer extends AppCompatActivity
             case SONGS_LIST_PAGE:
                 fragmentTransaction.replace(R.id.main_display_frame, songListScreenFragment);
                 break;
+            case SONGS_BY_ARTIST:
+                fragmentTransaction.replace(R.id.main_display_frame, songByArtistFragment);
+                break;
             case BACK_BUTTON:
                 getFragmentManager().popBackStackImmediate();
+                break;
         }
+
         if(setTransition){
             fragmentTransaction.setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         }
+        //True then the fragment will be added to the backstack
         if(addToBackStack){
             fragmentTransaction.addToBackStack(null);
         }
@@ -232,7 +245,7 @@ public class MainActivityContainer extends AppCompatActivity
     }
 
     /***
-     * invoked when back button is pressed
+     * Invoked when back button is pressed
      */
     @Override
     public void onBackPressed() {
@@ -241,11 +254,26 @@ public class MainActivityContainer extends AppCompatActivity
     }
 
     @Override
+    public void songClicked(String songID) {
+
+    }
+
+    @Override
+    public void backButtonPressed(){
+        startFragment(PlaylistFragmentType.BACK_BUTTON, false, false);
+    }
+
+    @Override
     public void onSongResultClicked(String songID) {
+
     }
 
     @Override
     public void onArtistResultClicked(String artistName) {
+        songByArtistFragment = SongByArtistFragment.newInstance(sentToServerRequest, getFromServerRequest,
+                artistName);
+        songByArtistFragment.setOnFragmentInteractionListener(this);
+        startFragment(PlaylistFragmentType.SONGS_BY_ARTIST, true, true);
 
     }
 

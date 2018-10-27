@@ -55,7 +55,7 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
     private TextView titleTextView;
     private RecyclerView songListRecycleView;
     private SongsAdapter songsListAdapter;
-    private OnChangeFragmentListener onChangeFragmentListener;
+    private OnFragmentInteractionListener onFragmentInteractionListener;
     private String playlistName;
     private static SentToServerRequest sentToServerRequest;
     private static GetFromServerRequest getFromServerRequest;
@@ -64,28 +64,26 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
      * Default constructor
      */
     public static SongsListFragment newInstance(SentToServerRequest sentRequest, GetFromServerRequest getRequest) {
-
-        Bundle args = new Bundle();
         sentToServerRequest = sentRequest;
         getFromServerRequest = getRequest;
         SongsListFragment fragment = new SongsListFragment();
-        fragment.setArguments(args);
         return fragment;
     }
 
     /**
      * Listener to tell the main container to switch fragments
      */
-    public interface OnChangeFragmentListener{
+    public interface OnFragmentInteractionListener{
         void songClicked(String songID);
+        void backButtonPressed();
     }
 
     /**
      * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
      * @param onChangeFragmentListener The listener for communication
      */
-    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener){
-        this.onChangeFragmentListener = onChangeFragmentListener;
+    public void setOnFragmentInteractionListener(OnFragmentInteractionListener onChangeFragmentListener){
+        this.onFragmentInteractionListener = onChangeFragmentListener;
     }
 
     /**
@@ -262,7 +260,7 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.song_list_back_image_button:
-                getFragmentManager().popBackStackImmediate();
+                onFragmentInteractionListener.backButtonPressed();
                 break;
             case R.id.song_list_edit_song_button:
                 // Update all of the views to have the delete button to appear

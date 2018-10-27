@@ -54,7 +54,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
     private RecyclerView songSearchResultRecycler;
     private RecyclerView artistSearchResultRecycler;
     private RecyclerView selectPlaylistList;
-    private OnChangeFragmentListener onChangeFragmentListener;
+    private OnFragmentInteractionListener onFragmentInteractionListener;
     private SearchSongAdapter songSearchResultAdapter;
     private SearchArtistAdapter artistSearchResultAdapter;
     private static SentToServerRequest sentToServerRequest;
@@ -86,20 +86,21 @@ public class SearchFragment extends Fragment implements TextWatcher{
     /**
      * Listener for the Fragment to tell the main activity to change fragments
      */
-    public interface OnChangeFragmentListener{
+    public interface OnFragmentInteractionListener{
         void onSongResultClicked(String song);
         void onArtistResultClicked(String artistName);
+
         PlaylistsAdapter getPlaylistAdapter();
     }
 
     /**
      * Sets the Listener object from the main activity
      *
-     * @param onChangeFragmentListener Set the listener for this fragment
+     * @param onFragmentInteractionListener Set the listener for this fragment
      *
      */
-    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
-        this.onChangeFragmentListener = onChangeFragmentListener;
+    public void setOnFragmentInteractionListener(OnFragmentInteractionListener onFragmentInteractionListener) {
+        this.onFragmentInteractionListener = onFragmentInteractionListener;
     }
 
 
@@ -143,7 +144,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
             @Override
             public void onItemClick(View v, int songPosition) {
                 if(v.getId() == R.id.search_result_item_recycler_view) {
-                    onChangeFragmentListener.onSongResultClicked(songSearchResultAdapter.getSongID(songPosition));
+                    onFragmentInteractionListener.onSongResultClicked(songSearchResultAdapter.getSongID(songPosition));
                 }
                 else if(v.getId() == R.id.search_add_to_play_list_image_view){
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -173,7 +174,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
                     });
 
                     //Get the list of playlist from playlist fragment
-                    currPlaylistAdapter.replacePlaylistList(onChangeFragmentListener.getPlaylistAdapter().getPlaylistListName());
+                    currPlaylistAdapter.replacePlaylistList(onFragmentInteractionListener.getPlaylistAdapter().getPlaylistListName());
 
                     //Display all of the items into the recycler view
                     RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
@@ -190,7 +191,9 @@ public class SearchFragment extends Fragment implements TextWatcher{
         artistSearchResultAdapter = new SearchArtistAdapter(new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-
+                String artistName = artistSearchResultAdapter.getArtistName(position);
+                artistName = artistName.substring(1, artistName.length() - 1);
+                onFragmentInteractionListener.onArtistResultClicked(artistName);
             }
         });
 
@@ -257,41 +260,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
             changeQueryLayoutStates();
         }
         else {
-            Call<ResponseBody> querySearch = getFromServerRequest.getSearchResult(currSearchQuery);
-            if(querySearch.isExecuted()){
-                querySearch.cancel();
-            }
-            querySearch.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    try {
-                        if(response.code() == Dotify.OK) {
-                            songSearchResultAdapter.newResult();
-                            artistSearchResultAdapter.newResult();
-                            Gson gson = new Gson();
-
-                            String serverResponse = response.body().string();
-                            JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
-
-                            JsonArray songQuery = jsonResponse.getAsJsonArray("songs");
-                            JsonArray artistQuery = jsonResponse.getAsJsonArray("artist");
-
-                            //Call the method to display the result
-                            displaySearchResultSong(songQuery);
-                            displaySearchResultArtists(artistQuery);
-
-                        }
-
-                    } catch (IOException ex) {
-
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                }
-            });
+            sendSearchToServer();
         }
     }
 
@@ -302,6 +271,46 @@ public class SearchFragment extends Fragment implements TextWatcher{
     @Override
     public void afterTextChanged(Editable currCharsSequence) {
 
+    }
+
+    /**
+     * Sent the query to the server
+     */
+    private void sendSearchToServer(){
+        Call<ResponseBody> querySearch = getFromServerRequest.getSearchResult(currSearchQuery);
+        if(querySearch.isExecuted()){
+            querySearch.cancel();
+        }
+        querySearch.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    if(response.code() == Dotify.OK) {
+                        songSearchResultAdapter.newResult();
+                        artistSearchResultAdapter.newResult();
+
+                        String serverResponse = response.body().string();
+                        JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
+
+                        JsonArray songQuery = jsonResponse.getAsJsonArray("songs");
+                        JsonArray artistQuery = jsonResponse.getAsJsonArray("artist");
+
+                        //Call the method to display the result
+                        displaySearchResultSong(songQuery);
+                        displaySearchResultArtists(artistQuery);
+
+                    }
+
+                } catch (IOException ex) {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
     /**
@@ -351,7 +360,6 @@ public class SearchFragment extends Fragment implements TextWatcher{
                     currDialogBox.dismiss();
                 }
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
