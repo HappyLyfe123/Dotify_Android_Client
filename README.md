@@ -1,4 +1,4 @@
-<p align="center"><img src="https://www.penguindan.com/img/dotify.png" width="300" height="300" /></p>
+<p align="center"><img src="https://www.penguindan.com/img/dotify.png" width="45%"/></p>
 Front End of the Dotify Project
 
 The Dotify Project incorporates the Dotify Android Client and the Dotify Server to form a peer to peer music streaming service. It was built using Android Studios in Java, Kotlin, and XML. All the data is stored server side and the Android Client interacts with the server to retrieve it. 
