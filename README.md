@@ -1,4 +1,3 @@
-# Dotify
 <p align="center"><img src="https://github.com/HappyLyfe123/Dotify_Android_Client/blob/master/app/src/main/res/drawable-mdpi/app_logo.png" width="300" height="300" /></p>
 Front End of the Dotify Project
 
