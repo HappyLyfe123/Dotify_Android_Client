@@ -148,7 +148,6 @@ public class StartUpContainer extends AppCompatActivity implements LoginFragment
                 break;
             case R.id.create_account_button:
                 if(createAccountFragment.createAccount()){
-
                 }
 
                 break;

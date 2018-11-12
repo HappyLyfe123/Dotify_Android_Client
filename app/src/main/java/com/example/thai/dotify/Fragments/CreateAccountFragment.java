@@ -61,7 +61,7 @@ public class CreateAccountFragment extends Fragment {
     private boolean usernameFilled, passwordFilled, confirmedPasswordFilled, securityQuestion1Filled,
             securityQuestion2Filled;
     private CreateAccountListener fragmentController;
-    private static SentToServerRequest sentToServerRequest;
+   //private static SentToServerRequest sentToServerRequest;
 
     /**
      * interface that enables the "Create" button when all fields have some text
@@ -79,9 +79,9 @@ public class CreateAccountFragment extends Fragment {
         this.fragmentController = onChangeFragmentListener;
     }
 
-    public static CreateAccountFragment newInstance(SentToServerRequest sentRequest) {
+    public CreateAccountFragment newInstance() {
         Bundle args = new Bundle();
-        sentToServerRequest = sentRequest;
+        //sentToServerRequest = new SentToServerRequest(getString(R.string.base_URL), getString(R.string.appKey));
         CreateAccountFragment fragment = new CreateAccountFragment();
         fragment.setArguments(args);
         return fragment;
@@ -452,16 +452,50 @@ public class CreateAccountFragment extends Fragment {
      */
     private void createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,
                                   final String secAnswer1, final String secAnswer2) {
-        //Create dotify user from SentToServer class
-        Call<DotifyUser> request = sentToServerRequest.createDotifyUser(username, password,
-                secQuestion1, secQuestion2, secAnswer1, secAnswer2, getActivity());
+        //Create dotify user from SentToServer
+
+        Dotify dotify = new Dotify(getString(R.string.base_URL));
+
+//        Call<DotifyUser> request = sentToServerRequest.createDotifyUser(username, password,
+//                secQuestion1, secQuestion2, secAnswer1, secAnswer2, getActivity());
+
+        //Create an dotifyUser object to send
+        DotifyUser dotifyUser = new DotifyUser(
+                username,
+                password,
+                secQuestion1,
+                secQuestion2,
+                secAnswer1,
+                secAnswer2,
+                "",
+                ""
+        );
+
+        //Start at POST request to create the user
+        //Intercept the request to add a header item
+        dotify.addRequestInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request();
+                //Add the app key to the request header
+                Request.Builder newRequest = request.newBuilder().header(
+                        Dotify.APP_KEY_HEADER, getString(R.string.appKey));
+                //Continue the request
+                return chain.proceed(newRequest.build());
+            }
+        });
+        dotify.addLoggingInterceptor(HttpLoggingInterceptor.Level.BODY);
+        DotifyHttpInterface dotifyHttpInterface = dotify.getHttpInterface();
+        //Create the POST request
+        Call<DotifyUser> request = dotifyHttpInterface.createUser(dotifyUser.getUsername(), dotifyUser.getPassword(),
+                dotifyUser.getQuestion1(), dotifyUser.getQuestion2(), dotifyUser.getAnswer1(), dotifyUser.getAnswer2());
 
         request.enqueue(new Callback<DotifyUser>() {
             @Override
             public void onResponse(Call<DotifyUser> call, retrofit2.Response<DotifyUser> response) {
                 if (response.code() == 201) {
                     Log.d(TAG, "createDotifyUser-> onClick-> onSuccess-> onResponse: Successful Response Code " + response.code());
-                    // Cache the user information that we jsut created
+                    // Cache the user information that we just created
                     DotifyUser dotifyUser = new DotifyUser(username, null, null,
                             null, null, null, "", "");
                     UserUtilities.cacheUser(getActivity(), dotifyUser);
