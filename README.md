@@ -11,6 +11,7 @@ It currently includes the following features:
 4. On the search page, the user can search for a specific song using the artist or song title.
 5. On the playlist page, it allows the user to create, edit, or delete a playlist as well as to add or deleate a song from a specific playlist.
 6. The application allows the user to play/pause a song and skip to go the next song in the playlist or previous to go to the previous song in the playlist.
+7. Server queries the txt file containing the data
 
 Future Implementations:
 
