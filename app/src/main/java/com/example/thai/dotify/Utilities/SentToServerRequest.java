@@ -74,7 +74,6 @@ public class SentToServerRequest {
                 "",
                 ""
         );
-
         //Start at POST request to create the user
         //Intercept the request to add a header item
         dotify.addRequestInterceptor(new Interceptor() {

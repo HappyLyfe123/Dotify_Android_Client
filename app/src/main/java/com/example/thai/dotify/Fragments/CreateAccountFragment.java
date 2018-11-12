@@ -61,7 +61,6 @@ public class CreateAccountFragment extends Fragment {
     private boolean usernameFilled, passwordFilled, confirmedPasswordFilled, securityQuestion1Filled,
             securityQuestion2Filled;
     private CreateAccountListener fragmentController;
-   //private static SentToServerRequest sentToServerRequest;
 
     /**
      * interface that enables the "Create" button when all fields have some text
@@ -81,7 +80,6 @@ public class CreateAccountFragment extends Fragment {
 
     public CreateAccountFragment newInstance() {
         Bundle args = new Bundle();
-        //sentToServerRequest = new SentToServerRequest(getString(R.string.base_URL), getString(R.string.appKey));
         CreateAccountFragment fragment = new CreateAccountFragment();
         fragment.setArguments(args);
         return fragment;
@@ -421,6 +419,7 @@ public class CreateAccountFragment extends Fragment {
         String securityQuestion2 = securityQuestion2Spinner.getSelectedItem().toString();
         String securityAnswer1 = securityQuestion1AnswerEditText.getText().toString();
         String securityAnswer2 = securityQuestion2AnswerEditText.getText().toString();
+        //Creates an account using the values entered
         createDotifyUser(username, password, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2);
 
         if (username == null) {
@@ -452,13 +451,7 @@ public class CreateAccountFragment extends Fragment {
      */
     private void createDotifyUser(final String username, final String password, final String secQuestion1, final String secQuestion2,
                                   final String secAnswer1, final String secAnswer2) {
-        //Create dotify user from SentToServer
-
         Dotify dotify = new Dotify(getString(R.string.base_URL));
-
-//        Call<DotifyUser> request = sentToServerRequest.createDotifyUser(username, password,
-//                secQuestion1, secQuestion2, secAnswer1, secAnswer2, getActivity());
-
         //Create an dotifyUser object to send
         DotifyUser dotifyUser = new DotifyUser(
                 username,

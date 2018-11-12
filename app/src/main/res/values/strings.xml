@@ -62,9 +62,6 @@
     <string name="reset_password">Reset Password</string>
 
     <!--Profile Info -->
-    <string name="date_joined">Date Joined:</string>
-    <string name="most_played">Most Played:</string>
-    <string name="time_spent">Time Spent:</string>
     <string name="logout">Log Out</string>
 
     <!--Search Fragment-->
