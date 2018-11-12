@@ -18,6 +18,7 @@ import com.example.thai.dotify.Fragments.MiniMusicControllerFragment;
 import com.example.thai.dotify.Fragments.PlaylistFragment;
 import com.example.thai.dotify.Fragments.ProfileInfoFragment;
 import com.example.thai.dotify.Fragments.SearchFragment;
+import com.example.thai.dotify.Fragments.SongByArtistFragment;
 import com.example.thai.dotify.Fragments.SongsListFragment;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;

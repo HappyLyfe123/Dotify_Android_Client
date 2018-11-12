@@ -12,15 +12,17 @@ import com.example.thai.dotify.RecyclerViewClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapter.ItemsViewHolder> {
 
-    private ArrayList<String> searchResultArtists;
     private RecyclerViewClickListener onItemClickedListener;
+    private ArrayList<String> artistAlbumList;
+    private ArrayList<String> artistNameList;
 
     //Default constructor
     public SearchArtistAdapter(RecyclerViewClickListener listener){
-        searchResultArtists = new ArrayList<>();
+        artistNameList = new ArrayList<>();
         onItemClickedListener = listener;
     }
 
@@ -36,15 +38,15 @@ public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapte
     //Set the name to display
     @Override
     public void onBindViewHolder(@NonNull ItemsViewHolder holder, int position) {
-        holder.setViewText(searchResultArtists.get(position));
+        holder.setViewText(artistNameList.get(position));
     }
 
     public void newResult(){
-        searchResultArtists = new ArrayList<>();
+        artistNameList = new ArrayList<>();
     }
 
     public ArrayList<String> getQueryArtistsList(){
-        return searchResultArtists;
+        return artistNameList;
     }
 
     /**
@@ -54,13 +56,25 @@ public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapte
      *
      */
     public void updateSearchResult(ArrayList<String> newResult){
-        searchResultArtists = newResult;
+        artistNameList = newResult;
     }
 
 
-    public void addSearchResultItem(String artistName){
-        searchResultArtists.add(artistName);
+    public void addArtist(String artistName){
+        artistNameList.add(artistName);
     }
+
+    /**
+     * Set the list of artist
+     * @param artistName
+     */
+    public void setArtistNameList(Set<String> artistName){
+        artistNameList = new ArrayList<>(artistName);
+    }
+
+    /**
+     * Set the list of
+     */
 
     /**
      * Get the artist name in a specific position
@@ -69,7 +83,7 @@ public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapte
      *
      */
     public String getArtistName(int position){
-        return searchResultArtists.get(position);
+        return artistNameList.get(position);
     }
 
     /**
@@ -78,11 +92,11 @@ public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapte
      */
     @Override
     public int getItemCount() {
-        if(searchResultArtists == null){
+        if(artistNameList == null){
             return 0;
         }
         else {
-            return searchResultArtists.size();
+            return artistNameList.size();
         }
     }
 

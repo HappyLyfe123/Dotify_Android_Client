@@ -236,7 +236,6 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
                 else{
 
                 }
-
             }
 
             @Override

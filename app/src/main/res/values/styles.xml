@@ -2,10 +2,14 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="android:background">#242424</item>
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@color/primary_color</item>
     </style>
 
+    <style name="BottomNavigationTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@color/bottom_nav_background_color</item>
+    </style>
     <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
         <!-- Gets rid of the search icon -->
         <item name="searchIcon">@drawable/search_icon</item>
@@ -23,4 +27,5 @@
     <style name="SplashTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/app_logo</item>
     </style>
+
 </resources>

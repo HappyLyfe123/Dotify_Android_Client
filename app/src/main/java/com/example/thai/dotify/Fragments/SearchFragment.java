@@ -18,10 +18,9 @@ import android.widget.LinearLayout;
 import com.example.thai.dotify.Adapters.PlaylistsAdapter;
 import com.example.thai.dotify.Adapters.SearchArtistAdapter;
 import com.example.thai.dotify.Adapters.SearchSongAdapter;
-import com.example.thai.dotify.MainActivityContainer;
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
-import com.example.thai.dotify.SearchResultSongs;
+import com.example.thai.dotify.SearchSongResult;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.JSONUtilities;
@@ -33,12 +32,9 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Set;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -53,6 +49,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
     private EditText searchEditText;
     private RecyclerView songSearchResultRecycler;
     private RecyclerView artistSearchResultRecycler;
+    private RecyclerView albumSearchResultRecycler;
     private RecyclerView selectPlaylistList;
     private OnFragmentInteractionListener onFragmentInteractionListener;
     private SearchSongAdapter songSearchResultAdapter;
@@ -63,9 +60,10 @@ public class SearchFragment extends Fragment implements TextWatcher{
     private String currSearchQuery;
     private LinearLayout songQueryLayout;
     private LinearLayout artistQueryLayout;
+    private LinearLayout albumQueryLayout;
     private LinearLayout welcomeMessageLayout;
     private AlertDialog currDialogBox;
-    private Map<String, ArrayList<SearchResultSongs>> songSearchQuery;
+    private Map<String, ArrayList<SearchSongResult>> songSearchQuery;
     private Map<String, ArrayList<String>> artistSearchQuery;
 
 
@@ -114,8 +112,10 @@ public class SearchFragment extends Fragment implements TextWatcher{
         searchEditText = (EditText) view.findViewById(R.id.search_edit_text);
         songSearchResultRecycler = (RecyclerView) view.findViewById(R.id.song_result_recycler_view);
         artistSearchResultRecycler = (RecyclerView) view.findViewById(R.id.artist_result_recycler_view);
+        albumSearchResultRecycler = (RecyclerView) view.findViewById(R.id.album_result_recycler_view);
         songQueryLayout = (LinearLayout) view.findViewById(R.id.search_song_result_layout);
         artistQueryLayout = (LinearLayout) view.findViewById(R.id.search_artist_result_layout);
+        albumQueryLayout = (LinearLayout) view.findViewById(R.id.search_album_result_layout);
         welcomeMessageLayout = (LinearLayout) view.findViewById(R.id.search_welcome_layout);
 
         searchEditText.addTextChangedListener(this);
@@ -143,9 +143,11 @@ public class SearchFragment extends Fragment implements TextWatcher{
         songSearchResultAdapter = new SearchSongAdapter(new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View v, int songPosition) {
+                //The user want to play the selected song
                 if(v.getId() == R.id.search_result_item_recycler_view) {
-                    onFragmentInteractionListener.onSongResultClicked(songSearchResultAdapter.getSongID(songPosition));
+                    onFragmentInteractionListener.onSongResultClicked(songSearchResultAdapter.getSongGUID(songPosition));
                 }
+                //The user want to add the song to a playlist
                 else if(v.getId() == R.id.search_add_to_play_list_image_view){
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                     //Set the View of the Alert Dialog
@@ -284,6 +286,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
         querySearch.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
                 try {
                     if(response.code() == Dotify.OK) {
                         songSearchResultAdapter.newResult();
@@ -292,12 +295,10 @@ public class SearchFragment extends Fragment implements TextWatcher{
                         String serverResponse = response.body().string();
                         JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
 
-                        JsonArray songQuery = jsonResponse.getAsJsonArray("songs");
-                        JsonArray artistQuery = jsonResponse.getAsJsonArray("artist");
-
-                        //Call the method to display the result
-                        displaySearchResultSong(songQuery);
-                        displaySearchResultArtists(artistQuery);
+                        //Call the display methods for each category
+                        //displaySearchResultSong(jsonResponse.getAsJsonArray("song"));
+                        displaySearchResultArtists(jsonResponse.getAsJsonArray("artist"));
+                        //displaySearchResultAblums(jsonResponse.getAsJsonObject("album"));
 
                     }
 
@@ -319,11 +320,17 @@ public class SearchFragment extends Fragment implements TextWatcher{
      */
     private void displaySearchResultSong(JsonArray querySongResult){
         Gson gson = new Gson();
-        //Add result into adapter
+
         for(JsonElement songInfo : querySongResult){
-            songSearchResultAdapter.insertSearchResultItem(gson.fromJson(
-                    songInfo, SearchResultSongs.class));
+            songInfo.getAsJsonObject().entrySet().forEach(entry->{
+                songSearchResultAdapter.addSongToList(entry.getKey());
+                songSearchResultAdapter.insertSearchResultItem(gson.fromJson(
+                        entry.getValue(), SearchSongResult.class));
+            });
+
+
         }
+        //Add result into adapter
         //Update adapter view
         notifyRecyclerDataInsertedChanged();
         //Update layout view
@@ -335,10 +342,15 @@ public class SearchFragment extends Fragment implements TextWatcher{
      * @param queryArtistResult - the artist query result
      */
     private void displaySearchResultArtists(JsonArray queryArtistResult){
+        String artistName;
         //Add the result into the adapter list
-        for (JsonElement artistName : queryArtistResult) {
-            artistSearchResultAdapter.addSearchResultItem(artistName.toString());
+        for(JsonElement artistInfo : queryArtistResult){
+            artistName = artistInfo.getAsJsonObject().keySet().toString();
+            artistName = artistName.substring(1, artistName.length() - 1);
+            artistInfo.getAsJsonObject().getAsJsonObject(artistName);
+            System.out.println();
         }
+
         //Update adapter view
         notifyRecyclerDataInsertedChanged();
         //Update layout view
@@ -346,12 +358,22 @@ public class SearchFragment extends Fragment implements TextWatcher{
     }
 
     /**
+     * Display album query result
+     */
+    private void displaySearchResultAblums(JsonArray queryAlbumResult){
+        for(JsonElement albumInfo : queryAlbumResult){
+            //System.out.println(albumInfo);
+        }
+    }
+
+
+    /**
      * Add the song to the select playlist
      */
     private void addSongToPlaylist(int songPosition, int playlistPosition){
 
         Call<ResponseBody> addSongRequest = sentToServerRequest.addSongToPlaylist(currPlaylistAdapter.getPlaylistName(playlistPosition),
-                songSearchResultAdapter.getSongID(songPosition));
+                songSearchResultAdapter.getSongGUID(songPosition));
 
         addSongRequest.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -387,7 +409,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
      * Cache song query result with the given string
      * @param key - the user search query
      */
-    private void cacheSongQuery(String key, ArrayList<SearchResultSongs> results) {
+    private void cacheSongQuery(String key, ArrayList<SearchSongResult> results) {
         songSearchQuery.put(key, results);
     }
 

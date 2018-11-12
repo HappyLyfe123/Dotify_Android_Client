@@ -9,13 +9,13 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
-import com.example.thai.dotify.SearchResultSongs;
+import com.example.thai.dotify.SearchSongResult;
 
 import java.util.List;
 
 public class SearchResultSongAdapter extends RecyclerView.Adapter<SearchResultSongAdapter.ItemsViewHolder>{
 
-    private List<SearchResultSongs> songsList;
+    private List<SearchSongResult> songsList;
     private RecyclerViewClickListener itemClickListener;
 
     public class ItemsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -50,7 +50,7 @@ public class SearchResultSongAdapter extends RecyclerView.Adapter<SearchResultSo
      * @param songList - list of songs
      * @param listener
      */
-    public SearchResultSongAdapter(List<SearchResultSongs> songList, RecyclerViewClickListener listener){
+    public SearchResultSongAdapter(List<SearchSongResult> songList, RecyclerViewClickListener listener){
         this.songsList = songList;
         itemClickListener = listener;
     }
@@ -77,8 +77,8 @@ public class SearchResultSongAdapter extends RecyclerView.Adapter<SearchResultSo
      */
     @Override
     public void onBindViewHolder(@NonNull SearchResultSongAdapter.ItemsViewHolder holder, int position) {
-        SearchResultSongs song = songsList.get(position);
-        holder.songTitle.setText(song.getSong_info());
+        SearchSongResult song = songsList.get(position);
+        holder.songTitle.setText(song.getArtist());
     }
 
     /**

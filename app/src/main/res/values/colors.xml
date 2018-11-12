@@ -9,4 +9,7 @@
     <color name="black">#000000</color>
     <color name="bottom_nav_icon_color">#9b9b9b</color>
     <color name="bottom_nav_select_color">#3247ff</color>
+    <color name="bottom_nav_background_color">#292929</color>
+    <color name="primary_color">#242424</color>
+    <color name="top_playlist_background">#292929</color>
 </resources>

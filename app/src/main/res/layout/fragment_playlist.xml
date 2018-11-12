@@ -10,7 +10,7 @@
         android:id="@+id/title_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#292929"
+        android:background="@color/top_playlist_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -59,15 +59,14 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/playlist_list_recycle_view"
         android:layout_width="match_parent"
-        android:layout_height="503dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
         android:fillViewport="true"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_relative_layout">
-
-
     </android.support.v7.widget.RecyclerView>
 
 

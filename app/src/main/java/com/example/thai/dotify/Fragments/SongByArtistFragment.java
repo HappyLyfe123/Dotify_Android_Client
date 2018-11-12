@@ -1,4 +1,4 @@
-package com.example.thai.dotify;
+package com.example.thai.dotify.Fragments;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -17,6 +17,9 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.Adapters.PlaylistsAdapter;
 import com.example.thai.dotify.Adapters.SearchSongAdapter;
+import com.example.thai.dotify.R;
+import com.example.thai.dotify.RecyclerViewClickListener;
+import com.example.thai.dotify.SearchSongResult;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.JSONUtilities;
@@ -217,7 +220,7 @@ public class SongByArtistFragment extends Fragment {
                         //Add result into adapter
                         for(JsonElement songInfo : querySongs){
                             songsListAdapter.insertSearchResultItem(gson.fromJson(
-                                    songInfo, SearchResultSongs.class));
+                                    songInfo, SearchSongResult.class));
                         }
                         songsListAdapter.notifyItemRangeInserted(0, songsListAdapter.getItemCount());
                         songsListAdapter.notifyItemRangeChanged(0, songsListAdapter.getItemCount());
@@ -251,7 +254,7 @@ public class SongByArtistFragment extends Fragment {
     private void addSongToPlaylist(int songPosition, int playlistPosition){
 
         Call<ResponseBody> addSongRequest = sentToServerRequest.addSongToPlaylist(currPlaylistAdapter.getPlaylistName(playlistPosition),
-                songsListAdapter.getSongID(songPosition));
+                songsListAdapter.getSongGUID(songPosition));
 
         addSongRequest.enqueue(new Callback<ResponseBody>() {
             @Override
