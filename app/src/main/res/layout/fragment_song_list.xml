@@ -17,6 +17,7 @@
             android:id="@+id/song_list_back_image_button"
             android:layout_width="60dp"
             android:layout_height="match_parent"
+            android:paddingRight="25dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:background="@android:color/transparent"

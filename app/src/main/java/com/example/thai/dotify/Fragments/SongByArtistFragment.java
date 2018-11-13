@@ -207,37 +207,6 @@ public class SongByArtistFragment extends Fragment {
      * Display all of the song by the artist
      */
     private void displaySongs(){
-        Call<ResponseBody> getSongs = getFromServerRequest.getSongByArtist(artistName);
-        getSongs.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String serverResponse = response.body().string();
-                    JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
-                    JsonArray querySongs = jsonResponse.getAsJsonArray("songs");
-                    if(querySongs != null){
-                        Gson gson = new Gson();
-                        //Add result into adapter
-                        for(JsonElement songInfo : querySongs){
-                            songsListAdapter.insertSearchResultItem(gson.fromJson(
-                                    songInfo, SearchSongResult.class));
-                        }
-                        songsListAdapter.notifyItemRangeInserted(0, songsListAdapter.getItemCount());
-                        songsListAdapter.notifyItemRangeChanged(0, songsListAdapter.getItemCount());
-                        songsListAdapter.notifyDataSetChanged();
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
 
     }
 

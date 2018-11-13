@@ -25,6 +25,7 @@ import com.example.thai.dotify.SearchSongResult;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.JSONUtilities;
+import com.example.thai.dotify.Utilities.SearchArtist;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -130,9 +131,27 @@ public class SearchFragment extends Fragment implements TextWatcher{
         artistSearchQuery = new HashMap<>();
 
         //Initialize view layout
-        RecyclerView.LayoutManager songSearchLayoutManager = new LinearLayoutManager(getContext());
-        RecyclerView.LayoutManager artistSearchLayoutManager = new LinearLayoutManager(getContext());
-        RecyclerView.LayoutManager albumSearchLayoutManager = new LinearLayoutManager(getContext());
+        RecyclerView.LayoutManager songSearchLayoutManager = new LinearLayoutManager(getContext()){
+            //Disable vertical scroll
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        RecyclerView.LayoutManager artistSearchLayoutManager = new LinearLayoutManager(getContext()){
+            //Disable vertical scroll
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        RecyclerView.LayoutManager albumSearchLayoutManager = new LinearLayoutManager(getContext()){
+            //Disable vertical scroll
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
 
         // The Recycler view that controls the song search results
         songSearchResultRecycler.setLayoutManager(songSearchLayoutManager);
@@ -203,8 +222,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
         artistSearchResultAdapter = new SearchArtistAdapter(new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                String artistName = artistSearchResultAdapter.getArtistName(position);
-                artistName = artistName.substring(1, artistName.length() - 1);
+                String artistName = artistSearchResultAdapter.getArtist(position).getArtistName();
                 onFragmentInteractionListener.onArtistResultClicked(artistName);
             }
         });
@@ -239,8 +257,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
         }
         else if(isSongQueryCached(currSearchQuery) || isArtistQueryCached(currSearchQuery)){
             //Get the previous result from cache
-            songSearchResultAdapter.updateSearchResult(songSearchQuery.get(currSearchQuery));
-            artistSearchResultAdapter.setArtistNameList(artistSearchQuery.get(currSearchQuery));
+
             //Update adapter view
             notifyRecyclerDataInsertedChanged(RECYCLER_TYPE.SEARCH_SONG);
             notifyRecyclerDataInsertedChanged(RECYCLER_TYPE.SEARCH_ARTIST);
@@ -334,8 +351,8 @@ public class SearchFragment extends Fragment implements TextWatcher{
         //Add the result into the adapter list
         for(JsonElement artistInfo : queryArtistResult){
              artistInfo.getAsJsonObject().entrySet().forEach(entry -> {
-                 artistSearchResultAdapter.addArtist(entry.getKey());
-                 artistSearchResultAdapter.addArtistSearchResult(entry.getValue());
+                 artistSearchResultAdapter.addArtist(
+                         new SearchArtist(entry.getKey(), entry.getValue()));
              });
         }
 
@@ -400,7 +417,6 @@ public class SearchFragment extends Fragment implements TextWatcher{
             if (artistSearchResultAdapter.getItemCount() != 0) {
                 artistQueryLayout.setVisibility(View.VISIBLE);
                 welcomeMessageLayout.setVisibility(View.GONE);
-                cacheArtistQuery(currSearchQuery, artistSearchResultAdapter.getQueryArtistsNameList());
             } else {
                 artistQueryLayout.setVisibility(View.GONE);
             }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
+import com.example.thai.dotify.Utilities.SearchArtist;
 import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
@@ -18,13 +19,11 @@ import java.util.Set;
 public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapter.ItemsViewHolder> {
 
     private RecyclerViewClickListener onItemClickedListener;
-    private ArrayList<JsonElement> searchArtistResult;
-    private ArrayList<String> artistNameList;
+    private ArrayList<SearchArtist> artistList;
 
     //Default constructor
     public SearchArtistAdapter(RecyclerViewClickListener listener){
-        artistNameList = new ArrayList<>();
-        searchArtistResult = new ArrayList<>();
+        artistList = new ArrayList<>();
         onItemClickedListener = listener;
     }
 
@@ -40,21 +39,12 @@ public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapte
     //Set the name to display
     @Override
     public void onBindViewHolder(@NonNull ItemsViewHolder holder, int position) {
-        holder.setViewText(artistNameList.get(position));
+        holder.setViewText(artistList.get(position).getArtistName());
     }
 
     //Clear out all of the previous result
     public void newResult(){
-        artistNameList.clear();
-        searchArtistResult.clear();
-    }
-
-    /**
-     * Update the curret search result for artist to a new one
-     * @param newResult
-     */
-    public void setSearchArtistResult(ArrayList<JsonElement> newResult){
-        searchArtistResult = newResult;
+        artistList.clear();
     }
 
     /**
@@ -63,43 +53,25 @@ public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapte
      * @param newResult new result
      *
      */
-    public void setArtistNameList(ArrayList<String> newResult){
-        artistNameList = newResult;
-    }
-
-    /**
-     * Get the search result for artist
-     */
-    public ArrayList<JsonElement> getQueryArtistResult(){
-        return searchArtistResult;
+    public void setArtistNameList(ArrayList<SearchArtist> newResult){
+        artistList = newResult;
     }
 
     /**
      * Get the current list of artist name
      * @return Arraylist of artist name
      */
-    public ArrayList<String> getQueryArtistsNameList(){
-        return artistNameList;
+    public ArrayList<SearchArtist> getQueryArtistsList(){
+        return artistList;
     }
 
-    public void addArtistSearchResult(JsonElement result){
-        searchArtistResult.add(result);
-    }
 
     /**
      * Add an artist to the name list
-     * @param artistName
+     * @param artist
      */
-    public void addArtist(String artistName){
-        artistNameList.add(artistName);
-    }
-
-    /**
-     * Set the list of artist
-     * @param artistName
-     */
-    public void setArtistNameList(Set<String> artistName){
-        artistNameList = new ArrayList<>(artistName);
+    public void addArtist(SearchArtist artist){
+        artistList.add(artist);
     }
 
     /**
@@ -112,8 +84,8 @@ public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapte
      * @param position the position of the artist
      *
      */
-    public String getArtistName(int position){
-        return artistNameList.get(position);
+    public SearchArtist getArtist(int position){
+        return artistList.get(position);
     }
 
     /**
@@ -122,11 +94,11 @@ public class SearchArtistAdapter extends RecyclerView.Adapter<SearchArtistAdapte
      */
     @Override
     public int getItemCount() {
-        if(artistNameList == null){
+        if(artistList == null){
             return 0;
         }
         else {
-            return artistNameList.size();
+            return artistList.size();
         }
     }
 

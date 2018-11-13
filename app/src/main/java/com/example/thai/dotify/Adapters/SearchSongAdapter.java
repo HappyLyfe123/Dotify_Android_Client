@@ -49,7 +49,7 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
      */
     @Override
     public void onBindViewHolder(@NonNull ItemsViewHolder holder, int position) {
-        holder.setViewText(getSongName(position));
+        holder.setViewText(getSongName(position), getArtistName(position), getAlbumName(position));
     }
     
     /**
@@ -115,17 +115,17 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
     }
 
     /**
-     * Get song artist
+     * Get song artist name
      * @return
      */
-    public String getArtist(int position){
+    public String getArtistName(int position){
         return searchResultsSongs.get(position).getArtist();
     }
 
     /**
      * Get song album
      */
-    public String getAlbum(int position){
+    public String getAlbumName(int position){
         return searchResultsSongs.get(position).getAlbum();
     }
 
@@ -148,6 +148,7 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
             implements View.OnClickListener{
 
         private TextView songNameTextView;
+        private TextView artistAlbumInfoTextView;
         private ImageView addToPlaylistView;
         private RecyclerViewClickListener itemClickedListener;
 
@@ -157,7 +158,11 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
 
             // Initialize the text from the search result item
             songNameTextView = (TextView) view.findViewById(R.id.search_result_item_recycler_view);
+            artistAlbumInfoTextView = (TextView) view.findViewById(R.id.artist_album_info_text_view);
             addToPlaylistView = (ImageView) view.findViewById(R.id.search_add_to_play_list_image_view);
+
+            //
+            artistAlbumInfoTextView.setVisibility(View.VISIBLE);
 
             //Set listen for the text view
             songNameTextView.setOnClickListener(this);
@@ -169,8 +174,9 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
          * Sets the text for the current item in the recycler view
          * @param songName
          */
-        public void setViewText(String songName) {
-            songNameTextView.setText(songName);
+        public void setViewText(String songName, String artsitName, String albumName) {
+            songNameTextView.setText(String.format("%s", songName));
+            artistAlbumInfoTextView.setText(String.format("%s \u2022 %s", artsitName, albumName));
         }
 
 
