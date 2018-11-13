@@ -25,7 +25,14 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
         onItemClickedListener = listener;
     }
 
-    //Set the view layout to be display
+    /**
+     *
+     * Set the view layout to be display
+     *
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @NonNull
     @Override
     public ItemsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,7 +41,12 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
         return new SearchSongAdapter.ItemsViewHolder(itemView, onItemClickedListener);
     }
 
-    //Set the text to be display
+    /**
+     * Set the text to be display
+     *
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull ItemsViewHolder holder, int position) {
         holder.setViewText(getSongName(position));

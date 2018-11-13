@@ -23,7 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:layout_gravity="center_vertical"
-        app:srcCompat="@drawable/search_add_to_playlist" />
+        app:srcCompat="@drawable/search_add_to_playlist"/>
+
 
 
 
