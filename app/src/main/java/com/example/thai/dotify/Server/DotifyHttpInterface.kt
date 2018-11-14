@@ -73,11 +73,11 @@ interface DotifyHttpInterface {
             @Header("username") username: String
     ): Call<ResponseBody>
 
-    @GET("playlistpage?")
+    @GET("playlistpage")
     fun getSongsFromPlaylist(
             @Header("appkey") appKey: String,
-            @Query("username") username: String,
-            @Query("playlist") playlistName: String)
+            @Header("username") username: String,
+            @Header("playlist") playlistName: String)
             :Call<ResponseBody>
 
     @DELETE("playlist")
@@ -95,12 +95,13 @@ interface DotifyHttpInterface {
             @Field("image") imageByteArray : String
     ) : Call<ResponseBody>
 
-    @PUT("playlistpage?")
+    @FormUrlEncoded
+    @PUT("playlistpage")
     fun addSongToPlaylist(
             @Header("appkey") appKey: String,
-            @Query("username") username: String,
-            @Query("playlist") playlistName: String,
-            @Query("songid") songID : String
+            @Field("username") username: String,
+            @Field("guid") songGUID : String,
+            @Field("playlist") playlistName: String
     ) : Call<ResponseBody>
 
     @GET("search")

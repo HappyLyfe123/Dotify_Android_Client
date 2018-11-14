@@ -265,7 +265,7 @@ public class MainActivityContainer extends AppCompatActivity
     }
 
     @Override
-    public void onSongResultClicked(String songID) {
+    public void onSongClicked(String songGUID) {
 
     }
 

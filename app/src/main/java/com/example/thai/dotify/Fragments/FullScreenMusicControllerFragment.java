@@ -196,7 +196,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
                 getString(R.string.appKey),
                 user.getUsername(),
                 playlistName,
-                musicController.getCurrentSongID()
+                musicController.getCurrentSongGUID()
         );
         addSongToPlaylist.enqueue(new Callback<ResponseBody>() {
             /**

@@ -93,7 +93,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
      * Listener for the Fragment to tell the main activity to change fragments
      */
     public interface OnFragmentInteractionListener{
-        void onSongResultClicked(String song);
+        void onSongClicked(String songGUID);
         void onArtistResultClicked(String artistName);
 
         PlaylistsAdapter getPlaylistAdapter();
@@ -174,7 +174,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
             public void onItemClick(View v, int songPosition) {
                 //The user want to play the selected song
                 if(v.getId() == R.id.search_result_item_recycler_view) {
-                    onFragmentInteractionListener.onSongResultClicked(songSearchResultAdapter.getSongGUID(songPosition));
+                    onFragmentInteractionListener.onSongClicked(songSearchResultAdapter.getSongGUID(songPosition));
                 }
                 //The user want to add the song to a playlist
                 else if(v.getId() == R.id.search_add_to_play_list_image_view){

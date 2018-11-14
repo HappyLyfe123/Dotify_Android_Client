@@ -189,7 +189,7 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
                     ResponseBody mySong = response.body();
                     try {
                         JsonObject currSongList= JSONUtilities.ConvertStringToJSON(mySong.string());
-                        JsonArray songsList = currSongList.getAsJsonArray("songs");
+                        JsonArray songsList = currSongList.getAsJsonArray("songList");
                         for(int x = 0; x < songsList.size(); x++){
                             songsListAdapter.insertSongToSongsList(x, gson.fromJson(
                                     songsList.get(x), DotifySong.class
@@ -286,7 +286,7 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
     public void onItemClick(View v, int position) {
         //The delete icon is selected
         if(v.getId() == R.id.song_info_song_delete_icon){
-            deleteSongFromPlaylist(songsListAdapter.getSongID(position), position);
+            deleteSongFromPlaylist(songsListAdapter.getSongGUID(position), position);
         }
         //The user picked a song
         else{

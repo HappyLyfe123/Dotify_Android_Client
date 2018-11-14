@@ -139,22 +139,22 @@ public class SentToServerRequest {
 
     }
 
-    public Call<ResponseBody> addSongToPlaylist(String playlistName, String songID){
+    public Call<ResponseBody> addSongToPlaylist(String playlistName, String guid){
         Call<ResponseBody> addSongToPlaylist = dotifyHttpInterface.addSongToPlaylist(
                 appKey,
                 username,
-                playlistName,
-                songID
+                guid,
+                playlistName
         );
         return addSongToPlaylist;
     }
 
-    public Call<ResponseBody> deleteSongFromPlaylist(String playlistName, String songID){
+    public Call<ResponseBody> deleteSongFromPlaylist(String playlistName, String songGUID){
         Call<ResponseBody> deleteSong = dotifyHttpInterface.deleteSongFromPlaylist(
                 appKey,
                 username,
-                playlistName,
-                songID
+                songGUID,
+                playlistName
         );
         return deleteSong;
     }

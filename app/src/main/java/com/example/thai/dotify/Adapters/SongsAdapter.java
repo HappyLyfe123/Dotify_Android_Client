@@ -57,7 +57,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
     @Override
     public void onBindViewHolder(@NonNull ItemsViewHolder holder, int position) {
         DotifySong song = songsList.get(position);
-        holder.setSongTitle(song.getSong());
+        holder.setSongTitle(song.getSongTitle());
         holder.setArtistName(song.getArtist());
         holder.setAlbumName(song.getAlbum());
 
@@ -97,8 +97,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
      * @param position the position of the song in the map
      * @return the song id
      */
-    public String getSongID(int position){
-        return songsList.get(position).getSongid();
+    public String getSongGUID(int position){
+        return songsList.get(position).getSongGUID();
     }
 
     /**
