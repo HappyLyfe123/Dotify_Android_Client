@@ -59,18 +59,19 @@ interface DotifyHttpInterface {
             : Call<DotifyUser>
 
 
+    @FormUrlEncoded
     @PUT("playlist")
     fun createPlaylist(
             @Header("appKey") appKey: String,
-            @Query("username") username: String,
-            @Query("playlist") playlist: String)
+            @Field("username") username: String,
+            @Field("playlist") playlist: String)
             : Call<ResponseBody>
 
-    @GET("playlist?")
+    @GET("playlist")
     fun getPlaylistsList(
             @Header("appkey") appKey: String,
-            @Query("username") username: String
-    ): Call<List<String>>
+            @Header("username") username: String
+    ): Call<ResponseBody>
 
     @GET("playlistpage?")
     fun getSongsFromPlaylist(

@@ -79,8 +79,8 @@ public class GetFromServerRequest {
      * Method that gets the playlists
      * @return The string of playlists
      */
-    public Call<List<String>> getUserplaylistsList(){
-        Call<List<String>> getPlaylistsList = dotifyHttpInterface.getPlaylistsList(
+    public Call<ResponseBody> getUserplaylistsList(){
+        Call<ResponseBody> getPlaylistsList = dotifyHttpInterface.getPlaylistsList(
                 appKey,
                 username
         );

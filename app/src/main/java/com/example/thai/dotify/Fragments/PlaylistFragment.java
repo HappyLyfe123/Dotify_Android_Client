@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.thai.dotify.Server.Dotify;
+import com.example.thai.dotify.Utilities.JSONUtilities;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Adapters.PlaylistsAdapter;
 import com.example.thai.dotify.R;
@@ -24,7 +25,11 @@ import com.example.thai.dotify.RecyclerViewClickListener;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Server.DotifyHttpInterface;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -187,19 +192,27 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
      * @param
      */
     private void displayPlaylistsList(){
-        Call<List<String>> getPlaylistsList = getFromServerRequest.getUserplaylistsList();
-        getPlaylistsList.enqueue(new Callback<List<String>>() {
+        Call<ResponseBody> getPlaylistsList = getFromServerRequest.getUserplaylistsList();
+        getPlaylistsList.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<List<String>> call, retrofit2.Response<List<String>> response) {
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
                 int respCode = response.code();
                 if (respCode == Dotify.OK) {
-                    Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
-                    //gets a list of strings of playlist names
-                    List<String> userPlaylist = response.body();
-                    for(String playListName : userPlaylist){
-                        playlistsAdapter.insertPlaylistToPlaylistsList(playListName);
+                    try {
+                        Log.d(TAG, "getPlaylist-> onResponse: Success Code : " + response.code());
+                        //gets a list of strings of playlist names
+                        String serverResponse = response.body().string();
+                        JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
+                        JsonArray playlists = jsonResponse.getAsJsonArray("playlists");
+
+                        for (JsonElement playlistTitle : playlists) {
+                            playlistsAdapter.insertPlaylistToPlaylistsList(playlistTitle.getAsString());
+                        }
+
+                        updateInsertPlaylistsList();
+                    }catch(IOException ex) {
+                        Log.d(TAG, "getPlaylist -> IO Error\nError Message:");
                     }
-                    updateInsertPlaylistsList();
 
                 } else {
                     //If unsuccessful, show the response code
@@ -209,12 +222,10 @@ public class PlaylistFragment extends Fragment implements View.OnClickListener,
 
             //If something is wrong with our request to the server, goes to this method
             @Override
-            public void onFailure(Call<List<String>> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d(TAG, "Invalid failure: onFailure");
             }
         });
-
-        updateInsertPlaylistsList();
     }
 
     /***
