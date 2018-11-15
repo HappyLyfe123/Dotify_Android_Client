@@ -58,7 +58,7 @@ public class MusicService extends IntentService {
             case LOAD_PEER:{
                 Log.d(TAG, "Creating a peer object");
                 try {
-                    clientSocket = new DatagramSocket();
+                    clientSocket = new DatagramSocket(40000);
                     serverAddress = Inet4Address.getByName("www.dotify.online");
 
                     // Create the request to open a peer in the server
@@ -123,30 +123,48 @@ public class MusicService extends IntentService {
                             responseBuffer,
                             responseBuffer.length
                     );
-                    // The output stream for playing music
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
                     clientSocket.receive(fileSizePacket);
                     ByteBuffer byteBuffer = ByteBuffer.wrap(responseBuffer);
                     int fileSize = byteBuffer.getInt();
 
-                    // Create a buffer that will store the bytes of the music
-                    byte[] musicBuffer = new byte[fileSize];
-                    DatagramPacket musicPacket = new DatagramPacket(
+                    // Initialize the memory space to store the file contents
+                    byte[] musicBuffer = new byte[30000];
+                    ByteArrayOutputStream musicOS = new ByteArrayOutputStream();
+                    DatagramPacket musicChunkPacket = new DatagramPacket(
                             musicBuffer,
                             musicBuffer.length
                     );
-                    // Block until we get the reply for the song
-                    clientSocket.receive(musicPacket);
 
-                    // Write the received file
-                    outputStream.write(musicBuffer);
+                    int burst = 1;
+                    int burstSize = 10000;
+
+                    for (int i = 0; i < fileSize; i += burstSize*burst) {
+                        byte[] musicChunkRequest = ("" + i).getBytes();
+                        DatagramPacket musicChunkRequestPacket = new DatagramPacket(
+                                musicChunkRequest,
+                                musicChunkRequest.length,
+                                serverAddress,
+                                streamPort
+                        );
+                        clientSocket.send(musicChunkRequestPacket);
+
+                        for (int j = 0; j < burst; j++) {
+                            Log.d(TAG, "Inner Iteration: " + i);
+                            if (i + j * burstSize > fileSize) {
+                                break;
+                            }
+                            clientSocket.receive(musicChunkPacket);
+                            musicOS.write(musicBuffer);
+                        }
+                        Log.d(TAG, "Outer Iteration: " + i);
+                    }
 
                     // Create the temporary file to read from
                     File tempMP3 = File.createTempFile("temp", "mp3", this.getCacheDir());
                     tempMP3.deleteOnExit();
                     FileOutputStream fos = new FileOutputStream(tempMP3);
-                    fos.write(outputStream.toByteArray());
+                    fos.write(musicOS.toByteArray());
                     fos.close();
 
                     mediaPlayer.reset();
