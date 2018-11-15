@@ -111,6 +111,11 @@ public class MainActivityContainer extends AppCompatActivity
         miniMusicControllerFragment = miniMusicControllerFragment.newInstance();
 
         createBottomNavigationView();
+
+        // Send a request to initialize a peer the current Android Client Session
+        Intent musicIntent = new Intent(this, MusicService.class);
+        musicIntent.setAction(MusicService.LOAD_PEER);
+        startService(musicIntent);
     }
 
     /**
@@ -119,10 +124,6 @@ public class MainActivityContainer extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        // Send a request to initialize a peer the current Android Client Session
-        Intent musicIntent = new Intent(this, MusicService.class);
-        musicIntent.setAction(MusicService.LOAD_PEER);
-        startService(musicIntent);
     }
 
 
