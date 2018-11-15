@@ -16,13 +16,18 @@ import android.widget.TextView;
 
 
 import com.example.thai.dotify.Adapters.PlaylistsAdapter;
-import com.example.thai.dotify.Adapters.SearchSongAdapter;
+import com.example.thai.dotify.Adapters.SearchAlbumAdapter;
+import com.example.thai.dotify.Adapters.SearchArtistSongAdapter;
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
 import com.example.thai.dotify.Server.Dotify;
+import com.example.thai.dotify.Server.SearchArtistSongResult;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+
+import java.util.ArrayList;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -44,14 +49,18 @@ public class SongsByArtistFragment extends Fragment {
     private static GetFromServerRequest getFromServerRequest;
     private TextView titleTextView;
     private RecyclerView songListRecycleView;
+    private RecyclerView albumListRecyclerView;
     private ImageButton backButton;
     private String artistName;
-    private SearchSongAdapter songsListAdapter;
     private AlertDialog currDialogBox;
     private RecyclerView selectPlaylistList;
     private PlaylistsAdapter currPlaylistAdapter;
+    private SearchArtistSongAdapter songsListAdapter;
+    private SearchAlbumAdapter albumSearchResultAdapter;
     private OnFragmentInteractionListener onFragmentInteractionListener;
     private static JsonElement artistInfo;
+
+
 
 
     /**
@@ -90,7 +99,6 @@ public class SongsByArtistFragment extends Fragment {
         SongsByArtistFragment fragment = new SongsByArtistFragment();
         Bundle args = new Bundle();
         args.putString("artistName", artistName);
-        System.out.println(artistName);
         sentToServerRequest = sentRequest;
         getFromServerRequest = getRequest;
         artistInfo = currArtistInfo;
@@ -115,13 +123,24 @@ public class SongsByArtistFragment extends Fragment {
         backButton = view.findViewById(R.id.song_list_back_image_button);
         titleTextView = (TextView) view.findViewById(R.id.song_list_title_text_view);
         songListRecycleView = (RecyclerView) view.findViewById(R.id.song_list_recycle_view);
+        albumListRecyclerView = (RecyclerView) view.findViewById(R.id.album_list_recycler_view);
+
+        //Enable album list recycler view
+        albumListRecyclerView.setVisibility(View.VISIBLE);
 
         //Display all of the items into the recycler view
         RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext());
+        RecyclerView.LayoutManager albumLayoutManager = new LinearLayoutManager(getContext());
+
+        // Recycler view that controls displaying song
         songListRecycleView.setLayoutManager(songLayoutManager);
         songListRecycleView.setItemAnimator(new DefaultItemAnimator());
+        // Recycler view that controls displaying album
+        albumListRecyclerView.setLayoutManager(albumLayoutManager);
+        albumListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
         //Set adapter
-        songsListAdapter = new SearchSongAdapter(new RecyclerViewClickListener() {
+        songsListAdapter = new SearchArtistSongAdapter(new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View v, int songPosition) {
                 if(v.getId() == R.id.search_result_item_recycler_view) {
@@ -175,10 +194,12 @@ public class SongsByArtistFragment extends Fragment {
                 onFragmentInteractionListener.backButtonPressed();
             }
         });
+
+
+
         setFragmentTitle();
         displaySongs();
         songListRecycleView.setAdapter(songsListAdapter);
-
         // Inflate the layout for this fragment
         return view;
     }
@@ -204,6 +225,16 @@ public class SongsByArtistFragment extends Fragment {
      * Display all of the song by the artist
      */
     private void displaySongs(){
+        Gson gson = new Gson();
+        JsonElement albumInfo = artistInfo.getAsJsonObject().get("albumList");
+        songsListAdapter.setArtistName(artistName);
+        for(JsonElement currAlbum : albumInfo.getAsJsonArray()){
+
+            for(JsonElement songInfo : currAlbum.getAsJsonObject().get("songList").getAsJsonArray()) {
+                songsListAdapter.insertSearchResultItem(gson.fromJson(
+                        songInfo, SearchArtistSongResult.class));
+            }
+        }
     }
 
     /**

@@ -175,13 +175,13 @@ public class MainActivityContainer extends AppCompatActivity
                 // Set the current music controller for the FullScreenMusicControllerFragment
                 fullScreenMusicControllerFragment.setMusicController(musicController);
                 // set the fragment to be displayed
-                fragmentTransaction.replace(R.id.main_display_frame, fullScreenMusicControllerFragment);
+                fragmentTransaction.replace(mainDisplayLayout.getId(), fullScreenMusicControllerFragment);
                 break;
             case SONGS_LIST_PAGE:
-                fragmentTransaction.replace(R.id.main_display_frame, songListScreenFragment);
+                fragmentTransaction.replace(mainDisplayLayout.getId(), songListScreenFragment);
                 break;
             case SONGS_BY_ARTIST:
-                fragmentTransaction.replace(R.id.main_display_frame, songsByArtistFragment);
+                fragmentTransaction.replace(mainDisplayLayout.getId(), songsByArtistFragment);
                 break;
             case BACK_BUTTON:
                 getFragmentManager().popBackStackImmediate();
@@ -270,18 +270,13 @@ public class MainActivityContainer extends AppCompatActivity
     }
 
     @Override
-    public void songClicked(String songID) {
-
-    }
-
-    @Override
     public void backButtonPressed(){
         startFragment(PlaylistFragmentType.BACK_BUTTON, false, false);
     }
 
     @Override
     public void onSongClicked(String songGUID) {
-
+        System.out.println(songGUID);
     }
 
     @Override

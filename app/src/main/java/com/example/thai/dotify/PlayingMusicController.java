@@ -57,7 +57,7 @@ public class PlayingMusicController {
                 // Retrieve the song to request from the server
                 DotifySong requestSong = songs[0];
                 // Turn the request into bytes
-                byte[] requestBytes = ("x" + requestSong.getSongGUID()).getBytes();
+                byte[] requestBytes = ("x" + requestSong.getGuid()).getBytes();
 
                 // Create the Packet to send to the server
                 DatagramPacket sendPacket = new DatagramPacket(
@@ -167,7 +167,7 @@ public class PlayingMusicController {
      * @return
      */
     public String getCurrentSongGUID() {
-        return songList.get(currSongPosition).getSongGUID();
+        return songList.get(currSongPosition).getGuid();
     }
 
     public void requestCurrentSong() {

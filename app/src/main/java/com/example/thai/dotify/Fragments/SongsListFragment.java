@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -74,7 +75,7 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
      * Listener to tell the main container to switch fragments
      */
     public interface OnFragmentInteractionListener{
-        void songClicked(String songGUID);
+        void onSongClicked(String songGUID);
         void backButtonPressed();
     }
 
@@ -192,8 +193,7 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
                         JsonArray songsList = currSongList.getAsJsonArray("songList");
                         for(int x = 0; x < songsList.size(); x++){
                             songsListAdapter.insertSongToSongsList(x, gson.fromJson(
-                                    songsList.get(x), DotifySong.class
-                            ));
+                                    songsList.get(x), DotifySong.class));
                         }
                         notifyRecyclerDataInsertedChanged(0, songsList.size());
                     } catch (Exception e) {
@@ -252,7 +252,6 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
         songsListAdapter.notifyDataSetChanged();
     }
 
-
     //OnClickListener
     @Override
     public void onClick(View v) {
@@ -285,11 +284,11 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
     public void onItemClick(View v, int position) {
         //The delete icon is selected
         if(v.getId() == R.id.song_info_song_delete_icon){
-            deleteSongFromPlaylist(songsListAdapter.getSong(position).getSongGUID(), position);
+            deleteSongFromPlaylist(songsListAdapter.getSong(position).getGuid(), position);
         }
         //The user picked a song
         else{
-
+            onFragmentInteractionListener.onSongClicked(songsListAdapter.getSong(position).getGuid());
         }
 
     }
