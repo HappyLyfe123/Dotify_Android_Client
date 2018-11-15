@@ -95,7 +95,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
     public interface OnFragmentInteractionListener{
         void onSongClicked(String songGUID);
         void onArtistResultClicked(String artistName, JsonElement currArtistInfo);
-
+        void onAlbumResultClicked(String albumName, String artistName, JsonArray albumSongsList);
         PlaylistsAdapter getPlaylistAdapter();
     }
 
@@ -231,7 +231,8 @@ public class SearchFragment extends Fragment implements TextWatcher{
         albumSearchResultAdapter = new SearchAlbumAdapter(new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-
+                onFragmentInteractionListener.onAlbumResultClicked(albumSearchResultAdapter.getAlbumName(position),
+                        albumSearchResultAdapter.getArtistName(position), albumSearchResultAdapter.getSongList(position));
             }
         });
 
@@ -366,9 +367,14 @@ public class SearchFragment extends Fragment implements TextWatcher{
      * Display album query result
      */
     private void displaySearchResultAlbums(JsonArray queryAlbumResult){
+
         for(JsonElement albumInfo : queryAlbumResult){
             albumInfo.getAsJsonObject().entrySet().forEach(entry -> {
-                albumSearchResultAdapter.addAlbumName(entry.getKey());
+                String albumName = entry.getKey();
+                String artistName = entry.getValue().getAsJsonObject().get("artist").toString();
+                JsonArray albumSongList = entry.getValue().getAsJsonObject().get("songList").getAsJsonArray();
+                albumSearchResultAdapter.insertAlbum(albumName, artistName.substring(1, artistName.length() - 1)
+                        , albumSongList);
             });
         }
         //Update adapter view

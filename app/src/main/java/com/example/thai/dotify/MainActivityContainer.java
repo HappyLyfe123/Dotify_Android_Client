@@ -20,12 +20,14 @@ import com.example.thai.dotify.Fragments.MiniMusicControllerFragment;
 import com.example.thai.dotify.Fragments.PlaylistFragment;
 import com.example.thai.dotify.Fragments.ProfileInfoFragment;
 import com.example.thai.dotify.Fragments.SearchFragment;
+import com.example.thai.dotify.Fragments.SongInAlbumFragment;
 import com.example.thai.dotify.Fragments.SongsByArtistFragment;
 import com.example.thai.dotify.Fragments.SongsListFragment;
 import com.example.thai.dotify.Services.MusicService;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import okhttp3.ResponseBody;
@@ -38,7 +40,8 @@ import retrofit2.Response;
  */
 public class MainActivityContainer extends AppCompatActivity
         implements PlaylistFragment.OnFragmentInteractionListener, SearchFragment.OnFragmentInteractionListener,
-    SongsListFragment.OnFragmentInteractionListener, SongsByArtistFragment.OnFragmentInteractionListener{
+    SongsListFragment.OnFragmentInteractionListener, SongsByArtistFragment.OnFragmentInteractionListener,
+    SongInAlbumFragment.OnFragmentInteractionListener{
 
     private SearchFragment searchFragment;
     private PlaylistFragment playlistFragment;
@@ -48,6 +51,7 @@ public class MainActivityContainer extends AppCompatActivity
     private MiniMusicControllerFragment miniMusicControllerFragment;
     private SongsListFragment songListScreenFragment;
     private SongsByArtistFragment songsByArtistFragment;
+    private SongInAlbumFragment songInAlbumFragment;
     private BottomNavigationView bottomNavigationView;
     private FrameLayout miniMusicControllerLayout;
     private FrameLayout mainDisplayLayout;
@@ -70,7 +74,8 @@ public class MainActivityContainer extends AppCompatActivity
         SONGS_LIST_PAGE,
         FULL_SCREEN_MUSIC,
         BACK_BUTTON,
-        SONGS_BY_ARTIST
+        SONGS_BY_ARTIST,
+        SONGS_IN_ALBUM
 
     }
 
@@ -192,6 +197,8 @@ public class MainActivityContainer extends AppCompatActivity
             case SONGS_BY_ARTIST:
                 fragmentTransaction.replace(mainDisplayLayout.getId(), songsByArtistFragment);
                 break;
+            case SONGS_IN_ALBUM:
+                fragmentTransaction.replace(mainDisplayLayout.getId(), songInAlbumFragment);
             case BACK_BUTTON:
                 getFragmentManager().popBackStackImmediate();
                 break;
@@ -283,6 +290,10 @@ public class MainActivityContainer extends AppCompatActivity
         startFragment(PlaylistFragmentType.BACK_BUTTON, false, false);
     }
 
+    /**
+     * A song been selected
+     * @param songGUID the guid of the song
+     */
     @Override
     public void onSongClicked(String songGUID) {
         Intent startSongIntent = new Intent(this, MusicService.class);
@@ -291,12 +302,31 @@ public class MainActivityContainer extends AppCompatActivity
         startService(startSongIntent);
     }
 
+    /**
+     * User select an artist
+     * @param artistName name of the artist
+     * @param currArtistInfo artist information
+     */
     @Override
     public void onArtistResultClicked(String artistName, JsonElement currArtistInfo) {
         songsByArtistFragment = SongsByArtistFragment.newInstance(sentToServerRequest, getFromServerRequest,
                 artistName, currArtistInfo);
         songsByArtistFragment.setOnFragmentInteractionListener(this);
         startFragment(PlaylistFragmentType.SONGS_BY_ARTIST, true, true);
+    }
+
+    /**
+     * The user select on an album
+     * @param albumName name of the album
+     * @param artistName the artist of the album
+     * @param albumSongsList all of the song in the album
+     */
+    @Override
+    public void onAlbumResultClicked(String albumName, String artistName, JsonArray albumSongsList){
+        songInAlbumFragment = SongInAlbumFragment.newInstance(sentToServerRequest, getFromServerRequest,
+                albumName, artistName, albumSongsList);
+        songInAlbumFragment.setOnFragmentInteractionListener(this);
+        startFragment(PlaylistFragmentType.SONGS_IN_ALBUM, true, true);
     }
 
     @Override

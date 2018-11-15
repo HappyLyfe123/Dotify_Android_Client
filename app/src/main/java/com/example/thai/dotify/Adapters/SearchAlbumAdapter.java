@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
-import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
 
 import java.util.ArrayList;
 
@@ -18,11 +18,13 @@ public class SearchAlbumAdapter extends RecyclerView.Adapter<SearchAlbumAdapter.
 
     private RecyclerViewClickListener onItemClickedListener;
     private ArrayList<String> albumNameList;
-    private ArrayList<JsonElement> searchAlbumResult;
+    private ArrayList<String> artistNameList;
+    private ArrayList<JsonArray> albumSongsList;
 
     public SearchAlbumAdapter(RecyclerViewClickListener listener){
         albumNameList = new ArrayList<>();
-        searchAlbumResult = new ArrayList<>();
+        albumSongsList = new ArrayList<>();
+        artistNameList = new ArrayList<>();
         onItemClickedListener = listener;
     }
 
@@ -39,6 +41,56 @@ public class SearchAlbumAdapter extends RecyclerView.Adapter<SearchAlbumAdapter.
         holder.setViewText(albumNameList.get(position));
     }
 
+    /**
+     * Store album name and songs for that album
+     * @param albumName name of the album
+     * @param songsList all the information about the album
+     */
+    public void insertAlbum(String albumName, JsonArray songsList){
+        albumNameList.add(albumName.substring(1, albumName.length() - 1));
+        albumSongsList.add(songsList);
+    }
+
+    /**
+     * Store album name, artist name and songs for that album
+     */
+    public void insertAlbum(String albumName, String artistName, JsonArray songList){
+        albumNameList.add(albumName);
+        artistNameList.add(artistName);
+        albumSongsList.add(songList);
+    }
+
+    /**
+     * Get the name of the album
+     * @param position the location of where the name located
+     * @return name of the album
+     */
+    public String getAlbumName(int position){
+        return albumNameList.get(position);
+    }
+
+    /**
+     * Get the name of the artist of the album
+     * @param position the location where the name is located
+     * @return artist name
+     */
+    public String getArtistName(int position){
+        return artistNameList.get(position);
+    }
+
+    /**
+     * Get all of the song in the album
+     * @param position the position of where the songs is located
+     * @return all of the songs associated with the album
+     */
+    public JsonArray getSongList(int position){
+        return albumSongsList.get(position);
+    }
+
+    /**
+     * Get the amount of album in the list
+     * @return
+     */
     @Override
     public int getItemCount() {
         return albumNameList.size();
@@ -48,16 +100,9 @@ public class SearchAlbumAdapter extends RecyclerView.Adapter<SearchAlbumAdapter.
      * Clear out all of the previous result
      */
     public void newResult(){
-        searchAlbumResult.clear();
+        albumSongsList.clear();
         albumNameList.clear();
-    }
-
-    /**
-     * Add album to the list
-     * @param name name of the album
-     */
-    public void addAlbumName(String name){
-        albumNameList.add(name);
+        artistNameList.clear();
     }
 
     public class ItemsViewHolder extends RecyclerView.ViewHolder
