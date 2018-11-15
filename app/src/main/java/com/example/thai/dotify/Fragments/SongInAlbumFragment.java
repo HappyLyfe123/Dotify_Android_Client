@@ -14,10 +14,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-
 import com.example.thai.dotify.Adapters.PlaylistsAdapter;
-import com.example.thai.dotify.Adapters.SearchAlbumAdapter;
-import com.example.thai.dotify.Adapters.SearchArtistSongAdapter;
+import com.example.thai.dotify.Adapters.SearchAlbumSongAdapter;
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
 import com.example.thai.dotify.Server.Dotify;
@@ -28,41 +26,26 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
-import java.util.ArrayList;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SongsByArtistFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SongsByArtistFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SongsByArtistFragment extends Fragment {
+public class SongInAlbumFragment extends Fragment {
 
     private static SentToServerRequest sentToServerRequest;
     private static GetFromServerRequest getFromServerRequest;
     private TextView titleTextView;
     private RecyclerView songListRecycleView;
-    private RecyclerView albumListRecyclerView;
     private ImageButton backButton;
-    private String artistName;
     private AlertDialog currDialogBox;
     private RecyclerView selectPlaylistList;
     private PlaylistsAdapter currPlaylistAdapter;
-    private SearchArtistSongAdapter songsListAdapter;
-    private SearchAlbumAdapter albumListAdapter;
+    private SearchAlbumSongAdapter songsListAdapter;
     private OnFragmentInteractionListener onFragmentInteractionListener;
-    private static JsonElement artistInfo;
-
-
-
+    private static JsonArray albumSongList;
+    private String artistName;
+    private String albumName;
 
     /**
      * This interface must be implemented by activities that contain this
@@ -72,7 +55,7 @@ public class SongsByArtistFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void backButtonPressed();
-        void onAlbumResultClicked(String albumName, String artistName, JsonArray albumSongsList);
+        void onSongClicked(String songGUID);
         PlaylistsAdapter getPlaylistAdapter();
     }
 
@@ -86,7 +69,7 @@ public class SongsByArtistFragment extends Fragment {
         this.onFragmentInteractionListener = onFragmentInteractionListener;
     }
 
-    public SongsByArtistFragment() {
+    public SongInAlbumFragment() {
         // Required empty public constructor
     }
 
@@ -96,14 +79,15 @@ public class SongsByArtistFragment extends Fragment {
      *
      * @return A new instance of fragment SongsByArtistFragment.
      */
-    public static SongsByArtistFragment newInstance(SentToServerRequest sentRequest, GetFromServerRequest getRequest,
-                                                    String artistName, JsonElement currArtistInfo) {
-        SongsByArtistFragment fragment = new SongsByArtistFragment();
+    public static SongInAlbumFragment newInstance(SentToServerRequest sentRequest, GetFromServerRequest getRequest,
+                                                    String albumName, String artistName, JsonArray songsList) {
+        SongInAlbumFragment fragment = new SongInAlbumFragment();
         Bundle args = new Bundle();
         args.putString("artistName", artistName);
+        args.putString("albumName", albumName);
         sentToServerRequest = sentRequest;
         getFromServerRequest = getRequest;
-        artistInfo = currArtistInfo;
+        albumSongList = songsList;
         fragment.setArguments(args);
         return fragment;
     }
@@ -113,6 +97,7 @@ public class SongsByArtistFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             artistName = getArguments().getString("artistName");
+            albumName = getArguments().getString("albumName");
         }
     }
 
@@ -122,22 +107,14 @@ public class SongsByArtistFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_song_list, container, false);
         //Disable the edit song button
         view.findViewById(R.id.song_list_edit_song_button).setVisibility(View.GONE);
-        //Enable album list recycler view
-        view.findViewById(R.id.album_linear_layout).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.song_text_view).setVisibility(View.GONE);
 
         backButton = view.findViewById(R.id.song_list_back_image_button);
         titleTextView = (TextView) view.findViewById(R.id.song_list_title_text_view);
         songListRecycleView = (RecyclerView) view.findViewById(R.id.song_list_recycle_view);
-        albumListRecyclerView = (RecyclerView) view.findViewById(R.id.album_list_recycler_view);
 
         //Display all of the items into the recycler view
         RecyclerView.LayoutManager songLayoutManager = new LinearLayoutManager(getContext()){
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        };
-        RecyclerView.LayoutManager albumLayoutManager = new LinearLayoutManager(getContext()){
             @Override
             public boolean canScrollVertically() {
                 return false;
@@ -147,16 +124,13 @@ public class SongsByArtistFragment extends Fragment {
         // Recycler view that controls displaying song
         songListRecycleView.setLayoutManager(songLayoutManager);
         songListRecycleView.setItemAnimator(new DefaultItemAnimator());
-        // Recycler view that controls displaying album
-        albumListRecyclerView.setLayoutManager(albumLayoutManager);
-        albumListRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         //Set adapter
-        songsListAdapter = new SearchArtistSongAdapter(new RecyclerViewClickListener() {
+        songsListAdapter = new SearchAlbumSongAdapter(new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View v, int songPosition) {
                 if(v.getId() == R.id.search_result_item_recycler_view) {
-
+                    onFragmentInteractionListener.onSongClicked(songsListAdapter.getSongGUID(songPosition));
                 }
                 else if(v.getId() == R.id.search_add_to_play_list_image_view){
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -200,13 +174,6 @@ public class SongsByArtistFragment extends Fragment {
 
             }
         });
-        albumListAdapter = new SearchAlbumAdapter(new RecyclerViewClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                onFragmentInteractionListener.onAlbumResultClicked(albumListAdapter.getAlbumName(position),
-                        artistName, albumListAdapter.getSongList(position));
-            }
-        });
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,12 +181,9 @@ public class SongsByArtistFragment extends Fragment {
             }
         });
 
-
-
         setFragmentTitle();
         displayInfo();
         songListRecycleView.setAdapter(songsListAdapter);
-        albumListRecyclerView.setAdapter(albumListAdapter);
         // Inflate the layout for this fragment
         return view;
     }
@@ -227,7 +191,7 @@ public class SongsByArtistFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
+        if (context instanceof SongsByArtistFragment.OnFragmentInteractionListener) {
             onFragmentInteractionListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
@@ -246,24 +210,21 @@ public class SongsByArtistFragment extends Fragment {
      */
     private void displayInfo(){
         Gson gson = new Gson();
-        JsonElement albumInfo = artistInfo.getAsJsonObject().get("albumList");
         songsListAdapter.setArtistName(artistName);
-        for(JsonElement currAlbum : albumInfo.getAsJsonArray()){
-            JsonArray albumSongList = currAlbum.getAsJsonObject().get("songList").getAsJsonArray();
-            String albumName = currAlbum.getAsJsonObject().get("albumTitle").toString();
-            albumListAdapter.insertAlbum(albumName, albumSongList);
-            for(JsonElement songInfo : albumSongList) {
-                songsListAdapter.insertSearchResultItem(gson.fromJson(
-                        songInfo, SearchArtistSongResult.class));
-            }
+        for(JsonElement songInfo : albumSongList) {
+            songsListAdapter.newSong(gson.fromJson(
+                    songInfo, SearchArtistSongResult.class));
         }
+        songsListAdapter.notifyItemRangeInserted(0, albumSongList.size());
+        songsListAdapter.notifyItemRangeChanged(0, albumSongList.size());
+        songsListAdapter.notifyDataSetChanged();
     }
 
     /**
      * Set the title of the page to the artist name
      */
     private void setFragmentTitle(){
-        titleTextView.setText(artistName);
+        titleTextView.setText(albumName);
     }
 
     /**
@@ -290,7 +251,4 @@ public class SongsByArtistFragment extends Fragment {
             }
         });
     }
-
-
-
 }
