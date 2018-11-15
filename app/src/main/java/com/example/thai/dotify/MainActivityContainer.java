@@ -18,18 +18,19 @@ import com.example.thai.dotify.Fragments.MiniMusicControllerFragment;
 import com.example.thai.dotify.Fragments.PlaylistFragment;
 import com.example.thai.dotify.Fragments.ProfileInfoFragment;
 import com.example.thai.dotify.Fragments.SearchFragment;
-import com.example.thai.dotify.Fragments.SongByArtistFragment;
+import com.example.thai.dotify.Fragments.SongsByArtistFragment;
 import com.example.thai.dotify.Fragments.SongsListFragment;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
+import com.google.gson.JsonElement;
 
 /**
  * this object puts together all the parts of the application
  */
 public class MainActivityContainer extends AppCompatActivity
         implements PlaylistFragment.OnFragmentInteractionListener, SearchFragment.OnFragmentInteractionListener,
-    SongsListFragment.OnFragmentInteractionListener, SongByArtistFragment.OnFragmentInteractionListener{
+    SongsListFragment.OnFragmentInteractionListener, SongsByArtistFragment.OnFragmentInteractionListener{
 
     private SearchFragment searchFragment;
     private PlaylistFragment playlistFragment;
@@ -38,7 +39,7 @@ public class MainActivityContainer extends AppCompatActivity
     private CreatePlaylistFragment createPlaylistFragment;
     private MiniMusicControllerFragment miniMusicControllerFragment;
     private SongsListFragment songListScreenFragment;
-    private SongByArtistFragment songByArtistFragment;
+    private SongsByArtistFragment songsByArtistFragment;
     private BottomNavigationView bottomNavigationView;
     private FrameLayout miniMusicControllerLayout;
     private FrameLayout mainDisplayLayout;
@@ -166,7 +167,7 @@ public class MainActivityContainer extends AppCompatActivity
                 fragmentTransaction.replace(R.id.main_display_frame, songListScreenFragment);
                 break;
             case SONGS_BY_ARTIST:
-                fragmentTransaction.replace(R.id.main_display_frame, songByArtistFragment);
+                fragmentTransaction.replace(R.id.main_display_frame, songsByArtistFragment);
                 break;
             case BACK_BUTTON:
                 getFragmentManager().popBackStackImmediate();
@@ -270,10 +271,10 @@ public class MainActivityContainer extends AppCompatActivity
     }
 
     @Override
-    public void onArtistResultClicked(String artistName) {
-        songByArtistFragment = SongByArtistFragment.newInstance(sentToServerRequest, getFromServerRequest,
-                artistName);
-        songByArtistFragment.setOnFragmentInteractionListener(this);
+    public void onArtistResultClicked(String artistName, JsonElement currArtistInfo) {
+        songsByArtistFragment = SongsByArtistFragment.newInstance(sentToServerRequest, getFromServerRequest,
+                artistName, currArtistInfo);
+        songsByArtistFragment.setOnFragmentInteractionListener(this);
         startFragment(PlaylistFragmentType.SONGS_BY_ARTIST, true, true);
 
     }

@@ -94,7 +94,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
      */
     public interface OnFragmentInteractionListener{
         void onSongClicked(String songGUID);
-        void onArtistResultClicked(String artistName);
+        void onArtistResultClicked(String artistName, JsonElement currArtistInfo);
 
         PlaylistsAdapter getPlaylistAdapter();
     }
@@ -223,7 +223,8 @@ public class SearchFragment extends Fragment implements TextWatcher{
             @Override
             public void onItemClick(View v, int position) {
                 String artistName = artistSearchResultAdapter.getArtist(position).getArtistName();
-                onFragmentInteractionListener.onArtistResultClicked(artistName);
+                onFragmentInteractionListener.onArtistResultClicked(artistName,
+                        artistSearchResultAdapter.getArtist(position).getArtistInfo());
             }
         });
 
@@ -264,7 +265,6 @@ public class SearchFragment extends Fragment implements TextWatcher{
             //Update layout view
             changeQueryLayoutStates(RECYCLER_TYPE.SEARCH_SONG);
             changeQueryLayoutStates(RECYCLER_TYPE.SEARCH_ARTIST);
-
 
         }
         else {

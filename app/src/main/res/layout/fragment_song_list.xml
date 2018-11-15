@@ -34,18 +34,20 @@
 
         <Button
             android:id="@+id/song_list_edit_song_button"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:paddingStart="30dp"
             android:background="@android:color/transparent"
             android:text="@string/edit"
             android:textAlignment="center" />
 
         <Button
             android:id="@+id/song_list_cancel_song_button"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:paddingStart="30dp"
             android:background="@android:color/transparent"
             android:text="@string/done"
             android:textAlignment="center"

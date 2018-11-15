@@ -19,17 +19,10 @@ import com.example.thai.dotify.Adapters.PlaylistsAdapter;
 import com.example.thai.dotify.Adapters.SearchSongAdapter;
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
-import com.example.thai.dotify.SearchSongResult;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
-import com.example.thai.dotify.Utilities.JSONUtilities;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -40,12 +33,12 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SongByArtistFragment.OnFragmentInteractionListener} interface
+ * {@link SongsByArtistFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SongByArtistFragment#newInstance} factory method to
+ * Use the {@link SongsByArtistFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SongByArtistFragment extends Fragment {
+public class SongsByArtistFragment extends Fragment {
 
     private static SentToServerRequest sentToServerRequest;
     private static GetFromServerRequest getFromServerRequest;
@@ -58,6 +51,8 @@ public class SongByArtistFragment extends Fragment {
     private RecyclerView selectPlaylistList;
     private PlaylistsAdapter currPlaylistAdapter;
     private OnFragmentInteractionListener onFragmentInteractionListener;
+    private static JsonElement artistInfo;
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -80,7 +75,7 @@ public class SongByArtistFragment extends Fragment {
         this.onFragmentInteractionListener = onFragmentInteractionListener;
     }
 
-    public SongByArtistFragment() {
+    public SongsByArtistFragment() {
         // Required empty public constructor
     }
 
@@ -88,16 +83,17 @@ public class SongByArtistFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment SongByArtistFragment.
+     * @return A new instance of fragment SongsByArtistFragment.
      */
-    public static SongByArtistFragment newInstance(SentToServerRequest sentRequest, GetFromServerRequest getRequest,
-                                                   String artistName) {
-        SongByArtistFragment fragment = new SongByArtistFragment();
+    public static SongsByArtistFragment newInstance(SentToServerRequest sentRequest, GetFromServerRequest getRequest,
+                                                    String artistName, JsonElement currArtistInfo) {
+        SongsByArtistFragment fragment = new SongsByArtistFragment();
         Bundle args = new Bundle();
         args.putString("artistName", artistName);
         System.out.println(artistName);
         sentToServerRequest = sentRequest;
         getFromServerRequest = getRequest;
+        artistInfo = currArtistInfo;
         fragment.setArguments(args);
         return fragment;
     }
@@ -129,6 +125,7 @@ public class SongByArtistFragment extends Fragment {
             @Override
             public void onItemClick(View v, int songPosition) {
                 if(v.getId() == R.id.search_result_item_recycler_view) {
+
                 }
                 else if(v.getId() == R.id.search_add_to_play_list_image_view){
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -207,7 +204,6 @@ public class SongByArtistFragment extends Fragment {
      * Display all of the song by the artist
      */
     private void displaySongs(){
-
     }
 
     /**

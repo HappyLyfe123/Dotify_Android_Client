@@ -74,7 +74,7 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
      * Listener to tell the main container to switch fragments
      */
     public interface OnFragmentInteractionListener{
-        void songClicked(String songID);
+        void songClicked(String songGUID);
         void backButtonPressed();
     }
 
@@ -246,7 +246,6 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
 
     }
 
-
     private void notifyRecyclerDataInsertedChanged(int startPosition, int endPosition) {
         songsListAdapter.notifyItemRangeChanged(startPosition, endPosition);
         songsListAdapter.notifyItemRangeInserted(startPosition, endPosition);
@@ -286,7 +285,7 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
     public void onItemClick(View v, int position) {
         //The delete icon is selected
         if(v.getId() == R.id.song_info_song_delete_icon){
-            deleteSongFromPlaylist(songsListAdapter.getSongGUID(position), position);
+            deleteSongFromPlaylist(songsListAdapter.getSong(position).getSongGUID(), position);
         }
         //The user picked a song
         else{

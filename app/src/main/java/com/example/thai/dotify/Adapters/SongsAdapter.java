@@ -24,7 +24,6 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
     private RecyclerViewClickListener itemsClickListener;
     private boolean deleteIconIsVisible = false;
 
-
     /**
      * constructor with given list of songs
      * @param listener
@@ -64,8 +63,10 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
         // Check whether the boolean for whether the delete icon should be visible is
         // set to true
         if (deleteIconIsVisible) {
+
             holder.setDeleteIconVisible();
         } else {
+
             holder.setDeleteIconGone();
         }
     }
@@ -97,8 +98,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
      * @param position the position of the song in the map
      * @return the song id
      */
-    public String getSongGUID(int position){
-        return songsList.get(position).getSongGUID();
+    public DotifySong getSong(int position){
+        return songsList.get(position);
     }
 
     /**
@@ -109,7 +110,6 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
     public int getItemCount() {
         return songsList.size();
     }
-
 
     /**
      * A View object for each item in a corresponding RecyclerView
@@ -175,18 +175,13 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
             deleteIcon.setVisibility(View.GONE);
         }
 
-        /***
+        /**
          * invoked when a song is selected
          * @param v
          */
         @Override
         public void onClick(View v) {
-            if(v.getId() == R.id.song_info_song_delete_icon){
-                itemsClickListener.onItemClick(v, getAdapterPosition());
-            }
-            else {
-                itemsClickListener.onItemClick(v, getAdapterPosition());
-            }
+            itemsClickListener.onItemClick(v, getAdapterPosition());
         }
     }
 
