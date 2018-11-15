@@ -124,4 +124,9 @@ interface DotifyHttpInterface {
             @Query("songid") songID: String
     ) : Call<ResponseBody>
 
+    @GET("initialize-peer")
+    fun initializePeer(
+            @Header("AppKey") appKey: String
+    ) : Call<ResponseBody>
+
 }

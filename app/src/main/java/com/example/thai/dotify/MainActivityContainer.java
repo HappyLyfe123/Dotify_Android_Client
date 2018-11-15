@@ -1,11 +1,13 @@
 package com.example.thai.dotify;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -20,10 +22,16 @@ import com.example.thai.dotify.Fragments.ProfileInfoFragment;
 import com.example.thai.dotify.Fragments.SearchFragment;
 import com.example.thai.dotify.Fragments.SongsByArtistFragment;
 import com.example.thai.dotify.Fragments.SongsListFragment;
+import com.example.thai.dotify.Services.MusicService;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
 import com.google.gson.JsonElement;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * this object puts together all the parts of the application
@@ -49,6 +57,7 @@ public class MainActivityContainer extends AppCompatActivity
     private Context activityContext;
     private SentToServerRequest sentToServerRequest;
     private GetFromServerRequest getFromServerRequest;
+    private String TAG = MainActivityContainer.class.getSimpleName();
 
 
     //list of pages
@@ -102,6 +111,11 @@ public class MainActivityContainer extends AppCompatActivity
         miniMusicControllerFragment = miniMusicControllerFragment.newInstance();
 
         createBottomNavigationView();
+
+        // Send a request to initialize a peer the current Android Client Session
+        Intent musicIntent = new Intent(this, MusicService.class);
+        musicIntent.setAction(MusicService.LOAD_PEER);
+        startService(musicIntent);
     }
 
     /***
@@ -276,7 +290,6 @@ public class MainActivityContainer extends AppCompatActivity
                 artistName, currArtistInfo);
         songsByArtistFragment.setOnFragmentInteractionListener(this);
         startFragment(PlaylistFragmentType.SONGS_BY_ARTIST, true, true);
-
     }
 
 }

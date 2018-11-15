@@ -30,6 +30,11 @@
         <activity android:name=".StartUpContainer"
             android:label="Start Up Activity">
         </activity>
+
+        <service
+            android:name="com.example.thai.dotify.Services.MusicService"
+            android:stopWithTask="false"
+            />
     </application>
 
 </manifest>

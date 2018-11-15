@@ -133,4 +133,16 @@ public class GetFromServerRequest {
         return getSongsByArtist;
     }
 
+    /**
+     * Method that initializes the peer
+     * @return The method to be enqueued
+     */
+    public Call<ResponseBody> initializePeer() {
+        Call<ResponseBody> initializePeerRequest = dotifyHttpInterface.initializePeer(
+                appKey
+        );
+
+        return initializePeerRequest;
+    }
+
 }
