@@ -111,12 +111,20 @@ public class MainActivityContainer extends AppCompatActivity
         miniMusicControllerFragment = miniMusicControllerFragment.newInstance();
 
         createBottomNavigationView();
+    }
 
+    /**
+     * Initializes a peer for the client to connect to
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
         // Send a request to initialize a peer the current Android Client Session
         Intent musicIntent = new Intent(this, MusicService.class);
         musicIntent.setAction(MusicService.LOAD_PEER);
         startService(musicIntent);
     }
+
 
     /***
      * display playlist, search, and profile fragments via icons
@@ -281,7 +289,10 @@ public class MainActivityContainer extends AppCompatActivity
 
     @Override
     public void onSongClicked(String songGUID) {
-
+        Intent startSongIntent = new Intent(this, MusicService.class);
+        startSongIntent.putExtra("guid", songGUID);
+        startSongIntent.setAction(MusicService.START_SONG);
+        startService(startSongIntent);
     }
 
     @Override
@@ -292,4 +303,10 @@ public class MainActivityContainer extends AppCompatActivity
         startFragment(PlaylistFragmentType.SONGS_BY_ARTIST, true, true);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Kills the peer object since we don't need it anymore because the application is closing
+        MusicService.killPeer();
+    }
 }
