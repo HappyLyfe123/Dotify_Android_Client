@@ -3,10 +3,8 @@ package com.example.thai.dotify.Utilities;
 
 import com.google.gson.JsonElement;
 
-import java.util.ArrayList;
-
 //A class object for the specific artist
-public class SearchArtist {
+public class SearchArtist{
 
     private String artistName;
     private JsonElement artistInfo;
@@ -38,6 +36,7 @@ public class SearchArtist {
     public JsonElement getArtistInfo(){
         return artistInfo;
     }
+
 
 
 }

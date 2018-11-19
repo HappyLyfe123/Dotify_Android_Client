@@ -10,18 +10,23 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
-import com.example.thai.dotify.SearchSongResult;
+import com.example.thai.dotify.SearchResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.ItemsViewHolder>{
 
-    private ArrayList<SearchSongResult> searchResultsSongs;
+    private HashMap<String, ArrayList<SearchResult>> cacheSongsList;
+    private ArrayList<SearchResult> searchSongsResult;
     private RecyclerViewClickListener onItemClickedListener;
-    private ArrayList<String> songNameList = new ArrayList<>();
 
+    /**
+     * Default Constructor
+     * @param listener
+     */
     public SearchSongAdapter(RecyclerViewClickListener listener){
-        this.searchResultsSongs = new ArrayList<>();
+        cacheSongsList = new HashMap<>();
         onItemClickedListener = listener;
     }
 
@@ -51,37 +56,31 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
     public void onBindViewHolder(@NonNull ItemsViewHolder holder, int position) {
         holder.setViewText(getSongName(position), getArtistName(position), getAlbumName(position));
     }
-    
+
     /**
      * Create a new result list
      *
      */
     public void newResult(){
-        searchResultsSongs = new ArrayList<>();
+        searchSongsResult = new ArrayList<>();
     }
 
     /**
-     * Get song list
-     *
-     * @return  Current query songs list
-     *
+     * Return all of the songs from for the current search
+     * @return list of all of the songs
      */
-    public ArrayList<SearchSongResult> getQuerySongsList(){
-        return searchResultsSongs;
-    }
-
-    public void addSongToList(String songName){
-        songNameList.add(songName);
+    public ArrayList<SearchResult> getSearchsongsResult(){
+        return searchSongsResult;
     }
 
     /**
-     * Update old search result to the new search result
+     * Load old search result from cache
      *
-     * @param newSearchResult new result
+     * @param currQueryChars current search characters sequence
      *
      */
-    public void updateSearchResult(ArrayList<SearchSongResult> newSearchResult){
-        searchResultsSongs = newSearchResult;
+    public void updateSearchResultFromCache(String currQueryChars){
+        searchSongsResult = cacheSongsList.get(currQueryChars);
     }
 
     /**
@@ -90,8 +89,17 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
      * @param songInfo new result
      *
      */
-    public void insertSearchResultItem(SearchSongResult songInfo){
-        searchResultsSongs.add(songInfo);
+    public void addSong(SearchResult songInfo, String songName){
+        searchSongsResult.add(songInfo);
+        songInfo.setSongTitle(songName);
+
+    }
+
+    /**
+     * Cache the song result
+     */
+    public void cacheSongsResult(String queryChars){
+        cacheSongsList.put(queryChars, searchSongsResult);
     }
 
     /**
@@ -101,7 +109,7 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
      *
      */
     public String getSongName(int position){
-        return songNameList.get(position);
+        return searchSongsResult.get(position).getSongTitle();
     }
 
     /**
@@ -111,7 +119,7 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
      *
      */
     public String getSongGUID(int position){
-        return searchResultsSongs.get(position).getGuid();
+        return searchSongsResult.get(position).getGuid();
     }
 
     /**
@@ -119,27 +127,33 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
      * @return
      */
     public String getArtistName(int position){
-        return searchResultsSongs.get(position).getArtist();
+        return searchSongsResult.get(position).getArtist();
     }
 
     /**
      * Get song album
      */
     public String getAlbumName(int position){
-        return searchResultsSongs.get(position).getAlbum();
+        return searchSongsResult.get(position).getAlbum();
     }
 
     //Get the number of items in the searchResult list
     @Override
     public int getItemCount() {
-        if (searchResultsSongs == null) {
+        if (searchSongsResult == null) {
             return 0;
         } else{
-            return searchResultsSongs.size();
+            return searchSongsResult.size();
         }
     }
 
-
+    /**
+     * Deallocate memory space back to the OS
+     */
+    public void cleanUp(){
+        searchSongsResult = null;
+        onItemClickedListener = null;
+    }
 
     /**
      * A View object for each item in a corresponding RecyclerView
@@ -178,7 +192,6 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
             songNameTextView.setText(String.format("%s", songName));
             artistAlbumInfoTextView.setText(String.format("%s \u2022 %s", artsitName, albumName));
         }
-
 
         /**
          * Get the item that the user clicked on

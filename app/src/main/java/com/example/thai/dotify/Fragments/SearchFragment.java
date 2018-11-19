@@ -19,9 +19,10 @@ import com.example.thai.dotify.Adapters.PlaylistsAdapter;
 import com.example.thai.dotify.Adapters.SearchAlbumAdapter;
 import com.example.thai.dotify.Adapters.SearchArtistAdapter;
 import com.example.thai.dotify.Adapters.SearchSongAdapter;
+import com.example.thai.dotify.MainActivityContainer;
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
-import com.example.thai.dotify.SearchSongResult;
+import com.example.thai.dotify.SearchResult;
 import com.example.thai.dotify.Server.Dotify;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.JSONUtilities;
@@ -33,9 +34,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
 import okhttp3.ResponseBody;
@@ -54,23 +53,23 @@ public class SearchFragment extends Fragment implements TextWatcher{
     private RecyclerView albumSearchResultRecycler;
     private RecyclerView selectPlaylistList;
     private OnFragmentInteractionListener onFragmentInteractionListener;
-    private SearchSongAdapter songSearchResultAdapter;
-    private SearchArtistAdapter artistSearchResultAdapter;
-    private SearchAlbumAdapter albumSearchResultAdapter;
     private static SentToServerRequest sentToServerRequest;
     private static GetFromServerRequest getFromServerRequest;
-    private PlaylistsAdapter currPlaylistAdapter;
     private String currSearchQuery;
     private LinearLayout songQueryLayout;
     private LinearLayout artistQueryLayout;
     private LinearLayout albumQueryLayout;
     private LinearLayout welcomeMessageLayout;
     private AlertDialog currDialogBox;
-    private Map<String, ArrayList<SearchSongResult>> songSearchQuery;
-    private Map<String, ArrayList<String>> artistSearchQuery;
+    private SearchSongAdapter searchSongResultAdapter;
+    private SearchArtistAdapter searchArtistResultAdapter;
+    private SearchAlbumAdapter searchAlbumResultAdapter;
+    private PlaylistsAdapter currPlaylistAdapter;
+    private Set<String> searchQueryCache;
 
 
-    private enum RECYCLER_TYPE{
+
+    public enum RECYCLER_TYPE{
         SEARCH_SONG,
         SEARCH_ARTIST,
         SEARCH_ALBUM
@@ -96,6 +95,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
         void onSongClicked(String songGUID);
         void onArtistResultClicked(String artistName, JsonElement currArtistInfo);
         void onAlbumResultClicked(String albumName, String artistName, JsonArray albumSongsList);
+        void updateAdapterView(SearchFragment updateAdapter, MainActivityContainer.DisplayAdapter updateDisplay);
         PlaylistsAdapter getPlaylistAdapter();
     }
 
@@ -109,6 +109,12 @@ public class SearchFragment extends Fragment implements TextWatcher{
         this.onFragmentInteractionListener = onFragmentInteractionListener;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        //Initialize the cache
+        searchQueryCache = new HashSet<>();
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -126,9 +132,8 @@ public class SearchFragment extends Fragment implements TextWatcher{
         albumQueryLayout = (LinearLayout) view.findViewById(R.id.search_album_result_layout);
         welcomeMessageLayout = (LinearLayout) view.findViewById(R.id.search_welcome_layout);
 
+        //Add a listener for the search text box
         searchEditText.addTextChangedListener(this);
-        songSearchQuery = new HashMap<>();
-        artistSearchQuery = new HashMap<>();
 
         //Initialize view layout
         RecyclerView.LayoutManager songSearchLayoutManager = new LinearLayoutManager(getContext()){
@@ -169,12 +174,12 @@ public class SearchFragment extends Fragment implements TextWatcher{
         /**
          * Create the adapters to interact with each recycler view item
          */
-        songSearchResultAdapter = new SearchSongAdapter(new RecyclerViewClickListener() {
+        searchSongResultAdapter = new SearchSongAdapter(new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View v, int songPosition) {
                 //The user want to play the selected song
                 if(v.getId() == R.id.search_result_item_recycler_view) {
-                    onFragmentInteractionListener.onSongClicked(songSearchResultAdapter.getSongGUID(songPosition));
+                    onFragmentInteractionListener.onSongClicked(searchSongResultAdapter.getSongGUID(songPosition));
                 }
                 //The user want to add the song to a playlist
                 else if(v.getId() == R.id.search_add_to_play_list_image_view){
@@ -219,29 +224,41 @@ public class SearchFragment extends Fragment implements TextWatcher{
             }
         });
 
-        artistSearchResultAdapter = new SearchArtistAdapter(new RecyclerViewClickListener() {
+        searchArtistResultAdapter = new SearchArtistAdapter(new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                String artistName = artistSearchResultAdapter.getArtist(position).getArtistName();
+                String artistName = searchArtistResultAdapter.getArtist(position).getArtistName();
                 onFragmentInteractionListener.onArtistResultClicked(artistName,
-                        artistSearchResultAdapter.getArtist(position).getArtistInfo());
+                        searchArtistResultAdapter.getArtist(position).getArtistInfo());
             }
         });
 
-        albumSearchResultAdapter = new SearchAlbumAdapter(new RecyclerViewClickListener() {
+        searchAlbumResultAdapter = new SearchAlbumAdapter(new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                onFragmentInteractionListener.onAlbumResultClicked(albumSearchResultAdapter.getAlbumName(position),
-                        albumSearchResultAdapter.getArtistName(position), albumSearchResultAdapter.getSongList(position));
+                onFragmentInteractionListener.onAlbumResultClicked(searchAlbumResultAdapter.getAlbumName(position),
+                        searchAlbumResultAdapter.getArtistName(position), searchAlbumResultAdapter.getSongList(position));
             }
         });
 
         // Set the Adapters for the recycle views
-        songSearchResultRecycler.setAdapter(songSearchResultAdapter);
-        artistSearchResultRecycler.setAdapter(artistSearchResultAdapter);
-        albumSearchResultRecycler.setAdapter(albumSearchResultAdapter);
+        songSearchResultRecycler.setAdapter(searchSongResultAdapter);
+        artistSearchResultRecycler.setAdapter(searchArtistResultAdapter);
+        albumSearchResultRecycler.setAdapter(searchAlbumResultAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        onFragmentInteractionListener = null;
+        searchQueryCache = null;
+        searchSongResultAdapter.cleanUp();
+        searchSongResultAdapter= null;
+
+        searchArtistResultAdapter = null;
+        searchAlbumResultAdapter = null;
+        super.onDestroy();
     }
 
     @Override
@@ -256,17 +273,11 @@ public class SearchFragment extends Fragment implements TextWatcher{
             songQueryLayout.setVisibility(View.GONE);
             artistQueryLayout.setVisibility(View.GONE);
             albumQueryLayout.setVisibility(View.GONE);
+            return;
         }
-        else if(isSongQueryCached(currSearchQuery) || isArtistQueryCached(currSearchQuery)){
+        if(false){
             //Get the previous result from cache
-
-            //Update adapter view
-            notifyRecyclerDataInsertedChanged(RECYCLER_TYPE.SEARCH_SONG);
-            notifyRecyclerDataInsertedChanged(RECYCLER_TYPE.SEARCH_ARTIST);
-            //Update layout view
-            changeQueryLayoutStates(RECYCLER_TYPE.SEARCH_SONG);
-            changeQueryLayoutStates(RECYCLER_TYPE.SEARCH_ARTIST);
-
+            searchSongResultAdapter.updateSearchResultFromCache(currSearchQuery);
         }
         else {
             sendSearchToServer();
@@ -296,17 +307,34 @@ public class SearchFragment extends Fragment implements TextWatcher{
 
                 try {
                     if(response.code() == Dotify.OK) {
-                        songSearchResultAdapter.newResult();
-                        artistSearchResultAdapter.newResult();
-
+                        //Add the current search query to cache
+                        searchQueryCache.add(currSearchQuery);
                         String serverResponse = response.body().string();
                         JsonObject jsonResponse = JSONUtilities.ConvertStringToJSON(serverResponse);
+                        //Check if the current search query return any result
+                        if(jsonResponse == null){
+                            welcomeMessageLayout.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            welcomeMessageLayout.setVisibility(View.GONE);
+                        }
 
                         //Call the display methods for each category
-                        displaySearchResultSong(jsonResponse.getAsJsonArray("song"));
-                        displaySearchResultArtists(jsonResponse.getAsJsonArray("artist"));
-                        displaySearchResultAlbums(jsonResponse.getAsJsonArray("album"));
-
+                        Thread displaySong = new Thread(()->{
+                            displaySearchResultSong(jsonResponse.getAsJsonArray("song"));
+                            onFragmentInteractionListener.updateAdapterView(getCurrentClass(), MainActivityContainer.DisplayAdapter.SEARCH_SONG_ADAPTER);
+                        });
+                        displaySong.start();
+                        Thread displayArtist = new Thread(() ->{
+                            displaySearchResultArtists(jsonResponse.getAsJsonArray("artist"));
+                            onFragmentInteractionListener.updateAdapterView(getCurrentClass(), MainActivityContainer.DisplayAdapter.SEARCH_ARTIST_ADAPTER);
+                        });
+                        displayArtist.start();
+                        Thread displayAlbum = new Thread(() ->{
+                            displaySearchResultAlbums(jsonResponse.getAsJsonArray("album"));
+                            onFragmentInteractionListener.updateAdapterView(getCurrentClass(), MainActivityContainer.DisplayAdapter.SEARCH_ALBUM_ADAPTER);
+                        });
+                        displayAlbum.start();
                     }
 
                 } catch (IOException ex) {
@@ -322,26 +350,29 @@ public class SearchFragment extends Fragment implements TextWatcher{
     }
 
     /**
+     * Return the current class
+     * @return current class
+     */
+    public SearchFragment getCurrentClass(){
+        return this;
+    }
+
+    /**
      * Display songs query result
      * @param querySongResult - the songs query result
      */
     private void displaySearchResultSong(JsonArray querySongResult){
         Gson gson = new Gson();
-
-        for(JsonElement songInfo : querySongResult){
-            songInfo.getAsJsonObject().entrySet().forEach(entry->{
-                songSearchResultAdapter.addSongToList(entry.getKey());
-                songSearchResultAdapter.insertSearchResultItem(gson.fromJson(
-                        entry.getValue(), SearchSongResult.class));
-            });
-
-
+        if(querySongResult.size() > 0) {
+            searchSongResultAdapter.newResult();
+            for (JsonElement songInfo : querySongResult) {
+                songInfo.getAsJsonObject().entrySet().forEach(entry -> {
+                    searchSongResultAdapter.addSong(gson.fromJson(
+                            entry.getValue(), SearchResult.class), entry.getKey());
+                });
+            }
         }
-        //Add result into adapter
-        //Update adapter view
-        notifyRecyclerDataInsertedChanged(RECYCLER_TYPE.SEARCH_SONG);
-        //Update layout view
-        changeQueryLayoutStates(RECYCLER_TYPE.SEARCH_SONG);
+
     }
 
     /**
@@ -352,15 +383,9 @@ public class SearchFragment extends Fragment implements TextWatcher{
         //Add the result into the adapter list
         for(JsonElement artistInfo : queryArtistResult){
              artistInfo.getAsJsonObject().entrySet().forEach(entry -> {
-                 artistSearchResultAdapter.addArtist(
-                         new SearchArtist(entry.getKey(), entry.getValue()));
+                     searchArtistResultAdapter.addArtist(new SearchArtist(entry.getKey(), entry.getValue()));
              });
         }
-
-        //Update adapter view
-        notifyRecyclerDataInsertedChanged(RECYCLER_TYPE.SEARCH_ARTIST);
-        //Update layout view
-        changeQueryLayoutStates(RECYCLER_TYPE.SEARCH_ARTIST);
     }
 
     /**
@@ -373,35 +398,31 @@ public class SearchFragment extends Fragment implements TextWatcher{
                 String albumName = entry.getKey();
                 String artistName = entry.getValue().getAsJsonObject().get("artist").toString();
                 JsonArray albumSongList = entry.getValue().getAsJsonObject().get("songList").getAsJsonArray();
-                albumSearchResultAdapter.insertAlbum(albumName, artistName.substring(1, artistName.length() - 1)
+                searchAlbumResultAdapter.insertAlbum(albumName, artistName.substring(1, artistName.length() - 1)
                         , albumSongList);
             });
         }
-        //Update adapter view
-        notifyRecyclerDataInsertedChanged(RECYCLER_TYPE.SEARCH_ALBUM);
-        //Update layout view
-        changeQueryLayoutStates(RECYCLER_TYPE.SEARCH_ALBUM);
     }
 
     /**
      * Notify the adapter to change the layout when new item is added in
      */
-    private void notifyRecyclerDataInsertedChanged(RECYCLER_TYPE type) {
+    public void notifyRecyclerDataInsertedChanged(RECYCLER_TYPE type) {
 
         if(type == RECYCLER_TYPE.SEARCH_SONG) {
-            songSearchResultAdapter.notifyItemRangeInserted(0, songSearchResultAdapter.getItemCount());
-            songSearchResultAdapter.notifyItemRangeChanged(0, songSearchResultAdapter.getItemCount());
-            songSearchResultAdapter.notifyDataSetChanged();
+            searchSongResultAdapter.notifyItemRangeInserted(0, searchSongResultAdapter.getItemCount());
+            searchSongResultAdapter.notifyItemRangeChanged(0, searchSongResultAdapter.getItemCount());
+            searchSongResultAdapter.notifyDataSetChanged();
         }
         else if(type == RECYCLER_TYPE.SEARCH_ARTIST) {
-            artistSearchResultAdapter.notifyItemRangeInserted(0, artistSearchResultAdapter.getItemCount());
-            artistSearchResultAdapter.notifyItemRangeChanged(0, artistSearchResultAdapter.getItemCount());
-            artistSearchResultAdapter.notifyDataSetChanged();
+            searchArtistResultAdapter.notifyItemRangeInserted(0, searchArtistResultAdapter.getItemCount());
+            searchArtistResultAdapter.notifyItemRangeChanged(0, searchArtistResultAdapter.getItemCount());
+            searchArtistResultAdapter.notifyDataSetChanged();
         }
         else if(type == RECYCLER_TYPE.SEARCH_ALBUM){
-            albumSearchResultAdapter.notifyItemRangeInserted(0, artistSearchResultAdapter.getItemCount());
-            albumSearchResultAdapter.notifyItemRangeChanged(0, artistSearchResultAdapter.getItemCount());
-            albumSearchResultAdapter.notifyDataSetChanged();
+            searchAlbumResultAdapter.notifyItemRangeInserted(0, searchArtistResultAdapter.getItemCount());
+            searchAlbumResultAdapter.notifyItemRangeChanged(0, searchArtistResultAdapter.getItemCount());
+            searchAlbumResultAdapter.notifyDataSetChanged();
         }
     }
 
@@ -409,28 +430,24 @@ public class SearchFragment extends Fragment implements TextWatcher{
      * Change the layout of the search fragment according to what the user typed in the
      * search text box
      */
-    private void changeQueryLayoutStates(RECYCLER_TYPE type) {
+    public void changeQueryLayoutStates(RECYCLER_TYPE type) {
         if(type == RECYCLER_TYPE.SEARCH_SONG) {
-            if (songSearchResultAdapter.getItemCount() != 0) {
+            if (searchSongResultAdapter.getItemCount() != 0) {
                 songQueryLayout.setVisibility(View.VISIBLE);
-                welcomeMessageLayout.setVisibility(View.GONE);
-                cacheSongQuery(currSearchQuery, songSearchResultAdapter.getQuerySongsList());
             } else {
                 songQueryLayout.setVisibility(View.GONE);
             }
         }
         if(type == RECYCLER_TYPE.SEARCH_ARTIST) {
-            if (artistSearchResultAdapter.getItemCount() != 0) {
+            if (searchArtistResultAdapter.getItemCount() != 0) {
                 artistQueryLayout.setVisibility(View.VISIBLE);
-                welcomeMessageLayout.setVisibility(View.GONE);
             } else {
                 artistQueryLayout.setVisibility(View.GONE);
             }
         }
         if(type == RECYCLER_TYPE.SEARCH_ALBUM){
-            if(albumSearchResultAdapter.getItemCount() != 0){
+            if(searchAlbumResultAdapter.getItemCount() != 0){
                 albumQueryLayout.setVisibility(View.VISIBLE);
-                welcomeMessageLayout.setVisibility(View.GONE);
             } else{
                 albumQueryLayout.setVisibility(View.GONE);
             }
@@ -443,7 +460,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
     private void addSongToPlaylist(int songPosition, int playlistPosition){
 
         Call<ResponseBody> addSongRequest = sentToServerRequest.addSongToPlaylist(currPlaylistAdapter.getPlaylistName(playlistPosition),
-                songSearchResultAdapter.getSongGUID(songPosition));
+                searchSongResultAdapter.getSongGUID(songPosition));
 
         addSongRequest.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -457,37 +474,5 @@ public class SearchFragment extends Fragment implements TextWatcher{
 
             }
         });
-    }
-
-    /**
-     * Checks whether a specific search query's result has been cached for songs
-     * and returns a list of DotifySong objects if it has been cached and null otherwise
-     */
-    private boolean isSongQueryCached(String key) {
-        return songSearchQuery.containsKey(key);
-    }
-
-    /**
-     * Checks whether a specific search query's result has been cached for artists
-     * and returns a list of DotifySong objects if it has been cached and null otherwise
-     */
-    private boolean isArtistQueryCached(String key) {
-        return artistSearchQuery.containsKey(key);
-    }
-
-    /**
-     * Cache song query result with the given string
-     * @param key - the user search query
-     */
-    private void cacheSongQuery(String key, ArrayList<SearchSongResult> results) {
-        songSearchQuery.put(key, results);
-    }
-
-    /**
-     * Cache artist query result with the given string
-     * @param key - the user search query
-     */
-    private void cacheArtistQuery(String key, ArrayList<String> results) {
-        artistSearchQuery.put(key, results);
     }
 }

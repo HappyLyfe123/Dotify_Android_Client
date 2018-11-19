@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.example.thai.dotify.Adapters.PlaylistsAdapter;
+import com.example.thai.dotify.Adapters.SearchSongAdapter;
 import com.example.thai.dotify.Fragments.CreatePlaylistFragment;
 import com.example.thai.dotify.Fragments.ForYouFragment;
 import com.example.thai.dotify.Fragments.FullScreenMusicControllerFragment;
@@ -24,6 +25,7 @@ import com.example.thai.dotify.Fragments.SongInAlbumFragment;
 import com.example.thai.dotify.Fragments.SongsByArtistFragment;
 import com.example.thai.dotify.Fragments.SongsListFragment;
 import com.example.thai.dotify.Services.MusicService;
+import com.example.thai.dotify.Utilities.SearchArtist;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
@@ -34,6 +36,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.example.thai.dotify.MainActivityContainer.DisplayAdapter.SEARCH_SONG_ADAPTER;
 
 /**
  * this object puts together all the parts of the application
@@ -75,8 +79,13 @@ public class MainActivityContainer extends AppCompatActivity
         FULL_SCREEN_MUSIC,
         BACK_BUTTON,
         SONGS_BY_ARTIST,
-        SONGS_IN_ALBUM
+        SONGS_IN_ALBUM,
+    }
 
+    public enum DisplayAdapter{
+        SEARCH_SONG_ADAPTER,
+        SEARCH_ARTIST_ADAPTER,
+        SEARCH_ALBUM_ADAPTER
     }
 
     /***
@@ -327,6 +336,36 @@ public class MainActivityContainer extends AppCompatActivity
                 albumName, artistName, albumSongsList);
         songInAlbumFragment.setOnFragmentInteractionListener(this);
         startFragment(PlaylistFragmentType.SONGS_IN_ALBUM, true, true);
+    }
+
+    /**
+     * Update the recycler view list in SearchFragment
+     * @param updateAdapter SearchFragment class
+     * @param updateDisplay Which adapter to update
+     */
+    @Override
+    public void updateAdapterView(SearchFragment updateAdapter, DisplayAdapter updateDisplay) {
+        runOnUiThread(new Thread(()-> {
+            try {
+                switch (updateDisplay) {
+                    case SEARCH_SONG_ADAPTER:
+                        updateAdapter.notifyRecyclerDataInsertedChanged(SearchFragment.RECYCLER_TYPE.SEARCH_SONG);
+                        updateAdapter.changeQueryLayoutStates(SearchFragment.RECYCLER_TYPE.SEARCH_SONG);
+                        break;
+                    case SEARCH_ARTIST_ADAPTER:
+                        updateAdapter.notifyRecyclerDataInsertedChanged(SearchFragment.RECYCLER_TYPE.SEARCH_ARTIST);
+                        updateAdapter.changeQueryLayoutStates(SearchFragment.RECYCLER_TYPE.SEARCH_ARTIST);
+                        break;
+                    case SEARCH_ALBUM_ADAPTER:
+                        updateAdapter.notifyRecyclerDataInsertedChanged(SearchFragment.RECYCLER_TYPE.SEARCH_ALBUM);
+                        updateAdapter.changeQueryLayoutStates(SearchFragment.RECYCLER_TYPE.SEARCH_ALBUM);
+                        break;
+                }
+            }
+            catch (Exception ex){
+
+            }
+        }));
     }
 
     @Override

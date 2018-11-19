@@ -145,7 +145,7 @@ public class Dotify{
     }
 
     /**
-     * Retrieves the Astral shared preferences
+     * Retrieves the Dotify shared preferences
      * @param context The current context of the application
      *
      * @return Astral's shared preferences folder
