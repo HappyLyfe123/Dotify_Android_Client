@@ -88,8 +88,20 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemsViewHol
         songsList.put(songID, newSong);
     }
 
+    /**
+     * Delete song from the playlist
+     * @param position the song position to delete
+     */
     public void deleteSongFromList(int position){
         songsList.remove(position);
+    }
+
+    /**
+     * Get the playlist song list
+     * @return
+     */
+    public HashMap<Integer, DotifySong>getSongList(){
+        return songsList;
     }
 
 

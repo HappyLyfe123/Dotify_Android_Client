@@ -1,5 +1,6 @@
 package com.example.thai.dotify.Fragments;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
@@ -75,7 +76,7 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
      * Listener to tell the main container to switch fragments
      */
     public interface OnFragmentInteractionListener{
-        void onSongClicked(String songGUID);
+        void onSongClicked(int songPosition, HashMap<Integer ,DotifySong> songsList);
         void backButtonPressed();
     }
 
@@ -288,7 +289,7 @@ public class SongsListFragment extends Fragment implements View.OnClickListener,
         }
         //The user picked a song
         else{
-            onFragmentInteractionListener.onSongClicked(songsListAdapter.getSong(position).getGuid());
+            onFragmentInteractionListener.onSongClicked(position, songsListAdapter.getSongList());
         }
 
     }

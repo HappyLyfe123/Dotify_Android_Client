@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -156,10 +157,26 @@ public class PlayingMusicController {
 
     /**
      * Retrieves the name of the current song
-     * @return
+     * @return song title
      */
-    public String getCurrSongName() {
+    public String getCurrSongTitle() {
         return songList.get(currSongPosition).getSongTitle();
+    }
+
+    /**
+     * Get the artist of the song
+     * @return artist name
+     */
+    public String getCurrSongArtist(){
+        return songList.get(currSongPosition).getArtist();
+    }
+
+    /**
+     * Get the current song album name
+     * @return album name
+     */
+    public String getCurrSongAlbum(){
+        return songList.get(currSongPosition).getAlbum();
     }
 
     /**

@@ -24,6 +24,7 @@ import com.example.thai.dotify.Fragments.SearchFragment;
 import com.example.thai.dotify.Fragments.SongInAlbumFragment;
 import com.example.thai.dotify.Fragments.SongsByArtistFragment;
 import com.example.thai.dotify.Fragments.SongsListFragment;
+import com.example.thai.dotify.Server.DotifySong;
 import com.example.thai.dotify.Services.MusicService;
 import com.example.thai.dotify.Utilities.SearchArtist;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
@@ -31,6 +32,8 @@ import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.UserUtilities;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+
+import java.util.HashMap;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -309,6 +312,17 @@ public class MainActivityContainer extends AppCompatActivity
         startSongIntent.putExtra("guid", songGUID);
         startSongIntent.setAction(MusicService.START_SONG);
         startService(startSongIntent);
+    }
+
+    /**
+     * Play song
+     * @param selectedSongPosition the song that will be playing
+     * @param songsList the list of the song
+     */
+    @Override
+    public void onSongClicked(int selectedSongPosition, HashMap<Integer, DotifySong> songsList) {
+
+
     }
 
     /**
