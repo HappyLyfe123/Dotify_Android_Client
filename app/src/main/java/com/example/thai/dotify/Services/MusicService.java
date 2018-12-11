@@ -47,7 +47,6 @@ public class MusicService extends IntentService {
     private static InetAddress serverAddress;
     private static boolean isLoaded;
 
-
     public MusicService() {
         super("MusicService");
     }
@@ -98,86 +97,7 @@ public class MusicService extends IntentService {
             }
             break;
             case START_SONG:{
-                try {
-                    String songGuid = intent.getStringExtra("guid");
-
-                    // Create the request to receive a song from the server
-                    byte[] musicRequestBytes = songGuid.getBytes();
-
-                    // Create the Packet to send to the server
-                    DatagramPacket musicRequestPacket = new DatagramPacket(
-                            musicRequestBytes,
-                            musicRequestBytes.length,
-                            serverAddress,
-                            streamPort
-                    );
-
-                    // Send the request to the server
-                    clientSocket.send(musicRequestPacket);
-
-                    // The buffer to receive the music size
-                    byte[] responseBuffer = new byte[8];
-
-                    // Datagram packet for receiving the music size
-                    DatagramPacket fileSizePacket = new DatagramPacket(
-                            responseBuffer,
-                            responseBuffer.length
-                    );
-
-                    clientSocket.receive(fileSizePacket);
-                    ByteBuffer byteBuffer = ByteBuffer.wrap(responseBuffer);
-                    int fileSize = byteBuffer.getInt();
-
-                    // Initialize the memory space to store the file contents
-                    byte[] musicBuffer = new byte[30000];
-                    ByteArrayOutputStream musicOS = new ByteArrayOutputStream();
-                    DatagramPacket musicChunkPacket = new DatagramPacket(
-                            musicBuffer,
-                            musicBuffer.length
-                    );
-
-                    int burst = 1;
-                    int burstSize = 10000;
-
-                    for (int i = 0; i < fileSize; i += burstSize*burst) {
-                        byte[] musicChunkRequest = ("" + i).getBytes();
-                        DatagramPacket musicChunkRequestPacket = new DatagramPacket(
-                                musicChunkRequest,
-                                musicChunkRequest.length,
-                                serverAddress,
-                                streamPort
-                        );
-                        clientSocket.send(musicChunkRequestPacket);
-
-                        for (int j = 0; j < burst; j++) {
-                            Log.d(TAG, "Inner Iteration: " + i);
-                            if (i + j * burstSize > fileSize) {
-                                break;
-                            }
-                            clientSocket.receive(musicChunkPacket);
-                            musicOS.write(musicBuffer);
-                        }
-                        Log.d(TAG, "Outer Iteration: " + i);
-                    }
-
-                    // Create the temporary file to read from
-                    File tempMP3 = File.createTempFile("temp", "mp3", this.getCacheDir());
-                    tempMP3.deleteOnExit();
-                    FileOutputStream fos = new FileOutputStream(tempMP3);
-                    fos.write(musicOS.toByteArray());
-                    fos.close();
-
-                    mediaPlayer.reset();
-
-                    // Read in the file and start playing music
-                    FileInputStream fis = new FileInputStream(tempMP3);
-                    mediaPlayer.setDataSource(fis.getFD());
-                    mediaPlayer.prepare();
-                    mediaPlayer.start();
-
-                }catch(Exception ex) {
-                    ex.printStackTrace();
-                }
+               startSong(intent);
             }
             break;
             case PAUSE_SONG : {
@@ -236,6 +156,91 @@ public class MusicService extends IntentService {
 
                 // Close the client socket
                 clientSocket.close();
+            }catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void startSong(Intent intent){
+        AsyncTask.execute(() -> {
+            try {
+                String songGuid = intent.getStringExtra("guid");
+
+                // Create the request to receive a song from the server
+                byte[] musicRequestBytes = songGuid.getBytes();
+
+                // Create the Packet to send to the server
+                DatagramPacket musicRequestPacket = new DatagramPacket(
+                        musicRequestBytes,
+                        musicRequestBytes.length,
+                        serverAddress,
+                        streamPort
+                );
+
+                // Send the request to the server
+                clientSocket.send(musicRequestPacket);
+
+                // The buffer to receive the music size
+                byte[] responseBuffer = new byte[8];
+
+                // Datagram packet for receiving the music size
+                DatagramPacket fileSizePacket = new DatagramPacket(
+                        responseBuffer,
+                        responseBuffer.length
+                );
+
+                clientSocket.receive(fileSizePacket);
+                ByteBuffer byteBuffer = ByteBuffer.wrap(responseBuffer);
+                int fileSize = byteBuffer.getInt();
+
+                // Initialize the memory space to store the file contents
+                byte[] musicBuffer = new byte[30000];
+                ByteArrayOutputStream musicOS = new ByteArrayOutputStream();
+                DatagramPacket musicChunkPacket = new DatagramPacket(
+                        musicBuffer,
+                        musicBuffer.length
+                );
+
+                int burst = 1;
+                int burstSize = 10000;
+
+                for (int i = 0; i < fileSize; i += burstSize*burst) {
+                    byte[] musicChunkRequest = ("" + i).getBytes();
+                    DatagramPacket musicChunkRequestPacket = new DatagramPacket(
+                            musicChunkRequest,
+                            musicChunkRequest.length,
+                            serverAddress,
+                            streamPort
+                    );
+                    clientSocket.send(musicChunkRequestPacket);
+
+                    for (int j = 0; j < burst; j++) {
+                        Log.d(TAG, "Inner Iteration: " + i);
+                        if (i + j * burstSize > fileSize) {
+                            break;
+                        }
+                        clientSocket.receive(musicChunkPacket);
+                        musicOS.write(musicBuffer);
+                    }
+                    Log.d(TAG, "Outer Iteration: " + i);
+                }
+
+                // Create the temporary file to read from
+                File tempMP3 = File.createTempFile("temp", "mp3", this.getCacheDir());
+                tempMP3.deleteOnExit();
+                FileOutputStream fos = new FileOutputStream(tempMP3);
+                fos.write(musicOS.toByteArray());
+                fos.close();
+
+                mediaPlayer.reset();
+
+                // Read in the file and start playing music
+                FileInputStream fis = new FileInputStream(tempMP3);
+                mediaPlayer.setDataSource(fis.getFD());
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+
             }catch(Exception ex) {
                 ex.printStackTrace();
             }
