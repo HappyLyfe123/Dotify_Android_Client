@@ -163,7 +163,8 @@ public class MusicService extends IntentService {
     }
 
     public void startSong(Intent intent){
-        AsyncTask.execute(() -> {
+        Thread t = new Thread();
+        t.start();
             try {
                 String songGuid = intent.getStringExtra("guid");
 
@@ -244,6 +245,5 @@ public class MusicService extends IntentService {
             }catch(Exception ex) {
                 ex.printStackTrace();
             }
-        });
     }
 }
