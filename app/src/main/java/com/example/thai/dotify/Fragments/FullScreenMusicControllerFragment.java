@@ -108,7 +108,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Get the current song's information and display it to the screen
-        String currSongName = musicController.getCurrSongName();
+        String currSongName = musicController.getCurrSongTitle();
         songInfoTextView.setText(currSongName);
     }
 
@@ -137,8 +137,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
             case R.id.full_screen_next_track_image_button:
                 break;
             case R.id.full_screen_play_pause_image_button:{
-                if (!musicController.musicIsPlaying()) {
-                    musicController.requestCurrentSong();
+                if (!musicController.isSongPlaying()) {
                     playPauseImageButton.setImageResource(R.drawable.big_pause_button_icon);
                 } else {
                     playPauseImageButton.setImageResource(R.drawable.big_play_button_icon);

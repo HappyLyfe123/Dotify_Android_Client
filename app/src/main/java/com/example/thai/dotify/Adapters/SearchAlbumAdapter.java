@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
+import com.example.thai.dotify.Server.DotifySong;
 import com.google.gson.JsonArray;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class SearchAlbumAdapter extends RecyclerView.Adapter<SearchAlbumAdapter.
     private ArrayList<String> albumNameList;
     private ArrayList<String> artistNameList;
     private ArrayList<JsonArray> albumSongsList;
+    private DotifySong currSong;
 
     public SearchAlbumAdapter(RecyclerViewClickListener listener){
         albumNameList = new ArrayList<>();
@@ -76,6 +78,10 @@ public class SearchAlbumAdapter extends RecyclerView.Adapter<SearchAlbumAdapter.
      */
     public String getArtistName(int position){
         return artistNameList.get(position);
+    }
+
+    public DotifySong getSelectedSong(){
+        return currSong;
     }
 
     /**

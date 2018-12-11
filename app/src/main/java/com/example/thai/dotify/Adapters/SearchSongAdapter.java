@@ -10,15 +10,15 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
-import com.example.thai.dotify.SearchResult;
+import com.example.thai.dotify.Server.DotifySong;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.ItemsViewHolder>{
 
-    private HashMap<String, ArrayList<SearchResult>> cacheSongsList;
-    private ArrayList<SearchResult> searchSongsResult;
+    private HashMap<String, ArrayList<DotifySong>> cacheSongsList;
+    private ArrayList<DotifySong> searchSongsResult;
     private RecyclerViewClickListener onItemClickedListener;
 
     /**
@@ -69,7 +69,7 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
      * Return all of the songs from for the current search
      * @return list of all of the songs
      */
-    public ArrayList<SearchResult> getSearchsongsResult(){
+    public ArrayList<DotifySong> getSearchsongsResult(){
         return searchSongsResult;
     }
 
@@ -89,7 +89,7 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
      * @param songInfo new result
      *
      */
-    public void addSong(SearchResult songInfo, String songName){
+    public void addSong(DotifySong songInfo, String songName){
         searchSongsResult.add(songInfo);
         songInfo.setSongTitle(songName);
 
@@ -135,6 +135,10 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.It
      */
     public String getAlbumName(int position){
         return searchSongsResult.get(position).getAlbum();
+    }
+
+    public DotifySong getSong(int position){
+        return searchSongsResult.get(position);
     }
 
     //Get the number of items in the searchResult list

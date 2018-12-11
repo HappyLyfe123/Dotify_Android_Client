@@ -10,12 +10,13 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
-import com.example.thai.dotify.Server.SearchArtistSongResult;
+import com.example.thai.dotify.Server.Dotify;
+import com.example.thai.dotify.Server.DotifySong;
 
 import java.util.ArrayList;
 
 public class SearchAlbumSongAdapter extends RecyclerView.Adapter<SearchAlbumSongAdapter.ItemsViewHolder> {
-    private ArrayList<SearchArtistSongResult> songsList;
+    private ArrayList<DotifySong> songsList;
     private RecyclerViewClickListener onItemClickedListener;
     private String artistName;
 
@@ -41,7 +42,7 @@ public class SearchAlbumSongAdapter extends RecyclerView.Adapter<SearchAlbumSong
      * Add new song into the list of song in the album
      * @param song
      */
-    public void newSong(SearchArtistSongResult song){
+    public void newSong(DotifySong song){
         songsList.add(song);
     }
 
@@ -77,6 +78,10 @@ public class SearchAlbumSongAdapter extends RecyclerView.Adapter<SearchAlbumSong
      */
     public String getArtistName(){
         return artistName;
+    }
+
+    public DotifySong getSong(int position){
+        return songsList.get(position);
     }
 
     /**

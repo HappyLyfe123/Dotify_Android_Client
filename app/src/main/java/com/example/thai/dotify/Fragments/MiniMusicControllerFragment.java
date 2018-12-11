@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.thai.dotify.PlayingMusicController;
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.StartUpContainer;
 
@@ -19,32 +20,27 @@ import com.example.thai.dotify.StartUpContainer;
 public class MiniMusicControllerFragment extends Fragment implements View.OnClickListener{
 
     private ImageButton playPauseMusicButton;
-    private TextView songTitleInfo;
+    private static PlayingMusicController musicController;
+    private TextView songInfo;
     private ConstraintLayout currLayout;
-    private OnChangeFragmentListener onChangeFragmentListener;
+    private boolean songStatus;
+    private OnFragmentInteractionListener onFragmentInteractionListener;
 
     /**
      * object's own interface
      */
-    public interface OnChangeFragmentListener {
-        void buttonClicked(StartUpContainer.AuthFragmentType fragmentType);
-    }
-
-    /**
-     * Sets the OnChangeFragmentListener to communicate from this fragment to the activity
-     * @param onChangeFragmentListener The listener for communication
-     */
-    public void setOnChangeFragmentListener(OnChangeFragmentListener onChangeFragmentListener) {
-        this.onChangeFragmentListener = onChangeFragmentListener;
+    public interface OnFragmentInteractionListener {
+        void pauseSong();
+        void playSong();
     }
 
     /***
      * instantiate new object
      * @return new MiniMusicControllerFragment object
      */
-    public static MiniMusicControllerFragment newInstance(){
+    public static MiniMusicControllerFragment newInstance(PlayingMusicController controller){
         MiniMusicControllerFragment fragment = new MiniMusicControllerFragment();
-
+        musicController = controller;
         return fragment;
     }
 
@@ -64,8 +60,9 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
         // Initialize view layout
         playPauseMusicButton = (ImageButton) view.findViewById(R.id.mini_music_player_play_pause_image_button);
         playPauseMusicButton.setOnClickListener(this);
-        songTitleInfo = (TextView) view.findViewById(R.id.mini_music_player_song_info_text_view);
-
+        songInfo = (TextView) view.findViewById(R.id.mini_music_player_song_info_text_view);
+        setSongInfo();
+        setMusicPlayerButtonImage();
 
         return view;
     }
@@ -87,12 +84,11 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        System.out.println("Yes");
-/*        try{
-            onChangeFragmentListener = (OnChangeFragmentListener) context;
-        }catch(ClassCastException e){
-            throw new ClassCastException(context.toString());
-        }*/
+    }
+
+    private void setSongInfo(){
+        songInfo.setText(String.format("%s \u2022 %s", musicController.getCurrSongTitle(),
+                musicController.getCurrSongArtist()));
     }
 
     /***
@@ -104,27 +100,28 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
         switch (v.getId()){
             case R.id.mini_music_player_play_pause_image_button:
                 //Check the state of the music player
-
-//                if(PlayingMusicController.getSongPlayingStatus()){
-//                    PlayingMusicController.setSongPlayingStatus(false);
-//                }
-//                else{
-//                    PlayingMusicController.setSongPlayingStatus(true);
-//                }
-                changeMusicPlayerButtonImage();
+                if(musicController.isSongPlaying()){
+                    musicController.setSongStatus(false);
+                    musicController.pauseMusic();
+                }
+                else{
+                    musicController.setSongStatus(true);
+                    musicController.playMusic();
+                }
+                setMusicPlayerButtonImage();
                 break;
         }
     }
 
     //Change the button image according to the music state
-    public void changeMusicPlayerButtonImage(){
-//        if(PlayingMusicController.getSongPlayingStatus()){
-//            //Pause the music and show the play button
-//            playPauseMusicButton.setImageResource(R.drawable.mini_pause_button_icon);
-//        }
-//        else{
-//            //Play the music and show the pause button
-//            playPauseMusicButton.setImageResource(R.drawable.mini_play_button_icon);
-//        }
+    public void setMusicPlayerButtonImage(){
+        if(musicController.isSongPlaying()){
+            //Pause the music and show the play button
+            playPauseMusicButton.setImageResource(R.drawable.mini_pause_button_icon);
+        }
+        else{
+            //Play the music and show the pause button
+            playPauseMusicButton.setImageResource(R.drawable.mini_play_button_icon);
+        }
     }
 }

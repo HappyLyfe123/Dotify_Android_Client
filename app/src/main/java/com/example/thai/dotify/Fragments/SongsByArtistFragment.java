@@ -21,7 +21,7 @@ import com.example.thai.dotify.Adapters.SearchArtistSongAdapter;
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
 import com.example.thai.dotify.Server.Dotify;
-import com.example.thai.dotify.Server.SearchArtistSongResult;
+import com.example.thai.dotify.Server.DotifySong;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.google.gson.Gson;
@@ -254,7 +254,7 @@ public class SongsByArtistFragment extends Fragment {
             albumListAdapter.insertAlbum(albumName, albumSongList);
             for(JsonElement songInfo : albumSongList) {
                 songsListAdapter.insertSearchResultItem(gson.fromJson(
-                        songInfo, SearchArtistSongResult.class));
+                        songInfo, DotifySong.class));
             }
         }
     }

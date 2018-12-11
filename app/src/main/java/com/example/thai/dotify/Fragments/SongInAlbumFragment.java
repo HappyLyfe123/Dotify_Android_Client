@@ -19,7 +19,7 @@ import com.example.thai.dotify.Adapters.SearchAlbumSongAdapter;
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
 import com.example.thai.dotify.Server.Dotify;
-import com.example.thai.dotify.Server.SearchArtistSongResult;
+import com.example.thai.dotify.Server.DotifySong;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.SentToServerRequest;
 import com.google.gson.Gson;
@@ -55,7 +55,7 @@ public class SongInAlbumFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void backButtonPressed();
-        void onSongClicked(String songGUID);
+        void onSongClicked(DotifySong song);
         PlaylistsAdapter getPlaylistAdapter();
     }
 
@@ -130,7 +130,7 @@ public class SongInAlbumFragment extends Fragment {
             @Override
             public void onItemClick(View v, int songPosition) {
                 if(v.getId() == R.id.search_result_item_recycler_view) {
-                    onFragmentInteractionListener.onSongClicked(songsListAdapter.getSongGUID(songPosition));
+                    onFragmentInteractionListener.onSongClicked(songsListAdapter.getSong(songPosition));
                 }
                 else if(v.getId() == R.id.search_add_to_play_list_image_view){
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -213,7 +213,7 @@ public class SongInAlbumFragment extends Fragment {
         songsListAdapter.setArtistName(artistName);
         for(JsonElement songInfo : albumSongList) {
             songsListAdapter.newSong(gson.fromJson(
-                    songInfo, SearchArtistSongResult.class));
+                    songInfo, DotifySong.class));
         }
         songsListAdapter.notifyItemRangeInserted(0, albumSongList.size());
         songsListAdapter.notifyItemRangeChanged(0, albumSongList.size());

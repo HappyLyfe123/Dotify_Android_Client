@@ -48,7 +48,7 @@ import static com.example.thai.dotify.MainActivityContainer.DisplayAdapter.SEARC
 public class MainActivityContainer extends AppCompatActivity
         implements PlaylistFragment.OnFragmentInteractionListener, SearchFragment.OnFragmentInteractionListener,
     SongsListFragment.OnFragmentInteractionListener, SongsByArtistFragment.OnFragmentInteractionListener,
-    SongInAlbumFragment.OnFragmentInteractionListener{
+    SongInAlbumFragment.OnFragmentInteractionListener, MiniMusicControllerFragment.OnFragmentInteractionListener{
 
     private SearchFragment searchFragment;
     private PlaylistFragment playlistFragment;
@@ -68,8 +68,8 @@ public class MainActivityContainer extends AppCompatActivity
     private Context activityContext;
     private SentToServerRequest sentToServerRequest;
     private GetFromServerRequest getFromServerRequest;
+    private Intent startSongIntent;
     private String TAG = MainActivityContainer.class.getSimpleName();
-
 
     //list of pages
     public enum PlaylistFragmentType{
@@ -104,6 +104,8 @@ public class MainActivityContainer extends AppCompatActivity
         user = UserUtilities.getCachedUserInfo(this);
         getFromServerRequest = new GetFromServerRequest(getString(R.string.base_URL), getString(R.string.appKey), user.getUsername());
         sentToServerRequest = new SentToServerRequest(getString(R.string.base_URL), getString(R.string.appKey), user.getUsername());
+        startSongIntent =  new Intent(this, MusicService.class);
+        musicController = new PlayingMusicController();
 
         //Initialize view layout
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
@@ -125,7 +127,9 @@ public class MainActivityContainer extends AppCompatActivity
         searchFragment.setOnFragmentInteractionListener(this);
         playlistFragment.setOnFragmentInteractionListener(this);
 
-        miniMusicControllerFragment = miniMusicControllerFragment.newInstance();
+
+        miniMusicControllerFragment = miniMusicControllerFragment.newInstance(musicController);
+        createMiniMusicControllerView();
 
         createBottomNavigationView();
 
@@ -262,7 +266,7 @@ public class MainActivityContainer extends AppCompatActivity
     public void miniMusicScreenClicked(View view){
         bottomNavigationView.setVisibility(View.VISIBLE);
         miniMusicControllerLayout.setVisibility(View.VISIBLE);
-        miniMusicControllerFragment.changeMusicPlayerButtonImage();
+        miniMusicControllerFragment.setMusicPlayerButtonImage();
         startFragment(PlaylistFragmentType.BACK_BUTTON, false, false);
     }
 
@@ -304,14 +308,12 @@ public class MainActivityContainer extends AppCompatActivity
 
     /**
      * A song been selected
-     * @param songGUID the guid of the song
+     * @param song the current song that the user want to play
      */
     @Override
-    public void onSongClicked(String songGUID) {
-        Intent startSongIntent = new Intent(this, MusicService.class);
-        startSongIntent.putExtra("guid", songGUID);
-        startSongIntent.setAction(MusicService.START_SONG);
-        startService(startSongIntent);
+    public void onSongClicked(DotifySong song) {
+        musicController.addSongToList(song, false);
+
     }
 
     /**
@@ -323,6 +325,16 @@ public class MainActivityContainer extends AppCompatActivity
     public void onSongClicked(int selectedSongPosition, HashMap<Integer, DotifySong> songsList) {
 
 
+    }
+
+    /**
+     * Play current song
+     * @param songGUID song GUID
+     */
+    public void playMusic(String songGUID){
+        startSongIntent.putExtra("guid", songGUID);
+        startSongIntent.setAction(MusicService.START_SONG);
+        startService(startSongIntent);
     }
 
     /**
@@ -351,6 +363,23 @@ public class MainActivityContainer extends AppCompatActivity
         songInAlbumFragment.setOnFragmentInteractionListener(this);
         startFragment(PlaylistFragmentType.SONGS_IN_ALBUM, true, true);
     }
+
+    /**
+     * Pause current song
+     */
+    @Override
+    public void pauseSong() {
+
+    }
+
+    /**
+     * Play current song
+     */
+    @Override
+    public void playSong() {
+
+    }
+
 
     /**
      * Update the recycler view list in SearchFragment

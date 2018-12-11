@@ -10,12 +10,13 @@ import android.widget.TextView;
 
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
-import com.example.thai.dotify.Server.SearchArtistSongResult;
+import com.example.thai.dotify.Server.Dotify;
+import com.example.thai.dotify.Server.DotifySong;
 
 import java.util.ArrayList;
 
 public class SearchArtistSongAdapter extends RecyclerView.Adapter<SearchArtistSongAdapter.ItemsViewHolder>{
-    private ArrayList<SearchArtistSongResult> searchResultsSongs;
+    private ArrayList<DotifySong> searchResultsSongs;
     private RecyclerViewClickListener onItemClickedListener;
     private String artistName;
 
@@ -65,7 +66,7 @@ public class SearchArtistSongAdapter extends RecyclerView.Adapter<SearchArtistSo
      * @return  Current query songs list
      *
      */
-    public ArrayList<SearchArtistSongResult> getQuerySongsList(){
+    public ArrayList<DotifySong> getQuerySongsList(){
         return searchResultsSongs;
     }
 
@@ -75,7 +76,7 @@ public class SearchArtistSongAdapter extends RecyclerView.Adapter<SearchArtistSo
      * @param newSearchResult new result
      *
      */
-    public void updateSearchResult(ArrayList<SearchArtistSongResult> newSearchResult){
+    public void updateSearchResult(ArrayList<DotifySong> newSearchResult){
         searchResultsSongs = newSearchResult;
     }
 
@@ -85,7 +86,7 @@ public class SearchArtistSongAdapter extends RecyclerView.Adapter<SearchArtistSo
      * @param songInfo new result
      *
      */
-    public void insertSearchResultItem(SearchArtistSongResult songInfo){
+    public void insertSearchResultItem(DotifySong songInfo){
         searchResultsSongs.add(songInfo);
     }
 

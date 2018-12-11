@@ -22,8 +22,8 @@ import com.example.thai.dotify.Adapters.SearchSongAdapter;
 import com.example.thai.dotify.MainActivityContainer;
 import com.example.thai.dotify.R;
 import com.example.thai.dotify.RecyclerViewClickListener;
-import com.example.thai.dotify.SearchResult;
 import com.example.thai.dotify.Server.Dotify;
+import com.example.thai.dotify.Server.DotifySong;
 import com.example.thai.dotify.Utilities.GetFromServerRequest;
 import com.example.thai.dotify.Utilities.JSONUtilities;
 import com.example.thai.dotify.Utilities.SearchArtist;
@@ -92,7 +92,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
      * Listener for the Fragment to tell the main activity to change fragments
      */
     public interface OnFragmentInteractionListener{
-        void onSongClicked(String songGUID);
+        void onSongClicked(DotifySong song);
         void onArtistResultClicked(String artistName, JsonElement currArtistInfo);
         void onAlbumResultClicked(String albumName, String artistName, JsonArray albumSongsList);
         void updateAdapterView(SearchFragment updateAdapter, MainActivityContainer.DisplayAdapter updateDisplay);
@@ -179,7 +179,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
             public void onItemClick(View v, int songPosition) {
                 //The user want to play the selected song
                 if(v.getId() == R.id.search_result_item_recycler_view) {
-                    onFragmentInteractionListener.onSongClicked(searchSongResultAdapter.getSongGUID(songPosition));
+                    onFragmentInteractionListener.onSongClicked(searchSongResultAdapter.getSong(songPosition));
                 }
                 //The user want to add the song to a playlist
                 else if(v.getId() == R.id.search_add_to_play_list_image_view){
@@ -368,7 +368,7 @@ public class SearchFragment extends Fragment implements TextWatcher{
             for (JsonElement songInfo : querySongResult) {
                 songInfo.getAsJsonObject().entrySet().forEach(entry -> {
                     searchSongResultAdapter.addSong(gson.fromJson(
-                            entry.getValue(), SearchResult.class), entry.getKey());
+                            entry.getValue(), DotifySong.class), entry.getKey());
                 });
             }
         }
@@ -382,9 +382,9 @@ public class SearchFragment extends Fragment implements TextWatcher{
     private void displaySearchResultArtists(JsonArray queryArtistResult){
         //Add the result into the adapter list
         for(JsonElement artistInfo : queryArtistResult){
-             artistInfo.getAsJsonObject().entrySet().forEach(entry -> {
-                     searchArtistResultAdapter.addArtist(new SearchArtist(entry.getKey(), entry.getValue()));
-             });
+            artistInfo.getAsJsonObject().entrySet().forEach(entry -> {
+                searchArtistResultAdapter.addArtist(new SearchArtist(entry.getKey(), entry.getValue()));
+            });
         }
     }
 

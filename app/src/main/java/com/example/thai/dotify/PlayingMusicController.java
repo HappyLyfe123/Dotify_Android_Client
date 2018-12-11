@@ -30,120 +30,25 @@ import java.util.List;
  */
 public class PlayingMusicController {
     private int currSongPosition;
-    private List<DotifySong> songList;
-    private Context activityContext;
-    private MediaPlayer mediaPlayer = new MediaPlayer();
-    private boolean songQueried;
-
-    /**
-     * the UDPClient class runs the client-side portion of our application
-     */
-    public class UDPClient extends AsyncTask<DotifySong, byte[], byte[]>{
-        private InetAddress serverAddress;
-        private final int SERVER_UDP_PORT = 40000;
-        private final int CLIENT_UDP_PORT = 30001;
-        private final String TAG = UDPClient.class.getSimpleName();
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected byte[] doInBackground(DotifySong... songs) {
-            try{
-                DatagramSocket sendSocket = new DatagramSocket(CLIENT_UDP_PORT);
-                serverAddress = Inet4Address.getByName("www.dotify.online");
-
-                // Retrieve the song to request from the server
-                DotifySong requestSong = songs[0];
-                // Turn the request into bytes
-                byte[] requestBytes = ("x" + requestSong.getGuid()).getBytes();
-
-                // Create the Packet to send to the server
-                DatagramPacket sendPacket = new DatagramPacket(
-                        requestBytes,
-                        requestBytes.length,
-                        serverAddress,
-                        SERVER_UDP_PORT
-                );
-
-                // Send the request to the server
-                sendSocket.send(sendPacket);
-                // Specify the buffer to retrieve the new port
-                byte[] receiveBuffer = new byte[8];
-                // Receive the new socket to connect to
-                DatagramPacket newPortPacket = new DatagramPacket(receiveBuffer,
-                        receiveBuffer.length);
-                sendSocket.receive(newPortPacket);
-                // Get the reply
-                ByteBuffer portByteBuffer = ByteBuffer.wrap(receiveBuffer);
-                double fragmentCount = portByteBuffer.getDouble();
-
-
-                // Start receiving the packets for the music
-                byte[] receiveSongBuffer = new byte[20000];
-                DatagramPacket receiveSongPacket = new DatagramPacket(receiveSongBuffer, receiveSongBuffer.length);
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-                for (int i = 0; i < fragmentCount; i++) {
-                    byte[] songRequestBytes = ("" + i).getBytes();
-                    sendPacket = new DatagramPacket(
-                            songRequestBytes,
-                            songRequestBytes.length,
-                            serverAddress,
-                            SERVER_UDP_PORT
-                    );
-                    sendSocket.send(sendPacket);
-                    sendSocket.receive(receiveSongPacket);
-                    outputStream.write(receiveSongBuffer);
-                    Log.d(TAG, "Iteration Value " + i);
-                }
-
-                sendSocket.close();
-
-                return outputStream.toByteArray();
-
-            }catch(Exception ex) {
-                ex.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(byte[] song) {
-            super.onPostExecute(song);
-            try{
-                songQueried = true;
-                File tempMP3 = File.createTempFile("temp", "mp3", activityContext.getCacheDir());
-                tempMP3.deleteOnExit();
-                FileOutputStream fos = new FileOutputStream(tempMP3);
-                fos.write(song);
-                fos.close();
-
-                mediaPlayer.reset();
-
-                FileInputStream fis = new FileInputStream(tempMP3);
-                mediaPlayer.setDataSource(fis.getFD());
-                mediaPlayer.prepare();
-                mediaPlayer.start();
-            }catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-        }
-    }
+    private List<DotifySong> currSongList;
+    private HashMap<String, MediaPlayer> cacheSongs;
+    private static boolean isSongPlaying;
 
     /**
      * constructor with given list of songs
      *
-     * @param songList - list of songs to add
+     * @param
      */
-    public PlayingMusicController(Context context, List<DotifySong> songList) {
-        this.songList = songList;
-        activityContext = context;
-        songQueried = false;
+    public PlayingMusicController() {
+        currSongList = new ArrayList<>();
+        isSongPlaying = false;
+    }
+
+    /**
+     * Clear all song from the current song list
+     */
+    public void clearSongList(){
+        currSongList.clear();
     }
 
     /**
@@ -151,8 +56,37 @@ public class PlayingMusicController {
      *
      * @param position - song at specified position
      */
-    public void setCurrentSong(int position) {
+    public void setCurrSongPosition(int position) {
+
         currSongPosition = position;
+    }
+
+    /**
+     * Add the a new song to the song list
+     * @param newSong
+     */
+    public void addSongToList(DotifySong newSong, boolean clearSongsList){
+        //Clear all of the song from the current song list before adding new song
+        if(clearSongsList){
+            clearSongList();
+        }
+        currSongList.add(newSong);
+    }
+
+    /**
+     * Replace old song list with new song list
+     * @param newSongList new song list
+     */
+    public void setNewSongList(ArrayList<DotifySong> newSongList){
+        currSongList = new ArrayList<>(newSongList);
+    }
+
+    /**
+     * Get the current GUID of the song playing
+     * @return GUID
+     */
+    public String getSongGUID(){
+        return currSongList.get(currSongPosition).getGuid();
     }
 
     /**
@@ -160,7 +94,11 @@ public class PlayingMusicController {
      * @return song title
      */
     public String getCurrSongTitle() {
-        return songList.get(currSongPosition).getSongTitle();
+        if(currSongList.isEmpty()){
+            return "";
+        }else {
+            return currSongList.get(currSongPosition).getSongTitle();
+        }
     }
 
     /**
@@ -168,7 +106,12 @@ public class PlayingMusicController {
      * @return artist name
      */
     public String getCurrSongArtist(){
-        return songList.get(currSongPosition).getArtist();
+        if(currSongList.isEmpty()){
+            return "";
+        }else{
+            return currSongList.get(currSongPosition).getArtist();
+        }
+
     }
 
     /**
@@ -176,7 +119,7 @@ public class PlayingMusicController {
      * @return album name
      */
     public String getCurrSongAlbum(){
-        return songList.get(currSongPosition).getAlbum();
+        return currSongList.get(currSongPosition).getAlbum();
     }
 
     /**
@@ -184,32 +127,67 @@ public class PlayingMusicController {
      * @return
      */
     public String getCurrentSongGUID() {
-        return songList.get(currSongPosition).getGuid();
+        return currSongList.get(currSongPosition).getGuid();
     }
 
-    public void requestCurrentSong() {
-        if (!songQueried) {
-            // Retrieve the current song object
-            DotifySong currentSong = songList.get(currSongPosition);
-            new UDPClient().execute(currentSong);
-        } else {
-            mediaPlayer.start();
+    /**
+     * Get the current song
+     * @return current song
+     */
+    public DotifySong getCurrentSong(){
+        return currSongList.get(currSongPosition);
+    }
+
+    /**
+     * The user want to play the next song in the list
+     */
+    public void playNextSong(){
+        //Check to make sure that the current song is not the last song in the list
+        if(currSongPosition >= currSongList.size() - 1){
+            //Set the next song to the first song in the list
+            currSongPosition = 0;
+        }
+        else{
+            currSongPosition++;
+        }
+    }
+
+    /**
+     * The user want to play previous song in the list
+     */
+    public void playPreviousSong(){
+        //Check to make sure that the song play currently is not the first song in the list
+        if(currSongPosition <= 0){
+            //Set the next song to be the last on in the list
+            currSongPosition = currSongList.size() - 1;
+        }
+        else{
+            currSongPosition--;
         }
     }
 
     //Pause Music
     public void pauseMusic() {
-        mediaPlayer.pause();
+
     }
 
     //Play music
     public void playMusic(){
-        mediaPlayer.start();
+
     }
 
-    //Check if the music is playing
-    public boolean musicIsPlaying(){
-        return mediaPlayer.isPlaying();
+    public void setSongStatus(boolean status){
+        isSongPlaying = status;
     }
+
+    /**
+     * Check the status of the song
+     * @return true if song is playing / false is song not playing
+     */
+    public boolean isSongPlaying(){
+        return isSongPlaying;
+    }
+
+
 
 }
