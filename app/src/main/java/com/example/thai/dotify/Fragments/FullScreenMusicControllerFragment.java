@@ -40,7 +40,8 @@ import static android.support.constraint.Constraints.TAG;
  */
 public class FullScreenMusicControllerFragment extends Fragment implements View.OnClickListener{
 
-    private TextView songInfoTextView;
+    private TextView songTitleTextView;
+    private TextView songArtistNameTextView;
     private ImageView songImageView;
     private ImageButton addToPlaylistButton;
     private ImageButton previousSongImageButton;
@@ -49,7 +50,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
     private ImageButton likeSongImageButton;
     private RecyclerView selectPlaylistList;
     public static SeekBar songSeekBar;
-    private PlayingMusicController musicController;
+    private static PlayingMusicController musicController;
     private DotifyUser user;
 
     /**
@@ -59,6 +60,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
      */
     public static FullScreenMusicControllerFragment newInstance(PlayingMusicController currController){
         FullScreenMusicControllerFragment fragment = new FullScreenMusicControllerFragment();
+        musicController = currController;
         return fragment;
     }
 
@@ -76,7 +78,8 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
         View view = inflater.inflate(R.layout.fragment_full_screen_music_controller, container, false);
 
         //Initialize view layout
-        songInfoTextView = (TextView) view.findViewById(R.id.full_screen_song_info_text_view);
+        songTitleTextView = (TextView) view.findViewById(R.id.full_screen_song_title_text_view);
+        songArtistNameTextView = (TextView) view.findViewById(R.id.full_screen_song_artist_text_view);
         songImageView = (ImageView) view.findViewById(R.id.full_screen_song_image_view);
         addToPlaylistButton = (ImageButton) view.findViewById(R.id.full_screen_add_to_playlist_button);
         previousSongImageButton = (ImageButton) view.findViewById(R.id.full_screen_previous_track_image_button);
@@ -96,6 +99,7 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
         // Initialize Variables
         user = ((MainActivityContainer) this.getActivity()).getCurrentUser();
 
+
         return view;
     }
 
@@ -108,8 +112,8 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Get the current song's information and display it to the screen
-        String currSongName = musicController.getCurrSongTitle();
-        songInfoTextView.setText(currSongName);
+        setMusicPlayerButtonImage();
+        setSongInfo();
     }
 
 
@@ -119,8 +123,10 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
      *                               and the currently playing song
      */
     public void setMusicController(PlayingMusicController playingMusicController){
-        musicController = playingMusicController;
+
     }
+
+
 
     /**
      * invoked when user wants to do something with the song
@@ -137,12 +143,14 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
             case R.id.full_screen_next_track_image_button:
                 break;
             case R.id.full_screen_play_pause_image_button:{
-                if (!musicController.isSongPlaying()) {
-                    playPauseImageButton.setImageResource(R.drawable.big_pause_button_icon);
-                } else {
-                    playPauseImageButton.setImageResource(R.drawable.big_play_button_icon);
+                if (musicController.isSongPlaying()) {
                     musicController.pauseMusic();
+                    musicController.setSongStatus(false);
+                } else {
+                    musicController.playMusic();
+                    musicController.setSongStatus(true);
                 }
+                setMusicPlayerButtonImage();
             }
             break;
             case R.id.full_screen_like_button_image:
@@ -151,7 +159,30 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
         }
     }
 
-    //Get the playlist name that the user want to add the song too
+    public void setSongInfo(){
+        if(musicController.getSongCount() > 0){
+            songTitleTextView.setText(musicController.getCurrSongTitle());
+            songArtistNameTextView.setText(musicController.getCurrSongArtist());
+        }
+    }
+
+    /**
+     * Change the button image depend on if a song is playing or not
+     */
+    public void setMusicPlayerButtonImage(){
+        if(musicController.isSongPlaying()){
+            //Pause the music and show the play button
+            playPauseImageButton.setImageResource(R.drawable.big_pause_button_icon);
+        }
+        else{
+            //Play the music and show the pause button
+            playPauseImageButton.setImageResource(R.drawable.big_play_button_icon);
+        }
+    }
+
+    /**
+     * Get the playlist name that the user selected
+     */
     private void getSelectedPlaylist(){
         final int[] selectPosition = {};
         //Create an instance of the Alert Dialog
@@ -186,6 +217,10 @@ public class FullScreenMusicControllerFragment extends Fragment implements View.
         currDialogBox.show();
     }
 
+    /**
+     *  Add the song to the playlist that the user seleted
+     * @param playlistName name of the playlist the user selected
+     */
     private void addSongToPlaylist(String playlistName){
         System.out.println(user.getUsername());
         final Dotify dotify = new Dotify(getActivity().getString(R.string.base_URL));

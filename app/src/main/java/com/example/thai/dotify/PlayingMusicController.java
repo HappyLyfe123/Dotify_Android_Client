@@ -166,6 +166,10 @@ public class PlayingMusicController {
         }
     }
 
+    public int getSongCount(){
+        return currSongList.size();
+    }
+
     //Pause Music
     public void pauseMusic() {
 

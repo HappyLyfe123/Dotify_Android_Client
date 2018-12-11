@@ -87,8 +87,11 @@ public class MiniMusicControllerFragment extends Fragment implements View.OnClic
     }
 
     private void setSongInfo(){
-        songInfo.setText(String.format("%s \u2022 %s", musicController.getCurrSongTitle(),
-                musicController.getCurrSongArtist()));
+        if(musicController.getSongCount() > 0){
+            songInfo.setText(String.format("%s \u2022 %s", musicController.getCurrSongTitle(),
+                    musicController.getCurrSongArtist()));
+        }
+
     }
 
     /***

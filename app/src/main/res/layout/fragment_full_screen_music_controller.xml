@@ -8,18 +8,36 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="57dp"
+        android:layout_height="58dp"
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/full_screen_song_image_view">
 
-        <TextView
-            android:id="@+id/full_screen_song_info_text_view"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="TextView" />
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/full_screen_song_title_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="TextView"/>
+
+            <TextView
+                android:id="@+id/full_screen_song_artist_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="13sp"
+                android:text="TextView"/>
+
+        </LinearLayout>
+
 
         <ImageButton
             android:id="@+id/full_screen_add_to_playlist_button"
@@ -113,7 +131,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:onClick="miniMusicScreenClicked"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +150,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="15dp"
-            android:onClick="miniMusicScreenClicked"
             android:text="TextView"
             android:textAlignment="center" />
     </LinearLayout>

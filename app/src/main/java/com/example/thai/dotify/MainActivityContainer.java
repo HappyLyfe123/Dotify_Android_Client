@@ -56,6 +56,7 @@ public class MainActivityContainer extends AppCompatActivity
     private ForYouFragment forYouFragment;
     private CreatePlaylistFragment createPlaylistFragment;
     private MiniMusicControllerFragment miniMusicControllerFragment;
+    private FullScreenMusicControllerFragment fullScreenMusicControllerFragment;
     private SongsListFragment songListScreenFragment;
     private SongsByArtistFragment songsByArtistFragment;
     private SongInAlbumFragment songInAlbumFragment;
@@ -129,6 +130,9 @@ public class MainActivityContainer extends AppCompatActivity
 
 
         miniMusicControllerFragment = miniMusicControllerFragment.newInstance(musicController);
+        fullScreenMusicControllerFragment = fullScreenMusicControllerFragment.newInstance(musicController);
+
+
         createMiniMusicControllerView();
 
         createBottomNavigationView();
@@ -200,10 +204,6 @@ public class MainActivityContainer extends AppCompatActivity
                 fragmentTransaction.replace(mainDisplayLayout.getId(),createPlaylistFragment);
                 break;
             case FULL_SCREEN_MUSIC:
-                // Initialize a FulLScreenMusicControllerFragment
-                FullScreenMusicControllerFragment fullScreenMusicControllerFragment = new FullScreenMusicControllerFragment();
-                // Set the current music controller for the FullScreenMusicControllerFragment
-                fullScreenMusicControllerFragment.setMusicController(musicController);
                 // set the fragment to be displayed
                 fragmentTransaction.replace(mainDisplayLayout.getId(), fullScreenMusicControllerFragment);
                 break;
